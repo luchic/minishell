@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_defines.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 13:40:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 14:14:54 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/01 17:50:36 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ struct ASTNode;
 
 typedef enum
 {
-	NODE_SCRIPT,
+	// NODE_SCRIPT,
 	NODE_COMMAND,
 	NODE_PIPELINE,
 	NODE_LOGICAL
@@ -35,18 +35,21 @@ typedef enum
 
 typedef struct s_var
 {
-    char			*name;
-    char			*value;
-    struct s_var	*next;
-}	t_var;
+    char					*name;
+    char					*value;
+    struct s_var			*next;
+}							t_var;
 
-typedef struct s_minishell
+typedef struct s_minishell 
 {
-    struct s_var    *variables;
-    t_script        *script;
-    int             num_variables;
-    int             is_background;
-}   t_minishell;
+    struct s_var			*variables;
+    t_script				*script;
+    int						num_variables;
+    int						is_background;
+	int						last_exit_status;
+}   						t_minishell;
+
+// ---- Executors ----
 
 // Represents a word (like "sleep", "2", etc.)
 typedef struct Word
@@ -80,12 +83,12 @@ typedef struct LogicalExpression
 // Generic AST node
 typedef struct ASTNode
 {
-	NodeType				type;
+	NodeType				type; //0: command, 1: pipeline, 2: logical
 	union
 	{
 		Command				command;
 		Pipeline			pipeline;
-		LogicalExpression	logical;
+		LogicalExpression	logical; // AND / OR
 	};
 }							ASTNode;
 
