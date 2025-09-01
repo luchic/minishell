@@ -8,7 +8,7 @@ struct s_script;
 
 typedef enum e_node_type
 {
-	// NODE_SCRIPT,
+	NODE_SUBSHELL,
 	NODE_COMMAND,
 	NODE_PIPELINE,
 	NODE_LOGICAL
@@ -50,6 +50,7 @@ typedef struct s_word
 // Represents a command
 typedef struct s_command
 {
+	int							type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
 	t_word						*name;
 	t_word						*suffix;
 }								t_command;
@@ -69,6 +70,12 @@ typedef struct s_logical_expression
 	struct s_ast_node			*right;
 }								t_logical_expression;
 
+// Represents a subshell
+typedef struct s_subshell
+{
+	t_script					*script;
+}								t_subshell;
+
 // Generic AST node
 typedef struct s_ast_node
 {
@@ -78,13 +85,14 @@ typedef struct s_ast_node
 		t_command				command;
 		t_pipeline				pipeline;
 		t_logical_expression	logical;
+		t_subshell				subshell;
 	};
 }								t_ast_node;
 
 // Represents a script (root)
 typedef struct s_script
 {
-	t_ast_node					**commands;
+	t_ast_node					**nodes; //to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
 

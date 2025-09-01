@@ -6,12 +6,12 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/01 18:00:38 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/01 19:51:34 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
-# include "ft_defines.h"
+#include "minishell.h"
+#include "ft_defines.h"
 
 int main(int argc, char **argv, char **envp)
 {
