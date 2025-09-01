@@ -6,15 +6,15 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 13:40:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 14:14:54 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/01 14:50:38 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
-// Forward declaration
-struct ASTNode;
+// Abstract Syntax Tree Node (ast node)
+struct s_ast_node;
 
 typedef enum
 {
@@ -22,14 +22,14 @@ typedef enum
 	NODE_COMMAND,
 	NODE_PIPELINE,
 	NODE_LOGICAL
-}							NodeType;
+}   t_node_type;
 
 // Operators for logical expressions
 typedef enum
 {
 	OP_AND,
 	OP_OR
-}							LogicalOp;
+}							t_logical_op;
 
 // ---- Structures ----
 
@@ -56,43 +56,43 @@ typedef struct Word
 }							Word;
 
 // Represents a command
-typedef struct Command
+typedef struct s_command
 {
 	Word					*name;
 	Word					*suffix;
-}							Command;
+}							t_command;
 
 // Represents a pipeline
-typedef struct Pipeline
+typedef struct s_pipeline
 {
-	struct ASTNode			**commands;
+	struct s_ast_node		**commands;
 	int						count;
-}							Pipeline;
+}							t_pipeline;
 
 // Represents a logical expression
-typedef struct LogicalExpression
+typedef struct s_logical_expression
 {
-	LogicalOp				op;
-	struct ASTNode			*left;
-	struct ASTNode			*right;
-}							LogicalExpression;
+	t_logical_op				op;
+	struct s_ast_node			*left;
+	struct s_ast_node			*right;
+}							t_logical_expression;
 
 // Generic AST node
-typedef struct ASTNode
+typedef struct s_ast_node
 {
-	NodeType				type;
+	t_node_type				type;
 	union
 	{
-		Command				command;
-		Pipeline			pipeline;
-		LogicalExpression	logical;
+		t_command				command;
+		t_pipeline				pipeline;
+		t_logical_expression	logical;
 	};
-}							ASTNode;
+}							t_ast_node;
 
 // Represents a script (root)
 typedef struct s_script
 {
-	ASTNode					**commands;
+	t_ast_node					**commands;
 	int						count;
 }							t_script;
 
