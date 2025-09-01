@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 13:40:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 14:08:20 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/01 14:14:54 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,21 @@ typedef enum
 }							LogicalOp;
 
 // ---- Structures ----
+
+typedef struct s_var
+{
+    char			*name;
+    char			*value;
+    struct s_var	*next;
+}	t_var;
+
+typedef struct s_minishell
+{
+    struct s_var    *variables;
+    t_script        *script;
+    int             num_variables;
+    int             is_background;
+}   t_minishell;
 
 // Represents a word (like "sleep", "2", etc.)
 typedef struct Word
@@ -79,6 +94,6 @@ typedef struct s_script
 {
 	ASTNode					**commands;
 	int						count;
-}							Script;
+}							t_script;
 
 #endif
