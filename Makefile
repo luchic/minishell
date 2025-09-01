@@ -1,24 +1,42 @@
+#Name of the program
 NAME = minishell
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -I.
 
-SRCS_DIR = src
-SRCS := $(wildcard $(SRCS_DIR)/*.c)
+
+# Source directories
+SRCS_DIR = src/
+
+COMMON = $(SRCS_DIR)common/
+EXEC = $(SRCS_DIR)exec/
+LEXER = $(SRCS_DIR)lexer/
+PARSER = $(SRCS_DIR)parser/
+
+
+# Source files
+SRCS = $(wildcard $(COMMON)*.c)
+SRCS += $(wildcard $(EXEC)*.c)
+SRCS += $(wildcard $(LEXER)*.c)
+SRCS += $(wildcard $(PARSER)*.c)
+SRCS += $(SRCS_DIR)main.c
 
 OBJS = $(SRCS:.c=.o)
 
+# Libft
 LIBFT_PATH = libft
+LIBFT = $(LIBFT_PATH)/libft.a
+FT = ft
+
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -Iincludes -I$(LIBFT_PATH)/includes
 
 all : $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT_PATH)/libft.a
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -o $(NAME)
+bonus : $(NAME)
 
-$(LIBFT_PATH)/libft.a:
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -l$(FT) -o $(NAME)
+
+$(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
-
-%.o: $(SRCS_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
 	$(MAKE) clean -C $(LIBFT_PATH)
@@ -30,4 +48,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
