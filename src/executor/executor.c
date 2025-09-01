@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/01 17:29:07 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/01 18:00:22 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,17 @@
 # include "minishell.h"
 # include "ft_defines.h"
 
-void    execute_script(t_script *script)
+void    execute_script(t_minishell *mnsh)
 {
     int i;
     int last_exit_status;
 
-    if (!script || !script->commands)
+    if (!mnsh || !mnsh->script || !mnsh->script->commands)
         return;
     i = 0;
-    while (i < script->count)
+    while (i < mnsh->script->count)
     {
-        last_exit_status = execute_node(script, script->commands[i]);
+        last_exit_status = execute_node(mnsh, mnsh->script->commands[i]);
         i++;
     }
 }

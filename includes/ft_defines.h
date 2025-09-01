@@ -1,24 +1,14 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_defines.h                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 13:40:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 18:07:34 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
 // Abstract Syntax Tree Node (ast node)
 struct s_ast_node;
+struct s_script;
 
 typedef enum e_node_type
 {
-	NODE_SCRIPT,
+	// NODE_SCRIPT,
 	NODE_COMMAND,
 	NODE_PIPELINE,
 	NODE_LOGICAL
@@ -43,11 +33,13 @@ typedef struct s_var
 typedef struct s_minishell
 {
 	struct s_var				*variables;
-	t_script					*script;
+	struct s_script				*script;
 	int							num_variables;
 	int							is_background;
+	int							last_exit_status;
 }								t_minishell;
 
+// ---- Executors ----
 // Represents a word (like "sleep", "2", etc.)
 typedef struct s_word
 {
