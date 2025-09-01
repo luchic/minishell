@@ -122,16 +122,16 @@ t_list	*fd_split_tokens(char *input)
 	return (head);
 }
 
-int main()
-{
-	t_list *tokens;
-	char *input = "echo 'Hello World' | grep World && echo \"Done\"";
+// int main()
+// {
+// 	t_list *tokens;
+// 	char *input = "echo 'Hello World' | grep World && echo \"Done\"";
 
-	tokens = fd_split_tokens(input);
-	while (tokens)
-	{
-		printf("Token: %s\n", (char *)tokens->content);
-		tokens = tokens->next;
-	}
-	return 0;
-}
+// 	tokens = fd_split_tokens(input);
+// 	while (tokens)
+// 	{
+// 		printf("Token: %s\n", (char *)tokens->content);
+// 		tokens = tokens->next;
+// 	}
+// 	return 0;
+// }
