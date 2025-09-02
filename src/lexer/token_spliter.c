@@ -16,23 +16,6 @@
 ;
 */
 
-int	is_doble_char_token(const char *str)
-{
-	if (!str || !str[0] || !str[1])
-		return (0);
-	if (str[0] == '$' && str[1] == '?')
-		return (1);
-	return (str[0] == str[1] && (str[0] == '|' || str[0] == '&' || str[0] == '<'
-			|| str[0] == '>'));
-}
-
-int	is_special_char(char c)
-{
-	return (c == '|' || c == '&' || c == '<' || c == '>' || c == '(' || c == ')'
-		|| c == ';' || c == ' ' || c == '\'' || c == '\"' || c == '$'
-		|| c == '?');
-}
-
 static char	*get_next_token(char **input, t_parse_mode *mode)
 {
 	char	*cur_input;
