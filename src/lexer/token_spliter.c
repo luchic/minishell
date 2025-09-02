@@ -16,7 +16,7 @@
 ;
 */
 
-static char	*get_next_token(char **input, t_parse_mode *mode)
+static char	*get_next_token(const char **input, t_parse_mode *mode)
 {
 	char	*cur_input;
 	char	*token;
@@ -44,7 +44,7 @@ static char	*get_next_token(char **input, t_parse_mode *mode)
 	return (token);
 }
 
-static char	*get_single_quoted_token(char **input, t_parse_mode *mode)
+static char	*get_single_quoted_token(const char **input, t_parse_mode *mode)
 {
 	char	*cur_input;
 	char	*token;
@@ -63,7 +63,7 @@ static char	*get_single_quoted_token(char **input, t_parse_mode *mode)
 	return (token);
 }
 
-static char	*get_double_quoted_token(char **input, t_parse_mode *mode)
+static char	*get_double_quoted_token(const char **input, t_parse_mode *mode)
 {
 	char	*cur_input;
 	char	*token;
@@ -86,7 +86,7 @@ static char	*get_double_quoted_token(char **input, t_parse_mode *mode)
 	return (token);
 }
 
-t_list	*ft_split_tokens(char *input)
+t_list	*ft_split_tokens(const char *input)
 {
 	t_list			*head;
 	char			*token;
