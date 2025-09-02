@@ -2,9 +2,11 @@
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
-// Abstract Syntax Tree Node (ast node)
+// Forward declarations
 struct s_ast_node;
 struct s_script;
+typedef struct s_ast_node t_ast_node;
+typedef struct s_script t_script;
 
 typedef enum e_node_type
 {
@@ -20,6 +22,16 @@ typedef enum e_logical_op
 	OP_AND,
 	OP_OR
 }								t_logical_op;
+
+// ---- Command Types ----
+
+typedef enum e_cmd_type
+{
+	CMD_BUILTIN,
+	CMD_EXTERNAL,
+	CMD_ASSIGNMENT,
+	CMD_HEREDOC
+}								t_cmd_type;
 
 // ---- Structures ----
 
@@ -40,19 +52,15 @@ typedef struct s_minishell
 }								t_minishell;
 
 // ---- Executors ----
-// Represents a word (like "sleep", "2", etc.)
-typedef struct s_word
-{
-	char						*text;
-	struct s_word				*next;
-}								t_word;
 
 // Represents a command
 typedef struct s_command
 {
-	int							type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
-	t_word						*name;
-	t_word						*suffix;
+	t_cmd_type					type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
+	int							fd_in; // -1 if no redirection
+	int							fd_out; // -1 if no redirection
+	char						*name;
+	char						**args; //includes name, NULL-terminated
 }								t_command;
 
 // Represents a pipeline
@@ -95,5 +103,18 @@ typedef struct s_script
 	t_ast_node					**nodes; //to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
+
+
+// execution functions
+
+int execute_command(t_minishell *mnsh, t_command *cmd);
+int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
+int execute_logical(t_minishell *mnsh, t_logical_expression *logic);
+int execute_subshell(t_minishell *mnsh, t_subshell *subsh);
+int execute_node(t_minishell *mnsh, t_ast_node *node);
+void execute_script(t_minishell *mnsh);
+
+//// built-in functions
+int ft_echo(t_command *cmd);
 
 #endif
