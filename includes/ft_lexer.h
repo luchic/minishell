@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 21:30:54 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/02 13:10:17 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef enum e_parse_mode
     NORMAL,
     DOUBLE,
     SINGLE,
+	ERROR,
 }						t_parse_mode;
 
 typedef enum e_token_type
