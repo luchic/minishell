@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/02 16:53:32 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/02 17:20:42 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,6 @@ int						is_special_char(char c);
 void					free_tokens(void *param);
 
 // ======================== Validator ========================
-
+int						validate_paratnes(const char *inpupt);
 
 #endif
