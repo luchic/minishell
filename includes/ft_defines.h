@@ -1,4 +1,5 @@
 
+
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
@@ -87,5 +88,9 @@ typedef struct s_script
 	t_ast_node					**commands;
 	int							count;
 }								t_script;
+
+# define STDERR 2
+# define STDOUT 1
+# define STDIN 0
 
 #endif

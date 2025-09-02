@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/02 15:39:30 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/02 16:53:32 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 
 typedef enum e_parse_mode
 {
-    NORMAL,
-    DOUBLE,
-    SINGLE,
+	NORMAL,
+	DOUBLE,
+	SINGLE,
 	ERROR,
 }						t_parse_mode;
 
@@ -29,14 +29,17 @@ typedef enum e_token_type
 	PIPE,
 	AND,
 	OR,
-	// SEMICOLON,
+	EXIT_STATUS,
+	EQUAL,
+	AMPERSAND,
+	SEMICOLON,
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	REDIRECT_APPEND,
 	HEREDOC,
 	PAREN_OPEN,
 	PAREN_CLOSE,
-	EOF // End of File
+	EOF
 }						t_token_type;
 
 typedef struct s_token
@@ -45,8 +48,19 @@ typedef struct s_token
 	char				*value;
 }						t_token;
 
-t_list					*ft_split_tokens(char *input);
-t_list					*lexer(const char *input);
-void					free_tokens(t_token *head);
+// ======================== Lexer ========================
+t_list					*run_lexer(const char *input);
+
+// ======================== Tokenizer ========================
+t_list					*ft_split_tokens(const char *input);
+t_token_type			get_token_type(const char *value);
+
+// ======================== Utils ========================
+int						is_doble_char_token(const char *str);
+int						is_special_char(char c);
+void					free_tokens(void *param);
+
+// ======================== Validator ========================
+
 
 #endif
