@@ -4,8 +4,8 @@ get the relative , absolute path of a command
 get env variables
 */
 
-# include "../../includes/minishell.h"
-# include "../../includes/ft_defines.h"
+# include "minishell.h"
+# include "ft_defines.h"
 
 int main (int argc, char **argv, char **envp)
 {

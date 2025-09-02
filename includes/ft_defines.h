@@ -49,6 +49,7 @@ typedef struct s_minishell
 	int							num_variables;
 	int							is_background;
 	int							last_exit_status;
+	char						**envp; //environment variables for execve
 }								t_minishell;
 
 // ---- Executors ----
@@ -61,6 +62,7 @@ typedef struct s_command
 	int							fd_out; // -1 if no redirection
 	char						*name;
 	char						**args; //includes name, NULL-terminated
+	t_minishell					*mnsh; //to access env variables
 }								t_command;
 
 // Represents a pipeline
