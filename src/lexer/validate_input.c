@@ -1,5 +1,5 @@
 
-int	validate_paratnes(const char *inpupt)
+int	validate_parantheses(const char *input)
 {
 	return (1);
 }

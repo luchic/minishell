@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/02 17:20:42 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/02 17:53:50 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_list					*run_lexer(const char *input);
 // ======================== Tokenizer ========================
 t_list					*ft_split_tokens(const char *input);
 t_token_type			get_token_type(const char *value);
+t_list					*token_assigment(const char *input);
 
 // ======================== Utils ========================
 int						is_doble_char_token(const char *str);
@@ -61,6 +62,6 @@ int						is_special_char(char c);
 void					free_tokens(void *param);
 
 // ======================== Validator ========================
-int						validate_paratnes(const char *inpupt);
+int						validate_parantheses(const char *input);
 
 #endif

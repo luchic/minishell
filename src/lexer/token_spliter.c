@@ -18,8 +18,8 @@
 
 static char	*get_next_token(const char **input, t_parse_mode *mode)
 {
-	char	*cur_input;
-	char	*token;
+	const char	*cur_input;
+	char		*token;
 
 	if (!*input || !**input)
 		return (NULL);
@@ -46,8 +46,8 @@ static char	*get_next_token(const char **input, t_parse_mode *mode)
 
 static char	*get_single_quoted_token(const char **input, t_parse_mode *mode)
 {
-	char	*cur_input;
-	char	*token;
+	const char	*cur_input;
+	char		*token;
 
 	if (!*input || !**input)
 		return (NULL);
@@ -65,8 +65,8 @@ static char	*get_single_quoted_token(const char **input, t_parse_mode *mode)
 
 static char	*get_double_quoted_token(const char **input, t_parse_mode *mode)
 {
-	char	*cur_input;
-	char	*token;
+	const char	*cur_input;
+	char		*token;
 
 	if (!*input || !**input)
 		return (NULL);
@@ -112,20 +112,3 @@ t_list	*ft_split_tokens(const char *input)
 	}
 	return (head);
 }
-
-// #include <stdio.h>
-
-// int	main(void)
-// {
-// 	t_list *tokens;
-// 	char *input = "echo 'Hello World' | grep World
-// 		&& echo \"Done\" > output.txt";
-
-// 	tokens = fd_split_tokens(input);
-// 	while (tokens)
-// 	{
-// 		printf("Token: %s\n", (char *)tokens->content);
-// 		tokens = tokens->next;
-// 	}
-// 	return (0);
-// }
