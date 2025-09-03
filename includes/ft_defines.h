@@ -1,4 +1,5 @@
 
+
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
@@ -49,7 +50,7 @@ typedef struct s_minishell
 	int							num_variables;
 	int							is_background;
 	int							last_exit_status;
-	char						**envp; //environment variables for execve
+	char						**envp;
 }								t_minishell;
 
 // ---- Executors ----
@@ -62,7 +63,7 @@ typedef struct s_command
 	int							fd_out; // -1 if no redirection
 	char						*name;
 	char						**args; //includes name, NULL-terminated
-	t_minishell					*mnsh; //to access env variables
+	t_minishell					*mnsh;
 }								t_command;
 
 // Represents a pipeline
@@ -105,6 +106,10 @@ typedef struct s_script
 	t_ast_node					**nodes; //to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
+
+# define STDERR 2
+# define STDOUT 1
+# define STDIN 0
 
 
 // execution functions
