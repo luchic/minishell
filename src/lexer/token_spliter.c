@@ -93,6 +93,16 @@ static char	*get_double_quoted_token(const char **input, t_parse_mode *mode)
 	*mode = NORMAL;
 	return (token);
 }
+void	*add_new_token(t_list **head, char *token)
+{
+	t_list	*new_node;
+
+	new_node = ft_lstnew(token);
+	if (!new_node)
+		return (NULL);
+	ft_lstadd_back(head, new_node);
+	return (new_node);
+}
 
 t_list	*ft_split_tokens(const char *input)
 {
@@ -113,8 +123,8 @@ t_list	*ft_split_tokens(const char *input)
 			token = get_double_quoted_token(&input, &mode);
 		else if (mode == ERROR)
 			return (ft_lstclear(&head, free), NULL);
-		if (token)
-			ft_lstadd_back(&head, ft_lstnew(token));
+		if (token && !add_new_token(&head, token))
+			return (free(token), ft_lstclear(&head, free), NULL);
 		if (*input == ' ')
 			input++;
 	}

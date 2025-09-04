@@ -20,10 +20,12 @@ t_list	*token_assigment(const char *input)
 	t_list	*head;
 	t_list	*new_node;
 	t_list	*splits;
+	t_list	*splits_copy;
 	t_token	*token;
 
 	head = NULL;
 	splits = ft_split_tokens(input);
+	splits_copy = splits;
 	while (splits)
 	{
 		token = get_next_token((char *)splits->content);
@@ -37,5 +39,6 @@ t_list	*token_assigment(const char *input)
 		ft_lstadd_back(&head, new_node);
 		splits = splits->next;
 	}
+	ft_lstclear(&splits_copy, free);
 	return (head);
 }
