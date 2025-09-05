@@ -1,7 +1,7 @@
 
-#include "../../../includes/ft_defines.h"
-#include "../../../includes/minishell.h"
-#include "../../../libft/includes/libft.h"
+#include "ft_defines.h"
+#include "minishell.h"
+#include "libft.h"
 
 /*
  * echo -n -n -n
@@ -16,7 +16,7 @@ int ft_echo(t_command *cmd)
 
     i = 1;
     newline = 1;
-    cmd->fd_out = STDOUT_FILENO;  // Use standard output
+    // cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
     while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
     {
         newline = 0;
