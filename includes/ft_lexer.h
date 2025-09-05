@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/02 17:53:50 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/05 12:47:08 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ typedef enum e_parse_mode
 	SINGLE,
 	ERROR,
 }						t_parse_mode;
+
+typedef enum e_merge_mode
+{
+	COPY,
+	MERGE,
+}			t_merge_mode;
+
 
 typedef enum e_token_type
 {
@@ -55,6 +62,7 @@ t_list					*run_lexer(const char *input);
 t_list					*ft_split_tokens(const char *input);
 t_token_type			get_token_type(const char *value);
 t_list					*token_assigment(const char *input);
+t_list					*merge_word_token(t_list *tokens, const char *input);
 
 // ======================== Utils ========================
 int						is_doble_char_token(const char *str);

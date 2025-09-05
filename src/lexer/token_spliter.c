@@ -42,7 +42,7 @@ static char	*get_next_token(const char **input, t_parse_mode *mode)
 		*input = cur_input + 1;
 	else
 		*input = cur_input;
-	if (*mode != NORMAL)
+	if (*mode != NORMAL && (ft_strcmp(token, "'") == 0 || ft_strcmp(token, "\"") == 0))
 		return (free(token), NULL);
 	return (token);
 }
