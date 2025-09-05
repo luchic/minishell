@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 11:44:17 by nluchini          #+#    #+#             */
-/*   Updated: 2025/07/05 17:19:44 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/05 13:13:40 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,27 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	if (*needle == '\0')
 		return ((char *)haystack);
 	while (*haystack != '\0' && i < len)
+	{
+		if (is_substrin(haystack, needle, len - i))
+			return ((char *)haystack);
+		haystack++;
+		i++;
+	}
+	return (NULL);
+}
+
+char	*ft_strstr(const char *haystack, const char *needle)
+{
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	if (haystack == NULL && needle != NULL)
+		return (NULL);
+	if (*needle == '\0')
+		return ((char *)haystack);
+	len = ft_strlen(haystack);
+	while (*haystack != '\0')
 	{
 		if (is_substrin(haystack, needle, len - i))
 			return ((char *)haystack);
