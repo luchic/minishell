@@ -26,7 +26,9 @@ int ft_unset(t_command *cmd)
 		else
 		{
 			ft_array_remove(&envp, args[i]);
+			cmd->mnsh->envp = envp; // update envp in mnsh
 		}
+		i++;
 	}
 	return (0);
 }

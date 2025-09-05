@@ -7,32 +7,35 @@ void	ft_array_remove(char ***array, char *value)
 {
 	int		i;
 	int		j;
+	char	**envp;
 	char	**new_array;
 
 	if (!array || !*array || !value)
 		return ;
 	i = 0;
-	while ((*array)[i] && ft_strncmp((*array)[i], value, ft_strlen(value)) != 0)
+	envp = *array;
+	// find if value exists in envp
+	while (envp[i] && ft_strncmp(envp[i], value, ft_strlen(value)) != 0)
 		i++;
-	if (!(*array)[i])
+	if (!envp[i])
 		return ; // value not found
-	new_array = malloc(sizeof(char *) * (ft_array_size(*array))); // -1 +1 for NULL
+	new_array = malloc(sizeof(char *) * (get_array_counts(envp) + 1)); // +1 for NULL terminator
 	if (!new_array)
 		return ;
 	j = 0;
 	i = 0;
-	while ((*array)[i])
+	while (envp[i])
 	{
-		if (ft_strncmp((*array)[i], value, ft_strlen(value)) != 0)
+		if (ft_strncmp(envp[i], value, ft_strlen(value)) != 0)
 		{
-			new_array[j] = (*array)[i];
+			new_array[j] = envp[i];
 			j++;
 		}
 		else
-			free((*array)[i]); // free the removed element
+			free(envp[i]); // free the removed element
 		i++;
 	}
 	new_array[j] = NULL;
-	free(*array);
+	free(envp);
 	*array = new_array;
 }

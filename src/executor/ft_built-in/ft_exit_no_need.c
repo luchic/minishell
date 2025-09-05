@@ -11,4 +11,48 @@
  * If there are more than one arguments, the exit status is 1.
  */
 
+static int	check_exit(char **args)
+{
+	int	exit_code;
+	int	i;
 
+	if (count_args(args) > 2)
+	{
+		ft_putstr_fd("exit: too many arguments\n", STDERR);
+		return (1);
+	}
+	i = 0;
+	while (args[1][i])
+	{
+		if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
+		{
+			ft_putstr_fd("exit: numeric argument required\n", STDERR);
+			exit(255);;
+		}
+		i++;
+	}
+	exit_code = ft_atoi(args[1]);
+	if (exit_code < 0 || exit_code > 255)
+		return (0);
+	return (1);
+}
+
+
+int	ft_exit(t_command *cmd)
+{
+	int	status;
+	int	i;
+	char	**arg;
+
+	ft_putstr_fd("exit\n", STDOUT); //later to cmd->fd_out
+	arg = cmd->args;
+
+	if (count_args(arg) == 1)
+		exit(cmd->mnsh->last_exit_status);
+	if (!check_exit(arg))
+		exit(255);
+	status = ft_atoi(arg[1]);
+	exit(status);
+
+	return (0);
+}
