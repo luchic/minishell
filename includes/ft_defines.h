@@ -31,7 +31,7 @@ typedef enum e_cmd_type
 {
 	CMD_BUILTIN,
 	CMD_EXTERNAL,
-	CMD_ASSIGNMENT,
+	CMD_ASSIGNMENT, //if no cmd name, but just assignemnt links
 	CMD_HEREDOC
 }								t_cmd_type;
 
@@ -57,6 +57,13 @@ typedef struct s_minishell
 // ---- Executors ----
 
 // Represents a command
+
+typedef struct s_list //temporary linked list structure
+{
+	void			*var;
+	struct s_list	*next;
+}					t_list;
+
 typedef struct s_command
 {
 	t_cmd_type					type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
@@ -64,6 +71,7 @@ typedef struct s_command
 	int							fd_out; // -1 if no redirection
 	char						*name;
 	char						**args; //includes name, NULL-terminated
+	t_list						*assignments; //list of t_var for assignments
 	t_minishell					*mnsh;
 }								t_command;
 

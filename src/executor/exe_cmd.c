@@ -11,7 +11,7 @@ special: << here doc
 #include "ft_defines.h"
 #include "minishell.h"
 
-int run_builtin(int fd_in, int fd_out, t_command *cmd)
+int run_builtin(t_command *cmd)
 {
     if (ft_strcmp(cmd->name, "echo") == 0)
         return (ft_echo(cmd));
@@ -34,21 +34,39 @@ int run_builtin(int fd_in, int fd_out, t_command *cmd)
 
 int execute_command(t_minishell *mnsh, t_command *cmd)
 {
-    if (cmd->type == CMD_BUILTIN)
+    int	orig_fd_in;
+	int	orig_fd_out;
+
+	//backup original fds
+	orig_fd_in = dup(STDIN);
+	orig_fd_out = dup(STDOUT);
+	//handle redirections
+	if (cmd->fd_in != STDIN)
+	{
+		dup2(cmd->fd_in, STDIN);
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT)
+	{
+		dup2(cmd->fd_out, STDOUT);
+		close(cmd->fd_out);
+	}
+
+	//execute based on command type
+	if (cmd->type == CMD_BUILTIN)
     {
-        return (run_builtin(cmd->fd_in, cmd->fd_out, cmd));
+        return (run_builtin(cmd));
     }
     else if (cmd->type == CMD_EXTERNAL)
     {
-        
-
+		return (run_external(cmd));
     }
     else if (cmd->type == CMD_ASSIGNMENT)
     {
-        // handle variable assignment
-        // e.g., VAR=value
-        // update mnsh->variables
-        // return 0 for success
+		// handle variable assignment
+		// e.g., VAR=value
+		// update mnsh->variables accordingly
+		// return 0 for success
     }
     else if (cmd->type == CMD_HEREDOC)
     {
@@ -63,5 +81,11 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
         ft_putstr_fd(cmd->name, 2);
         ft_putstr_fd("\n", 2);
     }
+
+	//restore original fds
+	dup2(orig_fd_in, STDIN);
+	dup2(orig_fd_out, STDOUT);
+	close(orig_fd_in);
+	close(orig_fd_out);
     return (0);
 }
