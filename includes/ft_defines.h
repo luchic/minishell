@@ -12,15 +12,16 @@ typedef struct s_script t_script;
 
 typedef enum e_node_type
 {
-	NODE_SUBSHELL,
-	NODE_COMMAND,
-	NODE_PIPELINE,
-	NODE_LOGICAL
+	SUBSHELL,
+	COMMAND,
+	PIPELINE,
+	LOGICAL
 }								t_node_type;
 
 // Operators for logical expressions
 typedef enum e_logical_op
 {
+	OP_INVALID,
 	OP_AND,
 	OP_OR
 }								t_logical_op;
@@ -57,14 +58,30 @@ typedef struct s_minishell
 // ---- Executors ----
 
 // Represents a command
+typedef enum e_redir_type
+{
+	REDIR_INPUT,
+	REDIR_OUTPUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+} t_redir_type;
+
+typedef struct  s_redirection
+{
+	t_redir_type				type;
+	char						*value;
+	struct s_redirection		*next;
+} t_redirection;
+
 typedef struct s_command
 {
 	t_cmd_type					type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
 	int							fd_in; // -1 if no redirection
-	int							fd_out; // -1 if no redirection
-	char						*name;
+	int							fd_out; // -1 if no redirection	
+	char						*name; 
 	char						**args; //includes name, NULL-terminated
 	t_minishell					*mnsh;
+	t_redirection				*redirections;
 }								t_command;
 
 // Represents a pipeline
@@ -91,7 +108,7 @@ typedef struct s_compound_list
 
 typedef struct s_subshell
 {	
-	t_script					*script;
+	t_ast_node					*script;
 }								t_subshell;
 
 // Generic AST node
@@ -100,10 +117,10 @@ typedef struct s_ast_node
 	t_node_type					type;
 	union
 	{
-		t_command				command;
-		t_pipeline				pipeline;
-		t_logical_expression	logical;
-		t_subshell				subshell;
+		t_command				*command;
+		t_pipeline				*pipeline;
+		t_logical_expression	*logical;
+		t_subshell				*subshell;
 	};
 }								t_ast_node;
 

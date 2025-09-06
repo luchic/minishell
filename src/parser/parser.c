@@ -4,6 +4,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int	set_redirection(t_command *cmd, t_tokenstream *ts)
+{
+	while (is_redirection_token(ts))
+	{
+		if (!cmd_set_redirection(cmd, ts))
+			return (0);
+	}
+	return (1);
+}
+
 t_ast_node	*parse_simple_command(t_tokenstream *ts)
 {
 	t_command	*cmd;
@@ -24,11 +34,8 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts)
 	if (!cmd)
 		return (NULL);
 	// Allow leading redirections before command word
-	while (is_redirection_token(ts))
-	{
-		if (!cmd_set_redirection(cmd, ts))
-			return (free_cmd(cmd), NULL);
-	}
+	if (!set_redirection(cmd, ts))
+		return (free_cmd(cmd), NULL);
 	// Require a command WORD
 	if (!ts_match(ts, WORD))
 		return (free_cmd(cmd), NULL);
@@ -50,6 +57,8 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts)
 	if (!cmd->args)
 		return (free_cmd(cmd), NULL);
 	cmd->args[argc] = NULL;
+	if (!set_redirection(cmd, ts))
+		return (free_cmd(cmd), NULL);
 	node = create_ast_node(COMMAND);
 	if (!node)
 		return (free_cmd(cmd), NULL);
@@ -272,6 +281,20 @@ void print_ast_tree(t_ast_node *node)
 			{
 				printf("No arguments\n");
 			}
+			t_redirection *redir = cmd->redirections;
+			if (!redir)
+			{
+				printf("No redirections\n");
+			}
+			else
+			{
+				printf("Redirections:\n");
+				while (redir)
+				{
+					printf("  - %s\n", redir->value);
+					redir = redir->next;
+				}
+			}
 		}
 	}
 	else if (node->type == PIPELINE)
@@ -314,8 +337,8 @@ int	main(int argc, char **argv)
 {
 	char *input;
 
-	input = "echo hello | grep h | wc -l";
-
+	// input = "< infile echo hello > outfile | grep h | wc -l";
+	input = "ARG=\"Hello world\"";
 	t_list *tokens = run_lexer(input);
 	print_tokens(tokens);
 
