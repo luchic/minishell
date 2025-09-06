@@ -34,5 +34,7 @@ t_token_type	get_token_type(const char *value)
 		return (PAREN_OPEN);
 	else if (ft_strcmp(value, ")") == 0)
 		return (PAREN_CLOSE);
+	else if (ft_strcmp(value, ";") == 0)
+		return (SEMICOLON);
 	return (WORD);
 }

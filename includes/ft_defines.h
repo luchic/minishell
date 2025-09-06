@@ -83,8 +83,14 @@ typedef struct s_logical_expression
 }								t_logical_expression;
 
 // Represents a subshell
-typedef struct s_subshell
+typedef struct s_compound_list
 {
+	struct s_ast_node			**nodes;
+	int							count;
+}								t_compound_list;
+
+typedef struct s_subshell
+{	
 	t_script					*script;
 }								t_subshell;
 
@@ -104,7 +110,7 @@ typedef struct s_ast_node
 // Represents a script (root)
 typedef struct s_script
 {
-	t_ast_node					**nodes; //to avoid confusion from pipeline->commands
+	t_ast_node					*nodes; //to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
 

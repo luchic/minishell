@@ -15,27 +15,30 @@ static t_token	*get_next_token(char *str_token)
 	return (token);
 }
 
-t_list	*token_assigment(char *input)
+t_list	*token_assigment(const char *input)
 {
 	t_list	*head;
 	t_list	*new_node;
 	t_list	*splits;
+	t_list	*splits_copy;
 	t_token	*token;
 
 	head = NULL;
 	splits = ft_split_tokens(input);
+	splits_copy = splits;
 	while (splits)
 	{
 		token = get_next_token((char *)splits->content);
 		if (!token)
-			return (ft_lstclear(splits, free), ft_lstclear(head, free_tokens),
+			return (ft_lstclear(&splits, free), ft_lstclear(&head, free_tokens),
 				NULL);
 		new_node = ft_lstnew(token);
 		if (!new_node)
-			return (free_tokens(token), ft_lstclear(splits, free),
-				ft_lstclear(head, free_tokens), NULL);
+			return (free_tokens(token), ft_lstclear(&splits, free),
+				ft_lstclear(&head, free_tokens), NULL);
 		ft_lstadd_back(&head, new_node);
 		splits = splits->next;
 	}
+	ft_lstclear(&splits_copy, free);
 	return (head);
 }
