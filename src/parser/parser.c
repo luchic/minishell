@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_ast_node	*parse_script(t_tokenstream *ts);
-t_ast_node	*parse_logical_node(t_tokenstream *ts);
+t_ast_node *_parse(t_tokenstream *ts);
 
 int	set_redirection(t_command *cmd, t_tokenstream *ts)
 {
@@ -102,33 +101,6 @@ t_ast_node	*parse_pipeline(t_tokenstream *ts)
 	return (ast_node_pipeline);
 }
 
-static t_ast_node	*parse_sequence(t_tokenstream *ts)
-{
-	return (parse_pipeline(ts));
-}
-
-t_ast_node	*parse_subshell(t_tokenstream *ts)
-{
-	t_subshell	*subshell;
-	t_ast_node	*ast_node_subshell;
-
-	if (!ts_expect(ts, PAREN_OPEN))
-		return (NULL);
-	subshell = ft_calloc(1, sizeof(t_subshell));
-	if (!subshell)
-		return (NULL);
-	subshell->script = parse_script(ts);
-	if (!subshell->script)
-		return (free(subshell), NULL); // TODO: Change free function
-	if (!ts_expect(ts, PAREN_CLOSE))
-		return (free(subshell), /* TODO: free AST inside script */ NULL);
-	ast_node_subshell = create_ast_node(SUBSHELL);
-	if (!ast_node_subshell)
-		return (free(subshell), NULL);
-	ast_node_subshell->subshell = subshell;
-	return (ast_node_subshell);
-}
-
 int	is_logical_op_token_in_input(t_tokenstream *ts)
 {
 	t_tokenstream	*clone;
@@ -170,77 +142,71 @@ t_logical_op get_logical_op(t_tokenstream *ts)
 	return (OP_INVALID); // Invalid
 }
 
-
-t_ast_node	*parse_logical_left(t_tokenstream *ts)
+t_ast_node *_parse_subshell(t_tokenstream *ts)
 {
-	t_ast_node				*ast_left_node;
-	t_ast_node				*ast_cmd_node;
-	
-	if (ts_match(ts, PAREN_OPEN))
-		return (parse_subshell(ts));
-	
-	ast_cmd_node = parse_pipeline(ts);
-	return (ast_cmd_node);
-}
-
-t_ast_node	*parse_logical_right(t_tokenstream *ts)
-{
-		t_ast_node				*ast_right_node;
-	t_ast_node					*ast_cmd_node;
-	
-	if (ts_match(ts, PAREN_OPEN))
-		return (parse_subshell(ts));
-
-	ast_cmd_node = parse_logical_node(ts);
-	if (!ast_cmd_node)
-		return (NULL); // TODO: free l
-	return (NULL);
-}
-
-t_ast_node	*parse_logical_node(t_tokenstream *ts)
-{
-	t_ast_node		*script;
-	t_ast_node		*left;
-	t_ast_node		*right;
-	t_logical_expression	*logical;
-
-	if (!is_logical_op_token_in_input(ts))
-		return (parse_pipeline(ts));
-
-	t_logical_op op = get_logical_op(ts);
-	left = parse_logical_left(ts);
-	if (!left)
+	t_subshell	*subshell;
+	if (!ts_expect(ts, PAREN_OPEN))
 		return (NULL);
-	right = parse_logical_right(ts);
-	if (!right)
+	t_ast_node *ast_script = _parse(ts);
+	if (!ast_script)
 		return (NULL);
-	logical = create_logical_expression(op, left, right);
-	if (!logical)
+	if (!ts_expect(ts, PAREN_CLOSE))
 		return (NULL);
-	script = create_ast_node(LOGICAL);
-	if (!script)
+	subshell = ft_calloc(1, sizeof(t_subshell));
+	if (!subshell)
 		return (NULL);
-	script->logical = logical;
-	return (script);
-}
-
-t_ast_node	*parse_script(t_tokenstream *ts)
-{
-	t_ast_node				*ast_node_script;
-	t_ast_node				*ast_node;
-	t_logical_expression	*logical;
-
-	if (!is_logical_op_token_in_input(ts))
-		return (parse_pipeline(ts));
-
-	ast_node = parse_logical_node(ts);
+	subshell->script = ast_script;
+	t_ast_node *ast_node = create_ast_node(SUBSHELL);
 	if (!ast_node)
-		return (NULL); // TODO: free left and right nodes
-	ast_node_script = create_ast_node(LOGICAL);
-	if (!ast_node_script)
 		return (NULL);
-	ast_node_script->logical = logical;
-	return (ast_node_script);
+	ast_node->subshell = subshell;
+	return (ast_node);
+}
+
+t_logical_expression *create_logical_node(t_tokenstream *ts, t_ast_node *left)
+{
+	t_logical_op op;
+	t_logical_expression *expr;
+
+	op = get_logical_op(ts);
+	if (op == OP_INVALID)
+		return (NULL);
+	
+	return (create_logical_expression(op, left, NULL));
+}
+
+t_ast_node *_parse(t_tokenstream *ts)
+{
+	t_ast_node	*ast_logical;
+	t_ast_node 	*ast_simple_left;
+	t_ast_node	*ast_simple_right;
+	t_logical_expression	*logical;
+	
+	if (ts_match(ts, PAREN_OPEN))
+		ast_simple_left = _parse_subshell(ts);
+	else
+		ast_simple_left = parse_pipeline(ts);
+	if (!ast_simple_left)
+		return (NULL);
+	while (ts_match(ts, AND) || ts_match(ts, OR))
+	{
+		logical = create_logical_node(ts, ast_simple_left);
+		if (!logical)
+			return (NULL);
+		ts_advance(ts);
+		if (ts_match(ts, PAREN_OPEN)) // consume AND/OR
+			ast_simple_right = _parse_subshell(ts);
+		else
+			ast_simple_right = parse_pipeline(ts);
+		if (!ast_simple_right)
+			return (NULL);
+		logical->right = ast_simple_right;
+		ast_simple_left = create_ast_node(LOGICAL);
+		if (!ast_simple_left)
+			return (NULL);
+		ast_simple_left->logical = logical;
+	}
+	return (ast_simple_left);
 }
 
 t_ast_node	*run_parser(t_list *tokens, char *input)
@@ -249,6 +215,7 @@ t_ast_node	*run_parser(t_list *tokens, char *input)
 	t_ast_node	*ast;
 
 	ts.cur = tokens;
-	ast = parse_script(&ts);
+	ast = _parse(&ts);
 	return (ast);
 }
+// TODO: After assignments can be command.
