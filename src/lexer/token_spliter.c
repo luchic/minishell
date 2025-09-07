@@ -1,4 +1,4 @@
-#include "ft_lexer.h"
+#include "lexer.h"
 #include "libft.h"
 #include <stdlib.h>
 
@@ -30,7 +30,7 @@ static char	*get_next_token(const char **input, t_parse_mode *mode)
 		cur_input += 2;
 	if (cur_input == *input)
 		token = ft_substr(*input, 0, cur_input - *input + 1);
-	else 
+	else
 		token = ft_substr(*input, 0, cur_input - *input);
 	if (!token)
 		return (*mode = ERROR, NULL);
@@ -38,11 +38,12 @@ static char	*get_next_token(const char **input, t_parse_mode *mode)
 		*mode = SINGLE;
 	else if (*cur_input == '\"')
 		*mode = DOUBLE;
-	if (*cur_input == '\'' || *cur_input == '\"' || cur_input == *input )
+	if (*cur_input == '\'' || *cur_input == '\"' || cur_input == *input)
 		*input = cur_input + 1;
 	else
 		*input = cur_input;
-	if (*mode != NORMAL && (ft_strcmp(token, "'") == 0 || ft_strcmp(token, "\"") == 0))
+	if (*mode != NORMAL && (ft_strcmp(token, "'") == 0 || ft_strcmp(token,
+				"\"") == 0))
 		return (free(token), NULL);
 	return (token);
 }
@@ -70,7 +71,7 @@ static char	*get_double_quoted_token(const char **input, t_parse_mode *mode)
 {
 	const char	*cur_input;
 	char		*token;
-	int i;
+	int			i;
 
 	if (!*input || !**input)
 		return (NULL);
