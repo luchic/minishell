@@ -1,7 +1,7 @@
 
 #include "ft_defines.h"
-#include "ft_lexer.h"
-#include "ft_parser.h"
+#include "lexer.h"
+#include "parser.h"
 #include <stdlib.h>
 
 t_command	*create_command(t_cmd_type type)

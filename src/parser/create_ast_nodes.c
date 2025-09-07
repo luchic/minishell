@@ -1,6 +1,6 @@
 #include "ft_defines.h"
-#include "ft_lexer.h"
-#include "ft_parser.h"
+#include "lexer.h"
+#include "parser.h"
 
 t_ast_node	*create_ast_node(t_node_type type)
 {

@@ -1,6 +1,7 @@
 #include "ft_defines.h"
-#include "ft_lexer.h"
-#include "ft_parser.h"
+#include "lexer.h"
+#include "parser.h"
+#include <stdlib.h>
 
 int	is_redirection_token(t_tokenstream *ts)
 {
@@ -40,17 +41,17 @@ int	cmd_set_redirection(t_command *cmd, t_tokenstream *ts)
 		return (0);
 	if (redir_token->type == REDIRECT_IN)
 		redir = create_redirection(&cmd->redirections, REDIR_INPUT,
-				ts_peek(ts)->value);
+				ts_advance(ts)->value);
 	else if (redir_token->type == REDIRECT_OUT)
 		redir = create_redirection(&cmd->redirections, REDIR_OUTPUT,
-				ts_peek(ts)->value);
+				ts_advance(ts)->value);
 	else if (redir_token->type == REDIRECT_APPEND)
 		redir = create_redirection(&cmd->redirections, REDIR_APPEND,
-				ts_peek(ts)->value);
+				ts_advance(ts)->value);
 	else if (redir_token->type == HEREDOC)
 		redir = create_redirection(&cmd->redirections, REDIR_HEREDOC,
-				ts_peek(ts)->value);
+				ts_advance(ts)->value);
 	if (!redir)
-		return (0); // TODO: Memory leak free redirections
+		return (0);
 	return (1);
 }
