@@ -16,8 +16,8 @@ int	set_redirection(t_command *cmd, t_tokenstream *ts)
 
 t_ast_node	*parse_simple_command(t_tokenstream *ts)
 {
-	t_command	*cmd;
-	t_ast_node	*node;
+	t_command	*command;
+	t_ast_node	*ast_node;
 	int			argc;
 	t_token		*token;
 	t_token		*tok_name;
@@ -27,77 +27,76 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts)
 	// VAR=value as a standalone assignment command
 	if (ts_match(ts, VARIABLE))
 	{
-		token = ts_advance(ts);
-		return (create_ast_node_assignment(token));
+		return (create_assignments_node(ts));
 	}
-	cmd = create_command(CMD_EXTERNAL);
-	if (!cmd)
+	command = create_command(CMD_EXTERNAL);
+	if (!command)
 		return (NULL);
 	// Allow leading redirections before command word
-	if (!set_redirection(cmd, ts))
-		return (free_cmd(cmd), NULL);
+	if (!set_redirection(command, ts))
+		return (free_cmd(command), NULL);
 	// Require a command WORD
 	if (!ts_match(ts, WORD))
-		return (free_cmd(cmd), NULL);
+		return (free_cmd(command), NULL);
 	tok_name = ts_peek(ts);
-	cmd->name = ft_strdup(tok_name->value);
-	if (!cmd->name)
-		return (free_cmd(cmd), NULL);
+	command->name = ft_strdup(tok_name->value);
+	if (!command->name)
+		return (free_cmd(command), NULL);
 	while (ts_match(ts, WORD))
 	{
 		arg = ts_advance(ts);
-		cmd->args = ft_realloc(cmd->args, sizeof(char *) * argc, sizeof(char *) * (argc + 1));
-		if (!cmd->args)
-			return (free_cmd(cmd), NULL);
-		cmd->args[argc++] = ft_strdup(arg->value);
-		if (!cmd->args[argc - 1])
-			return (free_cmd(cmd), NULL);
+		command->args = ft_realloc(command->args, sizeof(char *) * argc, sizeof(char *) * (argc + 1));
+		if (!command->args)
+			return (free_cmd(command), NULL);
+		command->args[argc++] = ft_strdup(arg->value);
+		if (!command->args[argc - 1])
+			return (free_cmd(command), NULL);
 	}
-	cmd->args = ft_realloc(cmd->args, sizeof(char *) * argc, sizeof(char *) * (argc + 1));
-	if (!cmd->args)
-		return (free_cmd(cmd), NULL);
-	cmd->args[argc] = NULL;
-	if (!set_redirection(cmd, ts))
-		return (free_cmd(cmd), NULL);
-	node = create_ast_node(COMMAND);
-	if (!node)
-		return (free_cmd(cmd), NULL);
-	node->command = cmd;
-	return (node);
+	command->args = ft_realloc(command->args, sizeof(char *) * argc, sizeof(char *) * (argc + 1));
+	if (!command->args)
+		return (free_cmd(command), NULL);
+	command->args[argc] = NULL;
+	if (!set_redirection(command, ts))
+		return (free_cmd(command), NULL);
+	ast_node = create_ast_node(COMMAND);
+	if (!ast_node)
+		return (free_cmd(command), NULL);
+	ast_node->command = command;
+	return (ast_node);
 }
 
 t_ast_node	*parse_pipeline(t_tokenstream *ts)
 {
 	t_pipeline	*pipeline;
-	t_ast_node	*pipe_node;
-	t_ast_node	*cmd;
+	t_ast_node	*ast_node_pipeline;
+	t_ast_node	*ast_node_cmd;
 
-	cmd = parse_simple_command(ts);
-	if (!cmd)
+	ast_node_cmd = parse_simple_command(ts);
+	if (!ast_node_cmd)
 		return (NULL);
 	if (!ts_match(ts, PIPE))
-		return (cmd);
+		return (ast_node_cmd);
 	pipeline = ft_calloc(1, sizeof(t_pipeline));
 	if (!pipeline)
 		return (NULL);
 	pipeline->count = 0; // TODO: Check on memory leaks
 	pipeline->commands = ft_realloc(pipeline->commands, sizeof(t_ast_node *) * pipeline->count,
 			sizeof(t_ast_node *) * (pipeline->count + 1));
-	pipeline->commands[pipeline->count++] = cmd;
+	pipeline->commands[pipeline->count++] = ast_node_cmd;
 	while (ts_expect(ts, PIPE))
 	{
-		cmd = parse_simple_command(ts);
-		if (!cmd)
+		ast_node_cmd = parse_simple_command(ts);
+		if (!ast_node_cmd)
 			return (NULL);
 		pipeline->commands = ft_realloc(pipeline->commands, sizeof(t_ast_node *) * pipeline->count,
 				sizeof(t_ast_node *) * (pipeline->count + 1));
-		pipeline->commands[pipeline->count++] = cmd;
+		pipeline->commands[pipeline->count++] = ast_node_cmd;
 	}
-	pipe_node = create_ast_node(PIPELINE);
-	if (!pipe_node)
+	ast_node_pipeline = create_ast_node(PIPELINE);
+	if (!ast_node_pipeline)
 		return (NULL);
-	pipe_node->pipeline = pipeline;
-	return (pipe_node);
+	ast_node_pipeline->pipeline = pipeline;
+	return (ast_node_pipeline);
 }
 
 static t_ast_node	*parse_sequence(t_tokenstream *ts)
@@ -216,7 +215,7 @@ t_logical_op get_logical_op(t_tokenstream *ts)
 
 t_ast_node	*parse_script(t_tokenstream *ts)
 {
-	t_ast_node *script;
+	t_ast_node		*script;
 	t_ast_node		*left;
 	t_ast_node		*right;
 	t_logical_expression	*logical;
@@ -270,6 +269,17 @@ void print_ast_tree(t_ast_node *node)
 		t_command *cmd = node->command;
 		if (cmd)
 		{
+			if (cmd->type == CMD_ASSIGNMENT)
+			{
+				printf("Assignment Command:\n");
+				t_list *assign = cmd->assignments;
+				while (assign)
+				{
+					printf("  - %s\n", (char *)assign->content);
+					assign = assign->next;
+				}
+				return;
+			}
 			printf("Command: %s\n", cmd->name);
 			if (cmd->args)
 			{
@@ -338,7 +348,7 @@ int	main(int argc, char **argv)
 	char *input;
 
 	// input = "< infile echo hello > outfile | grep h | wc -l";
-	input = "ARG=\"Hello world\"";
+	input = "ARG=\"Hello world\" HEllO=42";
 	t_list *tokens = run_lexer(input);
 	print_tokens(tokens);
 
