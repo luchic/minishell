@@ -17,7 +17,9 @@ void	free_array(char **arr)
 
 void	free_cmd(t_command *cmd)
 {
-	int	i;
+	int				i;
+	t_redirection	*redir;
+	t_redirection	*tmp;
 
 	if (!cmd)
 		return ;
@@ -26,7 +28,17 @@ void	free_cmd(t_command *cmd)
 	if (cmd->args)
 		free_array(cmd->args);
 	if (cmd->redirections)
-		ft_lstclear(&cmd->redirections, free);
+	{
+		redir = cmd->redirections;
+		while (redir)
+		{
+			tmp = redir;
+			redir = redir->next;
+			if (tmp->value)
+				free(tmp->value);
+			free(tmp);
+		}
+	}
 	if (cmd->assignments)
 		ft_lstclear(&cmd->assignments, free);
 	free(cmd);
