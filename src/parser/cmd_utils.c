@@ -18,22 +18,6 @@ t_command	*create_command(t_cmd_type type)
 	return (cmd);
 }
 
-// NOTE: For that version only one
-t_ast_node	*create_ast_node_assignment(t_token *token)
-{
-	t_ast_node	*node;
-	t_command	*command;
-
-	node = create_ast_node(COMMAND);
-	if (!node)
-		return (NULL);
-	command = create_command(CMD_ASSIGNMENT);
-	if (!command)
-		return (free(node), NULL);
-	command->name = ft_strdup(token->value);
-	node->command = command;
-	return (node);
-}
 
 void	free_cmd(t_command *cmd)
 {
