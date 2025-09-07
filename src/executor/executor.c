@@ -3,28 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/01 21:54:24 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/07 17:43:02 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
- // 4. 如果有子进程，在 fork() 后需要特别处理信号
-        // pid_t pid = fork();
-        // if (pid == 0) { // 子进程
-        //     signal(SIGINT, SIG_DFL);  // Ctrl+C 
-        //     signal(SIGQUIT, SIG_DFL); // core dump
-        //     execve(...)
-        // } else { // 父进程
-        //     waitpid(pid, &status, 0);
-        // }
-
-*/
-
 # include "minishell.h"
 # include "ft_defines.h"
+# include "ft_executor.h"
 
 void    execute_script(t_minishell *mnsh)
 {
@@ -49,7 +37,7 @@ void    execute_script(t_minishell *mnsh)
 int execute_node(t_minishell *mnsh, t_ast_node *node)
 {
     int left_status;
-    
+
     if (!node)
         return (0);
     if (node->type == NODE_COMMAND)

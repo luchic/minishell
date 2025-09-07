@@ -1,7 +1,7 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 
 int	ft_env(t_command cmd)
 {
@@ -10,7 +10,7 @@ int	ft_env(t_command cmd)
 	if (cmd.args[1])
 	{
 		ft_putstr_fd("env: too many arguments\n", STDERR);
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	i = 0;
 	while (cmd.mnsh->envp && cmd.mnsh->envp[i])
@@ -22,5 +22,5 @@ int	ft_env(t_command cmd)
 		}
 		i++;
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

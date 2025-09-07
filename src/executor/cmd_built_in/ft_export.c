@@ -1,7 +1,7 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 
 //first letter must be alpha or _
 int	is_valid_identifier(char *str)
@@ -14,11 +14,11 @@ int	is_valid_identifier(char *str)
 			return (0);
 		str++;
 	}
-	if (*str == '=')
-	{
-		if (*(str + 1) == '\0')
-			return (0);
-	}
+	// if (*str == '=')
+	// {
+	// 	if (*(str + 1) == '\0')
+	// 		return (0);
+	// }
 	return (1);
 }
 

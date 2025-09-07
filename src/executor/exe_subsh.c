@@ -6,6 +6,7 @@ all executions happen in the child process
 
 # include "minishell.h"
 # include "ft_defines.h"
+# include "ft_executor.h"
 
 int execute_subshell(t_minishell *mnsh, t_subshell *subsh)
 {

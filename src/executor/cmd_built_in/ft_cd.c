@@ -1,7 +1,7 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 
 extern char **environ;
 
@@ -22,7 +22,7 @@ int ft_cd_home(void)
 	home = getenv("HOME");
 	if (!home)
 	{
-		ft_putstr_fd("cd: HOME not set\n", 2);
+		ft_printf_fd(STDERR, "cd: HOME not set\n");
 		return (1);
 	}
 	if (chdir(home) != 0)
@@ -37,7 +37,7 @@ int ft_cd_oldpwd(char *oldpwd, char *pwd)
 {
 	if (!oldpwd)
 	{
-		ft_putstr_fd("cd: OLDPWD not set\n", 2);
+		ft_printf_fd(STDERR, "cd: OLDPWD not set\n");
 		return (1);
 	}
 	if (chdir(oldpwd) != 0)
@@ -47,8 +47,8 @@ int ft_cd_oldpwd(char *oldpwd, char *pwd)
 	}
 	pwd = getenv("PWD");
 	if (pwd)
-		ft_putstr_fd(pwd, 1);
-	ft_putstr_fd("\n", 1);
+		ft_printf_fd(STDOUT, "%s",pwd);
+	ft_putstr_fd("\n", STDOUT);
 	return (0);
 }
 
@@ -109,7 +109,7 @@ int ft_cd(t_command *cmd)
 	getcwd(pwd, sizeof(pwd));
 	if (count_args(cmd->args) > 2)
 	{
-		ft_putstr_fd("cd: too many arguments\n", 2);
+		ft_printf_fd(STDERR, "cd: too many arguments\n");
 		return (1);
 	}
 	if (!cmd->args[1] || ft_strcmp(cmd->args[1], "~") == 0)
@@ -120,7 +120,6 @@ int ft_cd(t_command *cmd)
 		status = ft_cd_to_path(cmd->args[1]);
 	if (status != 0)
 		return (status);
-	// printf("Changed directory to: %s\n", cmd->args[1] ? cmd->args[1] : getenv("HOME"));
 	update_env_var("OLDPWD", pwd, cmd); //update OLDPWD first
 	getcwd(pwd, sizeof(pwd)); //get the newpwd
 	update_env_var("PWD", pwd, cmd); //update PWD

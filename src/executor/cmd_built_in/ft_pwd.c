@@ -1,7 +1,7 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 
 
 int	ft_pwd(t_command *cmd)
@@ -16,7 +16,7 @@ int	ft_pwd(t_command *cmd)
 		return (1);
 	}
 	// cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
-	ft_putstr_fd(cwd, cmd->fd_out);
+	ft_printf_fd(cmd->fd_out, "%s\n", cwd);
 	ft_putstr_fd("\n", cmd->fd_out);
 	return (0);
 }

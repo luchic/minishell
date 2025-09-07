@@ -1,8 +1,7 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
-
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 /*
  * echo -n -n -n
  not double checked with minishell tester.
