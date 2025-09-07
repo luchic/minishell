@@ -1,4 +1,4 @@
-#include "ft_parser.h"
+#include "parser.h"
 #include <stdlib.h>
 
 
@@ -8,6 +8,7 @@ static t_list *create_assignment_list(t_tokenstream *ts)
 	t_list	*node;
 	char	*assignment;
 
+	head = NULL;
 	while (ts_match(ts, VARIABLE))
 	{
 		assignment = ft_strdup(ts_advance(ts)->value);
