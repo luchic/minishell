@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:36:57 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 10:41:43 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/08 13:16:30 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ t_command	*create_command(t_cmd_type type)
 	cmd = ft_calloc(1, sizeof(t_command));
 	if (!cmd)
 		return (NULL);
-	ft_bzero(cmd, sizeof(t_command));
 	cmd->type = type;
 	cmd->fd_in = -1;
 	cmd->fd_out = -1;
