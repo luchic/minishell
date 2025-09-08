@@ -73,15 +73,8 @@ void	free_ast_tree(t_ast_node *node)
 	else if (node->type == PIPELINE)
 		free_pipeline(node->pipeline);
 	else if (node->type == SUBSHELL)
-	{
-		free_ast_tree(node->subshell->script);
-		free(node->subshell);
-	}
+		free_subshell(node->subshell);
 	else if (node->type == LOGICAL)
-	{
-		free_ast_tree(node->logical->left);
-		free_ast_tree(node->logical->right);
-		free(node->logical);
-	}
+		free_logical(node->logical);
 	free(node);
 }
