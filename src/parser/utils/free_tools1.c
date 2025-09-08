@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   free_tools1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:30:11 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/08 13:29:29 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
-#include "lexer.h"
 #include "parser.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-t_ast_node	*run_parser(t_list *tokens, char *input)
+void	free_subshell(t_subshell *subshell)
 {
-	t_tokenstream	ts;
-	t_ast_node	*ast;
+	if (subshell)
+	{
+		if (subshell->script)
+			free_ast_tree(subshell->script);
+		free(subshell);
+	}
+}
 
-	ts.cur = tokens;
-	ast = parse_script(&ts);
-	return (ast);
+void	free_logical(t_logical_expression *logic)
+{
+	if (logic)
+	{
+		if (logic->left)
+			free_ast_tree(logic->left);
+		if (logic->right)
+			free_ast_tree(logic->right);
+		free(logic);
+	}
 }

@@ -6,13 +6,13 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:46 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/05 13:18:06 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/07 13:49:15 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
-#include "ft_lexer.h"
 #include "ft_printf.h"
+#include "lexer.h"
 
 t_list	*run_lexer(const char *input)
 {
@@ -24,14 +24,15 @@ t_list	*run_lexer(const char *input)
 			NULL);
 	tokens = token_assigment(input);
 	if (!tokens)
-		return (ft_printf_fd(STDERR, "minishell: Lexer error (token assignment)\n"), NULL);
+		return (ft_printf_fd(STDERR,
+				"minishell: Lexer error (token assignment)\n"), NULL);
 	merged = merge_word_token(tokens, input);
 	if (!merged)
 		return (ft_printf_fd(STDERR, "minishell: Lexer error (merge)\n"), NULL);
 	ft_lstclear(&tokens, free_tokens);
 	return (merged);
 }
-	
+
 // #include <stdio.h>
 // #include <stdlib.h>
 
@@ -55,19 +56,20 @@ t_list	*run_lexer(const char *input)
 // 		return ;
 // 	}
 // 	print_tokens(tokens);
-// 	ft_lstclear(&tokens, free_tokens);	
+// 	ft_lstclear(&tokens, free_tokens);
 // }
 
 // int	main(int argc, char **argv)
 // {
 
-	
 // 	// t_list *tokens;
-// 	// char *input = "(echo 'Hello World' | grep World) && echo \"Done\" >> output.txt";
-// 	char *input = "./a.out '\"'Hello'\"''\"'Hel lno'\"''\"''\"''\"'";
+// 	// char *input = "(echo 'Hello World' | grep World)
+		&& echo \"Done\" >> output.txt";
+// 	char *input = "ARG=HELLo && TMP=WORLD";
 // 	// char *input2 = "(echo 1&&echo 2)||(echo 3&&echo 4)";
 // 	// char *input3 = "echo hello>file&&cat<file||echo fail";
-// 	// char *input4 = "echo 1;((echo nested||echo test)&&echo done)||grep -v \"hello it is \\\"Nik\\\"\"";
+// 	// char *input4 = "echo 1;((echo nested||echo test)&&echo done)||grep
+		-v \"hello it is \\\"Nik\\\"\"";
 
 // 	// ft_printf("================= Input 1: =================\n");
 // 	split(input);
@@ -77,7 +79,6 @@ t_list	*run_lexer(const char *input)
 // 	// split(input3);
 // 	// ft_printf("================= Input 4: =================\n");
 // 	// split(input4);
-
 
 // 	return (0);
 // }

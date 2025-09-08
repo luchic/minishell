@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   assignments_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:30:11 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/08 13:29:49 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
-#include "lexer.h"
 #include "parser.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-t_ast_node	*run_parser(t_list *tokens, char *input)
+t_list	*create_assignments_node(t_tokenstream *ts)
 {
-	t_tokenstream	ts;
-	t_ast_node	*ast;
+	t_list	*head;
+	t_list	*node;
+	char	*assignment;
 
-	ts.cur = tokens;
-	ast = parse_script(&ts);
-	return (ast);
+	head = NULL;
+	while (ts_match(ts, VARIABLE))
+	{
+		assignment = ft_strdup(ts_advance(ts)->value);
+		if (!assignment)
+			return (ft_lstclear(&head, free), NULL);
+		node = ft_lstnew(assignment);
+		if (!node)
+			return (free(assignment), ft_lstclear(&head, free), NULL);
+		ft_lstadd_back(&head, node);
+	}
+
+	return (head);
 }

@@ -1,17 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_parser.h                                        :+:      :+:    :+:   */
+/*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 17:45:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/01 17:46:38 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/08 13:29:25 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/08 13:29:40 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PARSER_H
-# define FT_PARSER_H
+#include "parser.h"
 
+t_logical_op	get_logical_op(t_tokenstream *ts)
+{
+	t_tokenstream	*clone;
 
-#endif
+	clone = ts_clone(ts);
+	while (ts_peek(clone))
+	{
+		if (ts_match(clone, AND))
+		{
+			ts_free(clone);
+			return (OP_AND);
+		}
+		if (ts_match(clone, OR))
+		{
+			ts_free(clone);
+			return (OP_OR);
+		}
+		ts_advance(clone);
+	}
+	ts_free(clone);
+	return (OP_INVALID);
+}

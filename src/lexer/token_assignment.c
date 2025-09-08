@@ -1,4 +1,4 @@
-#include "ft_lexer.h"
+#include "lexer.h"
 #include <stdlib.h>
 
 // TODO: Where I should handle variables assigments like ARG=value

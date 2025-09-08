@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/05 12:47:08 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/05 20:39:21 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ typedef enum e_parse_mode
 typedef enum e_merge_mode
 {
 	COPY,
-	MERGE,
+	MERGE_WORD,
+	MERGE_ASSIGNMENT
 }			t_merge_mode;
 
 
@@ -46,7 +47,8 @@ typedef enum e_token_type
 	HEREDOC,
 	PAREN_OPEN,
 	PAREN_CLOSE,
-	EOF
+	EOF,
+	VARIABLE
 }						t_token_type;
 
 typedef struct s_token
