@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:03:35 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 11:20:46 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/08 13:08:40 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts)
 		else
 			right = parse_pipeline(ts);
 		if (!right)
-			return (NULL);
+			return (free_logical(logical), NULL);
 		logical->right = right;
 		left = create_ast_node(LOGICAL);
 		if (!left)
-			return (NULL);
+			return (free_logical(logical), NULL);
 		left->logical = logical;
 	}
 	return (left);
@@ -52,7 +52,7 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts)
 
 t_ast_node	*parse_script(t_tokenstream *ts)
 {
-	t_ast_node				*ast_simple_node;
+	t_ast_node	*ast_simple_node;
 
 	if (ts_match(ts, PAREN_OPEN))
 		ast_simple_node = parse_subshell(ts);
