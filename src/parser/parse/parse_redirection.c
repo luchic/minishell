@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:39:04 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 12:32:13 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/08 13:17:58 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ static void	*create_redirection(t_redirection **lst, t_redir_type type,
 	redir->value = ft_strdup(value);
 	if (!redir->value)
 		return (free(redir), NULL);
-	redir->next = NULL;
 	redir->next = *lst;
 	*lst = redir;
 	return (redir);
