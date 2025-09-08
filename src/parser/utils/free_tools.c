@@ -1,6 +1,7 @@
 
 #include "ft_defines.h"
 #include "libft.h"
+#include "parser.h"
 #include <stdlib.h>
 
 void	free_array(char **arr)
@@ -55,7 +56,7 @@ void	free_pipeline(t_pipeline *pipeline)
 	{
 		while (i < pipeline->count)
 		{
-			free(pipeline->commands[i]);
+			free_ast_tree(pipeline->commands[i]);
 			i++;
 		}
 		free(pipeline->commands);
