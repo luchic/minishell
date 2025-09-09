@@ -18,7 +18,7 @@ void	ft_array_remove(char ***array, char *value)
 		i++;
 	if (!envp[i])
 		return ; // value not found
-	new_array = malloc(sizeof(char *) * (get_array_counts(envp) + 1)); // +1 for NULL terminator
+	new_array = malloc(sizeof(char *) * (count_args(envp) + 1)); // +1 for NULL terminator
 	if (!new_array)
 		return ;
 	j = 0;
