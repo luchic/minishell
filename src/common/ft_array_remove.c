@@ -1,7 +1,6 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "ft_common.h"
+# include "libft.h"
 
 void	ft_array_remove(char ***array, char *value)
 {

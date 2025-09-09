@@ -1,5 +1,13 @@
 
-# include "minishell.h"
+# include "ft_common.h"
+
+
+/*
+** Duplicates an array of strings.
+** Returns a newly allocated array of duplicated strings.
+** The returned array is NULL-terminated.
+
+*/
 
 char **ft_strdup_array(char **array)
 {
@@ -22,5 +30,5 @@ char **ft_strdup_array(char **array)
 		i++;
 	}
 	dup_array[count] = NULL; // Null-terminate the array
-	return dup_array;
+	return (dup_array);
 }

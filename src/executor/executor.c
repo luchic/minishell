@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/07 17:43:02 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/09 15:33:10 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void    execute_script(t_minishell *mnsh)
     i = 0;
     while (i < mnsh->script->count)
     {
-        last_exit_status = execute_node(mnsh, mnsh->script->nodes[i]);
+		init_signal_handler();
+        last_exit_status = execute_node(mnsh, &(mnsh->script->nodes[i]));
         mnsh->last_exit_status = last_exit_status;
         i++;
     }
@@ -40,19 +41,19 @@ int execute_node(t_minishell *mnsh, t_ast_node *node)
 
     if (!node)
         return (0);
-    if (node->type == NODE_COMMAND)
+    if (node->type == COMMAND)
     {
         return (execute_command(mnsh, &(node->command)));
     }
-    else if (node->type == NODE_PIPELINE)
+    else if (node->type == PIPELINE)
     {
         return (execute_pipeline(mnsh, &(node->pipeline)));
     }
-    else if (node->type == NODE_LOGICAL)
+    else if (node->type == LOGICAL)
     {
         return (execute_logical(mnsh, &(node->logical)));
     }
-    else if (node->type == NODE_SUBSHELL)
+    else if (node->type == SUBSHELL)
     {
         return (execute_subshell(mnsh, &(node->subshell)));
     }

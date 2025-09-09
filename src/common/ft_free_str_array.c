@@ -1,7 +1,5 @@
 
-#include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
+# include "ft_common.h"
 
 void	free_str_array(char **arr)
 {

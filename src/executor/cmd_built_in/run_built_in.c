@@ -5,19 +5,48 @@
 
 int run_builtin(t_command *cmd)
 {
-    if (ft_strcmp(cmd->name, "echo") == 0)
-        return (ft_echo(cmd));
-    if (ft_strcmp(cmd->name, "cd") == 0)
-        return (ft_cd(cmd));
-    if (ft_strcmp(cmd->name, "pwd") == 0)
-        return (ft_pwd(cmd));
-    if (ft_strcmp(cmd->name, "export") == 0)
-        return (ft_export(cmd));
-    if (ft_strcmp(cmd->name, "unset") == 0)
-        return (ft_unset(cmd));
-    if (ft_strcmp(cmd->name, "env") == 0)
-        return (ft_env(cmd));
-    if (ft_strcmp(cmd->name, "exit") == 0)
-        return (ft_exit(cmd));
-    return (0);
+	int	orig_fd_in;
+	int	orig_fd_out;
+	int	status;
+
+	orig_fd_in = dup(STDIN);
+	orig_fd_out = dup(STDOUT);
+
+	if (cmd->fd_in != STDIN)
+	{
+		dup2(cmd->fd_in, STDIN);
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT)
+	{
+		dup2(cmd->fd_out, STDOUT);
+		close(cmd->fd_out);
+	}
+	//execute built-in
+	status = match_built_in(cmd->name);
+
+	dup2(orig_fd_in, STDIN);
+	dup2(orig_fd_out, STDOUT);
+	close(orig_fd_in);
+	close(orig_fd_out);
+    return (status);
+}
+
+int	match_built_in(char *cmd_name)
+{
+	if (ft_strcmp(cmd_name, "echo") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "exit") == 0)
+		return (1);
+	return (0);
 }

@@ -12,7 +12,8 @@ void	cmd_false_exit(void)
 		exit(126);
 }
 
-
+// thre can be sth wrong with environemtnt variables passed to execve. i gave cmd->mnsh to handle_assignements
+// should it be an address of mnsh->envp?
 int	run_external(t_command *cmd)
 {
 	pid_t	pid;
@@ -24,16 +25,24 @@ int	run_external(t_command *cmd)
 
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (EXIT_FAILURE);
-	}
+		return (perror("fork"),EXIT_FAILURE);
 	else if (pid == 0)
 	{
 		// Child process
 		signal(SIGINT, SIG_DFL); // Ctrl+C
 		signal(SIGQUIT, SIG_DFL); // core dump
-		handle_assignments(NULL, cmd->assignments);
+		handle_assignments(cmd->mnsh, cmd->assignments);
+		if (cmd->fd_in != STDIN)
+		{
+			dup2(cmd->fd_in, STDIN);
+			close(cmd->fd_in);
+		}
+		if (cmd->fd_out != STDOUT)
+		{
+			dup2(cmd->fd_out, STDOUT);
+			close(cmd->fd_out);
+		}
+		is_path_malloced = 0;
 		if (ft_strchr((cmd->args)[0], '/'))
 			path = (cmd->args)[0];
 		else

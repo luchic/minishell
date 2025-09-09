@@ -1,5 +1,5 @@
 
-# include "minishell.h"
+# include "ft_common.h"
 
 int count_args(char **args)
 {

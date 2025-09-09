@@ -17,6 +17,13 @@ int					execute_logical(t_minishell *mnsh, t_logical_expression *logic);
 int					execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
 int					execute_subshell(t_minishell *mnsh, t_subshell *subsh);
 
+// ======================== pipes utils========================
+pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
+int	finish_execution(pid_t **pids, int count);
+void	close_pipes(int pipe_fds[2]);
+
+
+
 // ======================== cmd_built_in ========================
 char				**handle_assignments(t_minishell *mnsh, t_list *assignments);
 
