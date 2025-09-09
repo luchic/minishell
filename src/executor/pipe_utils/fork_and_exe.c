@@ -8,22 +8,16 @@ void	close_pipes(int pipe_fds[2])
 	close(pipe_fds[1]);
 }
 
-pid_t *fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
+pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
-	pid_t *pid;
+	pid_t pid;
 
-	pid = malloc(sizeof(pid_t));
-	if (!pid)
-		return (perror("malloc"), NULL);
-
-	*pid = fork();
-	if (*pid == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-		;
-		free(pid);
-		return (perror("fork"), free(pid), NULL);
+		return (-1);
 	}
-	if (*pid == 0) // Child process
+	if (pid == 0) // Child process
 	{
 		if (fds[0] != STDIN)
 		{
@@ -52,7 +46,7 @@ pid_t *fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 	return (pid);
 }
 
-int	finish_execution(pid_t **pids, int count)
+int	finish_execution(pid_t *pids, int count)
 {
 	int	status;
 	int	i;
@@ -62,7 +56,7 @@ int	finish_execution(pid_t **pids, int count)
 	exit_status = 0;
 	while (i < count)
 	{
-		if (waitpid((*pids)[i], &status, 0) == -1)
+		if (waitpid(pids[i], &status, 0) == -1)
 		{
 			perror("waitpid");
 			exit_status = EXIT_FAILURE;
@@ -73,6 +67,5 @@ int	finish_execution(pid_t **pids, int count)
 			exit_status = 128 + WTERMSIG(status); // 128 is a conventino in bash
 		i++;
 	}
-	free(*pids);
 	return (exit_status);
 }
