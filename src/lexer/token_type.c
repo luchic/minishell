@@ -1,4 +1,16 @@
-#include "ft_lexer.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_type.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/07 13:49:41 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/07 13:49:42 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "lexer.h"
 
 static t_token_type	get_type_redirection(const char *value)
 {
@@ -34,5 +46,7 @@ t_token_type	get_token_type(const char *value)
 		return (PAREN_OPEN);
 	else if (ft_strcmp(value, ")") == 0)
 		return (PAREN_CLOSE);
+	else if (ft_strcmp(value, ";") == 0)
+		return (SEMICOLON);
 	return (WORD);
 }

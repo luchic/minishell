@@ -109,7 +109,7 @@ typedef struct s_compound_list
 
 typedef struct s_subshell
 {
-	t_script					*script;
+	t_ast_node					*script;
 }								t_subshell;
 
 // Generic AST node

@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   cloen_stream.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:30:11 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/08 12:41:55 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/08 13:29:54 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
-#include "lexer.h"
 #include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-t_ast_node	*run_parser(t_list *tokens, char *input)
+t_tokenstream	*ts_clone(t_tokenstream *src)
 {
-	t_tokenstream	ts;
-	t_ast_node	*ast;
+	t_tokenstream	*clone;
 
-	ts.cur = tokens;
-	ast = parse_script(&ts);
-	return (ast);
+	clone = ft_calloc(1, sizeof(t_tokenstream));
+	if (!clone)
+		return (NULL);
+	clone->cur = src->cur;
+	return (clone);
 }

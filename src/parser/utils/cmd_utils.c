@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:30:11 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/08 10:36:57 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/08 13:29:46 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
-#include "lexer.h"
 #include "parser.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-t_ast_node	*run_parser(t_list *tokens, char *input)
+int	realloc_args(t_command *cmd, int new_size)
 {
-	t_tokenstream	ts;
-	t_ast_node	*ast;
+	char	**new_args;
 
-	ts.cur = tokens;
-	ast = parse_script(&ts);
-	return (ast);
+	new_args = ft_realloc(cmd->args, sizeof(char *) * (new_size - 1),
+			sizeof(char *) * new_size);
+	if (!new_args)
+		return (0);
+	cmd->args = new_args;
+	return (1);
+}
+
+t_command	*create_command(t_cmd_type type)
+{
+	t_command	*cmd;
+
+	cmd = ft_calloc(1, sizeof(t_command));
+	if (!cmd)
+		return (NULL);
+	cmd->type = type;
+	cmd->fd_in = -1;
+	cmd->fd_out = -1;
+	return (cmd);
 }
