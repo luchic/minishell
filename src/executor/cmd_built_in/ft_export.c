@@ -102,25 +102,25 @@ void	update_env_var(char *arg, char ***envp)
 // - if not valid, print error and continue
 // - if validate, update or add to env
 
-int	ft_export(t_command cmd)
+int	ft_export(t_command *cmd)
 {
 	char	**args;
 	char	**envp;
 	int		i;
 
-	if (!cmd.args[1])
-		return (ft_export_print_env(cmd.mnsh->envp, STDOUT), 0); // could be replaced by cmd.fd_out
-	envp = cmd.mnsh->envp;
+	if (!cmd->args[1])
+		return (ft_export_print_env(cmd->mnsh->envp, STDOUT), 0); // could be replaced by cmd->fd_out
+	envp = cmd->mnsh->envp;
 	i = 1;
-	while (cmd.args[i])
+	while (cmd->args[i])
 	{
-		if (!is_valid_identifier(cmd.args[i]))
+		if (!is_valid_identifier(cmd->args[i]))
 		{
-			ft_printf_fd(STDERR, "export: `%s': not a valid identifier\n", cmd.args[i]);
+			ft_printf_fd(STDERR, "export: `%s': not a valid identifier\n", cmd->args[i]);
 		}
 		else
 		{
-			update_env_var(cmd.args[i], &envp);
+			update_env_var(cmd->args[i], &envp);
 		}
 		i++;
 	}
