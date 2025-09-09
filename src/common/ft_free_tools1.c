@@ -6,11 +6,11 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:29:29 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:46:51 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#include "ft_common.h"
 #include <stdlib.h>
 
 void	free_subshell(t_subshell *subshell)

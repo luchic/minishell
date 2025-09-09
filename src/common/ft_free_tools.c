@@ -3,29 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   free_tools.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/09 20:32:46 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/09 21:47:08 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
+#include "ft_common.h"
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
 
-void	free_array(char **arr)
+void	free_str_array(char **arr)
 {
 	int	i;
 
 	if (!arr)
 		return ;
-	i = -1;
-	while (arr[++i])
+	i = 0;
+	while (arr[i])
+	{
 		free(arr[i]);
+		i++;
+	}
 	free(arr);
 }
+
 
 void	free_cmd(t_command *cmd)
 {
