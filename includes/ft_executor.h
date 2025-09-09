@@ -18,20 +18,27 @@ int					execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
 int					execute_subshell(t_minishell *mnsh, t_subshell *subsh);
 
 // ======================== pipes utils========================
-pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
-int	finish_execution(pid_t **pids, int count);
-void	close_pipes(int pipe_fds[2]);
+pid_t				fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
+int					finish_execution(pid_t **pids, int count);
+void				close_pipes(int pipe_fds[2]);
 
 
 
-// ======================== cmd_built_in ========================
+// ======================== assignments ========================
 char				**handle_assignments(t_minishell *mnsh, t_list *assignments);
 
 
 // ======================== cmd_built_in ========================
 int					run_builtin(t_command *cmd);
 
+// ft_cd & helpers
 int					ft_cd(t_command *cmd);
+void				change_env_var(const char *name, char *value, t_command *cmd);
+int					ft_cd_home(void);
+int					ft_cd_oldpwd(char *oldpwd, char *pwd);
+int					ft_cd_to_path(char *path);
+
+
 int					ft_echo(t_command *cmd);
 int					ft_exit(t_command *cmd);
 int					ft_pwd(t_command *cmd);

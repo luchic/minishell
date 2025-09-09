@@ -26,7 +26,7 @@ char **ft_strdup_array(char **array)
 	{
 		dup_array[i] = ft_strdup(array[i]);
 		if (!dup_array[i])
-			return (free_array(dup_array), NULL);
+			return (free_str_array(dup_array), NULL);
 		i++;
 	}
 	dup_array[count] = NULL; // Null-terminate the array

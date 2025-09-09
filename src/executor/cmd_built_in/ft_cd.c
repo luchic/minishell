@@ -5,15 +5,6 @@
 
 extern char **environ;
 
-// move to common utils later
-int count_args(char **args)
-{
-	int count = 0;
-	while (args && args[count])
-		count++;
-	return count;
-}
-
 
 int ft_cd_home(void)
 {
@@ -64,11 +55,12 @@ int ft_cd_to_path(char *path)
 
 //initialize new env var if not exist, else update existing one
 
-void	update_env_var(const char *name, char *value, t_command *cmd)
+void	change_env_var(const char *name, char *value, t_command *cmd)
 {
 	char *new;
 	char *new_name;
 	int  i;
+	char **tmp;
 	size_t new_size;
 
 	new_name = ft_strjoin(name, "=");
@@ -91,9 +83,10 @@ void	update_env_var(const char *name, char *value, t_command *cmd)
 		}
 		i++;
 	}
-	cmd->mnsh->envp = ft_realloc(cmd->mnsh->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
-	if (!cmd->mnsh->envp)
+	tmp = ft_realloc(cmd->mnsh->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+	if (!tmp)
 		return (free(new_name), free(new));
+	cmd->mnsh->envp = tmp;
 	cmd->mnsh->envp[i] = new;
 	cmd->mnsh->envp[i + 1] = NULL;
 }
@@ -120,9 +113,9 @@ int ft_cd(t_command *cmd)
 		status = ft_cd_to_path(cmd->args[1]);
 	if (status != 0)
 		return (status);
-	update_env_var("OLDPWD", pwd, cmd); //update OLDPWD first
+	change_env_var("OLDPWD", pwd, cmd); //change OLDPWD first
 	getcwd(pwd, sizeof(pwd)); //get the newpwd
-	update_env_var("PWD", pwd, cmd); //update PWD
+	change_env_var("PWD", pwd, cmd); //change PWD
 	return (status);
 }
 
