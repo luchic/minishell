@@ -1,8 +1,7 @@
 
-#include "../../../includes/ft_defines.h"
-#include "../../../includes/minishell.h"
-#include "../../../libft/includes/libft.h"
-
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 /*
  * echo -n -n -n
  not double checked with minishell tester.
@@ -16,7 +15,7 @@ int ft_echo(t_command *cmd)
 
     i = 1;
     newline = 1;
-    cmd->fd_out = STDOUT_FILENO;  // Use standard output
+    // cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
     while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
     {
         newline = 0;
@@ -24,13 +23,13 @@ int ft_echo(t_command *cmd)
     }
     while (cmd->args[i])
     {
-        ft_putstr_fd(cmd->args[i], cmd->fd_out);
+        ft_printf_fd(cmd->fd_out, "%s", cmd->args[i]);
         if (cmd->args[i + 1])
-            ft_putstr_fd(" ", cmd->fd_out);
+			ft_printf_fd(cmd->fd_out, " ");
         i++;
     }
     if (newline)
-        ft_putstr_fd("\n", cmd->fd_out);
+		ft_printf_fd(cmd->fd_out, "\n");
     return (0);
 }
 

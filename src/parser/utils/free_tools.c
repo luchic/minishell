@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_tools.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:29:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:32:46 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	free_cmd(t_command *cmd)
 	if (cmd->name)
 		free(cmd->name);
 	if (cmd->args)
-		free_array(cmd->args);
+		free_str_array(cmd->args);
 	if (cmd->redirections)
 	{
 		redir = cmd->redirections;
