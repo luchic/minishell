@@ -1,8 +1,8 @@
 
 
-
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
+# include "libft.h"
 
 # include "libft.h"
 // Forward declarations
@@ -33,8 +33,8 @@ typedef enum e_cmd_type
 {
 	CMD_BUILTIN,
 	CMD_EXTERNAL,
-	CMD_ASSIGNMENT,
-	CMD_HEREDOC
+	// CMD_ASSIGNMENT, //if no cmd name, but just assignemnt links
+	//CMD_HEREDOC // executor doesn't execute, just handle redirection and tmp file
 }								t_cmd_type;
 
 // ---- Structures ----
@@ -78,18 +78,19 @@ typedef struct s_command
 {
 	t_cmd_type					type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
 	int							fd_in; // -1 if no redirection
-	int							fd_out; // -1 if no redirection	
-	char						*name; 
+	int							fd_out; // -1 if no redirection
+	char						*name;
 	char						**args; //includes name, NULL-terminated
 	t_list 						*assignments;
 	t_minishell					*mnsh;
 	t_redirection				*redirections;
+	t_list						*assignments; //list of t_var for assignments
 }								t_command;
 
 // Represents a pipeline
 typedef struct s_pipeline
 {
-	struct s_ast_node			**commands;
+	struct s_ast_node			**commands; //!! this is s_ast_node, not s_command, to allow subshells in pipeline
 	int							count;
 }								t_pipeline;
 
@@ -109,7 +110,7 @@ typedef struct s_compound_list
 }								t_compound_list;
 
 typedef struct s_subshell
-{	
+{
 	t_ast_node					*script;
 }								t_subshell;
 
@@ -137,17 +138,5 @@ typedef struct s_script
 # define STDOUT 1
 # define STDIN 0
 
-
-// execution functions
-
-int execute_command(t_minishell *mnsh, t_command *cmd);
-int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
-int execute_logical(t_minishell *mnsh, t_logical_expression *logic);
-int execute_subshell(t_minishell *mnsh, t_subshell *subsh);
-int execute_node(t_minishell *mnsh, t_ast_node *node);
-void execute_script(t_minishell *mnsh);
-
-//// built-in functions
-int ft_echo(t_command *cmd);
 
 #endif

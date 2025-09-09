@@ -1,67 +1,34 @@
-/*
-check which command type
-external: use fork + execve
-built-in: call the function directly
-assignment: update the variable in mnsh->variables
-special: << here doc
 
-*/
-
-
-#include "ft_defines.h"
-#include "minishell.h"
-
-int run_builtin(int fd_in, int fd_out, t_command *cmd)
-{
-    if (ft_strcmp(cmd->name, "echo") == 0)
-        return (ft_echo(cmd));
-    if (ft_strcmp(cmd->name, "cd") == 0)
-        return (ft_cd(cmd));
-    if (ft_strcmp(cmd->name, "pwd") == 0)
-        return (ft_pwd(cmd));
-    if (ft_strcmp(cmd->name, "export") == 0)
-        return (ft_export(cmd));
-    if (ft_strcmp(cmd->name, "unset") == 0)
-        return (ft_unset(cmd));
-    if (ft_strcmp(cmd->name, "env") == 0)
-        return (ft_env(cmd));
-    if (ft_strcmp(cmd->name, "exit") == 0)
-        return (ft_exit(cmd));
-    return (0);
-}
-
-
+# include "minishell.h"
+# include "ft_defines.h"
+# include "ft_executor.h"
 
 int execute_command(t_minishell *mnsh, t_command *cmd)
 {
-    if (cmd->type == CMD_BUILTIN)
+	char	**original_env;
+	int		status;
+
+	// assignemnts without command
+	if (cmd->assignments && !cmd->name)
+		return (handle_assignments(mnsh, cmd->assignments), 0);
+
+
+
+	//execute based on command type
+	if (cmd->type == CMD_BUILTIN)
     {
-        return (run_builtin(cmd->fd_in, cmd->fd_out, cmd));
+        original_env = handle_assignments(mnsh, cmd->assignments);
+		status = run_builtin(cmd);
+		if (original_env)
+		{
+			free_array(mnsh->envp);
+			mnsh->envp = original_env;
+		}
+		return (status);
     }
     else if (cmd->type == CMD_EXTERNAL)
-    {
-        
-
-    }
-    else if (cmd->type == CMD_ASSIGNMENT)
-    {
-        // handle variable assignment
-        // e.g., VAR=value
-        // update mnsh->variables
-        // return 0 for success
-    }
-    else if (cmd->type == CMD_HEREDOC)
-    {
-        // handle here document
-        // e.g., << EOF ... EOF
-        // create a temporary file or use a pipe to store the here doc content
-        // return 0 for success
-    }
+		return (run_external(cmd));
     else
-    {
-        ft_putstr_fd(": command not found: ", 2);
-        ft_putstr_fd(cmd->name, 2);
-        ft_putstr_fd("\n", 2);
-    }
+        ft_printf_fd(STDERR, ": command not found: %s\n", cmd->name);
     return (0);
 }

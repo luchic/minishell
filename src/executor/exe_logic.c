@@ -2,6 +2,7 @@
 
 # include "minishell.h"
 # include "ft_defines.h"
+# include "ft_executor.h"
 
 int execute_logical(t_minishell *mnsh, t_logical_expression *logic)
 {
