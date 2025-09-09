@@ -4,6 +4,7 @@
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 
+# include "libft.h"
 // Forward declarations
 struct s_ast_node;
 struct s_script;
@@ -80,6 +81,7 @@ typedef struct s_command
 	int							fd_out; // -1 if no redirection	
 	char						*name; 
 	char						**args; //includes name, NULL-terminated
+	t_list 						*assignments;
 	t_minishell					*mnsh;
 	t_redirection				*redirections;
 }								t_command;
