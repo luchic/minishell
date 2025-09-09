@@ -1,4 +1,3 @@
-
 # include "minishell.h"
 # include "ft_defines.h"
 # include "ft_executor.h"
@@ -9,28 +8,38 @@ void	close_pipes(int pipe_fds[2])
 	close(pipe_fds[1]);
 }
 
-
-pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
+pid_t *fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
-	pid_t	pid;
+	pid_t *pid;
 
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), -1);
-	if (pid == 0)
+	pid = malloc(sizeof(pid_t));
+	if (!pid)
+		return (perror("malloc"), NULL);
+
+	*pid = fork();
+	if (*pid == -1)
+	{
+		;
+		free(pid);
+		return (perror("fork"), free(pid), NULL);
+	}
+	if (*pid == 0) // Child process
 	{
 		if (fds[0] != STDIN)
 		{
-			dup2(fds[0], STDIN);
+			if (dup2(fds[0], STDIN) == -1)
+				exit(EXIT_FAILURE);
 			close(fds[0]);
 		}
 		if (fds[1] != STDOUT)
 		{
-			dup2(fds[1], STDOUT);
-			if (i < pipeline->count - 1)
-				close_pipes(pipe_fds);
+			if (dup2(fds[1], STDOUT) == -1)
+				exit(EXIT_FAILURE);
 		}
+		if (i < pipeline->count - 1)
+			close_pipes(pipe_fds);
 		execute_command(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
+		exit(EXIT_FAILURE);
 	}
 	else
 	{

@@ -103,12 +103,6 @@ typedef struct s_logical_expression
 }								t_logical_expression;
 
 // Represents a subshell
-typedef struct s_compound_list
-{
-	struct s_ast_node			**nodes;
-	int							count;
-}								t_compound_list;
-
 typedef struct s_subshell
 {
 	t_ast_node					*script;

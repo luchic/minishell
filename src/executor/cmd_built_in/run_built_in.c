@@ -5,30 +5,36 @@
 
 int run_builtin(t_command *cmd)
 {
-	int	orig_fd_in;
-	int	orig_fd_out;
+	int	orig_fds[2];
 	int	status;
 
-	orig_fd_in = dup(STDIN);
-	orig_fd_out = dup(STDOUT);
+	orig_fds[0] = dup(STDIN);
+	orig_fds[1] = dup(STDOUT);
 
 	if (cmd->fd_in != STDIN)
 	{
-		dup2(cmd->fd_in, STDIN);
+		if (dup2(cmd->fd_in, STDIN) == -1)
+		{
+			perror("dup2");
+			return (EXIT_FAILURE);
+		}
 		close(cmd->fd_in);
 	}
 	if (cmd->fd_out != STDOUT)
 	{
-		dup2(cmd->fd_out, STDOUT);
+		if (dup2(cmd->fd_out, STDOUT) == -1)
+			return (perror("dup2"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
 		close(cmd->fd_out);
 	}
 	//execute built-in
 	status = match_built_in(cmd->name);
 
-	dup2(orig_fd_in, STDIN);
-	dup2(orig_fd_out, STDOUT);
-	close(orig_fd_in);
-	close(orig_fd_out);
+	if (dup2(orig_fds[0], STDIN) == -1)
+		return (perror("dup2"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+	if (dup2(orig_fds[1], STDOUT) == -1)
+		return (perror("dup2"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+	close(orig_fds[0]);
+	close(orig_fds[1]);
     return (status);
 }
 

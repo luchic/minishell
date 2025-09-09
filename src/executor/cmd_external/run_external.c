@@ -3,6 +3,7 @@
 #include "minishell.h"
 #include "libft.h"
 #include "ft_printf.h"
+#include "ft_executor.h"
 
 void	cmd_false_exit(void)
 {
@@ -12,8 +13,6 @@ void	cmd_false_exit(void)
 		exit(126);
 }
 
-// thre can be sth wrong with environemtnt variables passed to execve. i gave cmd->mnsh to handle_assignements
-// should it be an address of mnsh->envp?
 int	run_external(t_command *cmd)
 {
 	pid_t	pid;
@@ -34,12 +33,20 @@ int	run_external(t_command *cmd)
 		handle_assignments(cmd->mnsh, cmd->assignments);
 		if (cmd->fd_in != STDIN)
 		{
-			dup2(cmd->fd_in, STDIN);
+			if (dup2(cmd->fd_in, STDIN) == -1)
+			{
+				perror("dup2");
+				cmd_false_exit();
+			}
 			close(cmd->fd_in);
 		}
 		if (cmd->fd_out != STDOUT)
 		{
-			dup2(cmd->fd_out, STDOUT);
+			if (dup2(cmd->fd_out, STDOUT) == -1)
+			{
+				perror("dup2");
+				cmd_false_exit();
+			}
 			close(cmd->fd_out);
 		}
 		is_path_malloced = 0;

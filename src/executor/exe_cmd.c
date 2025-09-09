@@ -21,7 +21,7 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		status = run_builtin(cmd);
 		if (original_env)
 		{
-			free_array(mnsh->envp);
+			free_str_array(mnsh->envp);
 			mnsh->envp = original_env;
 		}
 		return (status);

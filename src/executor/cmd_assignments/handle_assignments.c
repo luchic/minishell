@@ -15,7 +15,7 @@ char	**handle_assignments(t_minishell *mnsh, t_list **assignments)
 	current = *assignments;
 	original_env = ft_strdup_array(mnsh->envp);
 	if (!original_env)
-		return ;
+		return NULL;
 	while (current)
 	{
 		if (!is_valid_identifier(current->content) || !ft_strchr(current->content, '='))

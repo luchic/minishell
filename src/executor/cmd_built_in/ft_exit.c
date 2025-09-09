@@ -27,7 +27,7 @@ static int	check_exit(char **args)
 		if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
 		{
 			ft_printf_fd(STDERR, "exit: numeric argument required\n");
-			exit(255);;
+			exit(255);
 		}
 		i++;
 	}
