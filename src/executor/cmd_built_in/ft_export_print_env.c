@@ -64,9 +64,7 @@ void	ft_export_print_env(char **envp, int fd)
 	i = 0;
 	while (sorted[i])
 	{
-		ft_putstr_fd("declare -x ", fd);
-		ft_putstr_fd(sorted[i], fd);
-		ft_putstr_fd("\n", fd);
+		ft_printf_fd(fd, "declare -x '%s'\n", sorted[i]);
 		i++;
 	}
 	free_str_array(sorted);

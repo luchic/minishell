@@ -17,29 +17,12 @@ int	ft_pwd(t_command *cmd)
 	}
 	// cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
 	ft_printf_fd(cmd->fd_out, "%s\n", cwd);
-	ft_putstr_fd("\n", cmd->fd_out);
 	return (0);
 }
 
 /* int	ft_putchar_fd(char c, int fd)
 {
 	return (write(fd, &c, 1));
-}
-
-int	ft_putstr_fd(char *s, int fd)
-{
-	int	res;
-
-	res = 0;
-	if (!s)
-		return (-1);
-	while (*s)
-	{
-		if (ft_putchar_fd(*s++, fd) == -1)
-			return (-1);
-		res++;
-	}
-	return (res);
 }
 
 int	main(void)

@@ -23,13 +23,13 @@ int ft_echo(t_command *cmd)
     }
     while (cmd->args[i])
     {
-        ft_putstr_fd(cmd->args[i], cmd->fd_out);
+        ft_printf_fd(cmd->fd_out, "%s", cmd->args[i]);
         if (cmd->args[i + 1])
-            ft_putstr_fd(" ", cmd->fd_out);
+			ft_printf_fd(cmd->fd_out, " ");
         i++;
     }
     if (newline)
-        ft_putstr_fd("\n", cmd->fd_out);
+		ft_printf_fd(cmd->fd_out, "\n");
     return (0);
 }
 

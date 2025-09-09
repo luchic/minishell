@@ -18,7 +18,7 @@ static int	check_exit(char **args)
 
 	if (count_args(args) > 2)
 	{
-		ft_putstr_fd("exit: too many arguments\n", STDERR);
+		ft_printf_fd(STDERR, "exit: too many arguments\n");
 		return (1);
 	}
 	i = 0;
@@ -26,7 +26,7 @@ static int	check_exit(char **args)
 	{
 		if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
 		{
-			ft_putstr_fd("exit: numeric argument required\n", STDERR);
+			ft_printf_fd(STDERR, "exit: numeric argument required\n");
 			exit(255);;
 		}
 		i++;
@@ -44,7 +44,7 @@ int	ft_exit(t_command *cmd)
 	int	i;
 	char	**arg;
 
-	ft_putstr_fd("exit\n", STDOUT); //later to cmd->fd_out
+	ft_printf_fd(cmd->fd_out, "exit\n");
 	arg = cmd->args;
 
 	if (count_args(arg) == 1)

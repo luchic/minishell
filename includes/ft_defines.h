@@ -1,8 +1,8 @@
 
 
-
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
+# include "libft.h"
 
 // Forward declarations
 struct s_ast_node;
@@ -12,15 +12,16 @@ typedef struct s_script t_script;
 
 typedef enum e_node_type
 {
-	NODE_SUBSHELL,
-	NODE_COMMAND,
-	NODE_PIPELINE,
-	NODE_LOGICAL
+	SUBSHELL,
+	COMMAND,
+	PIPELINE,
+	LOGICAL
 }								t_node_type;
 
 // Operators for logical expressions
 typedef enum e_logical_op
 {
+	OP_INVALID,
 	OP_AND,
 	OP_OR
 }								t_logical_op;
@@ -57,12 +58,20 @@ typedef struct s_minishell
 // ---- Executors ----
 
 // Represents a command
-
-typedef struct s_list //temporary linked list structure
+typedef enum e_redir_type
 {
-	char			*content; //can be t_var or char*
-	struct s_list	*next;
-}					t_list;
+	REDIR_INPUT,
+	REDIR_OUTPUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+} t_redir_type;
+
+typedef struct  s_redirection
+{
+	t_redir_type				type;
+	char						*value;
+	struct s_redirection		*next;
+} t_redirection;
 
 typedef struct s_command
 {
@@ -71,8 +80,9 @@ typedef struct s_command
 	int							fd_out; // -1 if no redirection
 	char						*name;
 	char						**args; //includes name, NULL-terminated
-	t_list						**assignments; //list of t_var for assignments
 	t_minishell					*mnsh;
+	t_redirection				*redirections;
+	t_list						*assignments; //list of t_var for assignments
 }								t_command;
 
 // Represents a pipeline
@@ -91,6 +101,12 @@ typedef struct s_logical_expression
 }								t_logical_expression;
 
 // Represents a subshell
+typedef struct s_compound_list
+{
+	struct s_ast_node			**nodes;
+	int							count;
+}								t_compound_list;
+
 typedef struct s_subshell
 {
 	t_script					*script;
@@ -102,17 +118,17 @@ typedef struct s_ast_node
 	t_node_type					type;
 	union
 	{
-		t_command				command;
-		t_pipeline				pipeline;
-		t_logical_expression	logical;
-		t_subshell				subshell;
+		t_command				*command;
+		t_pipeline				*pipeline;
+		t_logical_expression	*logical;
+		t_subshell				*subshell;
 	};
 }								t_ast_node;
 
 // Represents a script (root)
 typedef struct s_script
 {
-	t_ast_node					**nodes; //to avoid confusion from pipeline->commands
+	t_ast_node					*nodes; //to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
 

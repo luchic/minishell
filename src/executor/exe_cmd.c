@@ -11,8 +11,8 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	int status;
 
 	//backup original fds
-	orig_fd_in = dup(STDIN);
-	orig_fd_out = dup(STDOUT);
+	orig_fd_in = dup(cmd->fd_in);
+	orig_fd_out = dup(cmd->fd_out);
 	//handle redirections, maybe different in each scenario
 	if (cmd->fd_in != STDIN)
 	{
@@ -58,9 +58,7 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
     //}
     else
     {
-        ft_putstr_fd(": command not found: ", 2);
-        ft_putstr_fd(cmd->name, 2);
-        ft_putstr_fd("\n", 2);
+        ft_printf_fd(STDERR, ": command not found: %s\n", cmd->name);
     }
 
 	//restore original fds

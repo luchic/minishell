@@ -9,7 +9,7 @@ int	ft_env(t_command cmd)
 
 	if (cmd.args[1])
 	{
-		ft_putstr_fd("env: too many arguments\n", STDERR);
+		ft_printf_fd(STDERR, "env: too many arguments\n");
 		return (EXIT_FAILURE);
 	}
 	i = 0;
@@ -17,8 +17,7 @@ int	ft_env(t_command cmd)
 	{
 		if (ft_strchr(cmd.mnsh->envp[i], '='))
 		{
-			ft_putstr_fd(cmd.mnsh->envp[i], STDOUT);
-			ft_putstr_fd("\n", STDOUT);
+			ft_printf_fd(STDOUT, "%s\n", cmd.mnsh->envp[i]);
 		}
 		i++;
 	}

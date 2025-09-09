@@ -19,9 +19,6 @@ int ft_unset(t_command *cmd)
 		if (!is_valid_identifier(args[i])) // simply return (1) if not found
 		{
 			return (1);
-			// ft_putstr_fd("unset: `", 2);
-			// ft_putstr_fd(args[i], 2);
-			// ft_putstr_fd("': not a valid identifier\n", 2);
 		}
 		else
 		{

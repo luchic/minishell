@@ -48,7 +48,7 @@ int ft_cd_oldpwd(char *oldpwd, char *pwd)
 	pwd = getenv("PWD");
 	if (pwd)
 		ft_printf_fd(STDOUT, "%s",pwd);
-	ft_putstr_fd("\n", STDOUT);
+	ft_printf_fd(STDOUT, "\n");
 	return (0);
 }
 

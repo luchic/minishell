@@ -116,9 +116,7 @@ int	ft_export(t_command cmd)
 	{
 		if (!is_valid_identifier(cmd.args[i]))
 		{
-			ft_putstr_fd("export: `", STDERR);
-			ft_putstr_fd(cmd.args[i], STDERR);
-			ft_putstr_fd("': not a valid identifier\n", STDERR);
+			ft_printf_fd(STDERR, "export: `%s': not a valid identifier\n", cmd.args[i]);
 		}
 		else
 		{
