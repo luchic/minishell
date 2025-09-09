@@ -19,9 +19,8 @@ int					execute_subshell(t_minishell *mnsh, t_subshell *subsh);
 
 // ======================== pipes utils========================
 pid_t				fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
-int					finish_execution(pid_t **pids, int count);
+int					finish_execution(pid_t *pids, int count);
 void				close_pipes(int pipe_fds[2]);
-
 
 
 // ======================== assignments ========================
