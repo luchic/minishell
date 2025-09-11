@@ -3,6 +3,25 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
+int	match_built_in(char *cmd_name)
+{
+	if (ft_strcmp(cmd_name, "echo") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "exit") == 0)
+		return (1);
+	return (0);
+}
+
 int run_builtin(t_command *cmd)
 {
 	int	orig_fds[2];
@@ -27,7 +46,22 @@ int run_builtin(t_command *cmd)
 		close(cmd->fd_out);
 	}
 	//execute built-in
-	status = match_built_in(cmd->name);
+	if (ft_strcmp(cmd->name, "echo") == 0)
+		status = ft_echo(cmd);
+	else if (ft_strcmp(cmd->name, "cd") == 0)
+		status = ft_cd(cmd);
+	else if (ft_strcmp(cmd->name, "pwd") == 0)
+		status = ft_pwd(cmd);
+	else if (ft_strcmp(cmd->name, "export") == 0)
+		status = ft_export(cmd);
+	else if (ft_strcmp(cmd->name, "unset") == 0)
+		status = ft_unset(cmd);
+	else if (ft_strcmp(cmd->name, "env") == 0)
+		status = ft_env(cmd);
+	else if (ft_strcmp(cmd->name, "exit") == 0)
+		status = ft_exit(cmd);
+	else
+		status = 0;
 
 	if (dup2(orig_fds[0], STDIN) == -1)
 		return (perror("dup2"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
@@ -38,21 +72,4 @@ int run_builtin(t_command *cmd)
     return (status);
 }
 
-int	match_built_in(char *cmd_name)
-{
-	if (ft_strcmp(cmd_name, "echo") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "cd") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "pwd") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "export") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "unset") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "env") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "exit") == 0)
-		return (1);
-	return (0);
-}
+

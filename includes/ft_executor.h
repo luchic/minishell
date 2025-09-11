@@ -9,7 +9,8 @@
 #include "ft_common.h"
 
 // ======================== executor ========================
-void				execute_script(t_minishell *mnsh);
+int 				run_exectutor(t_minishell *mnsh);
+int					execute_script(t_minishell *mnsh, t_ast_node *script);
 int					execute_node(t_minishell *mnsh, t_ast_node *node);
 
 int					execute_command(t_minishell *mnsh, t_command *cmd);
@@ -29,6 +30,7 @@ char				**handle_assignments(t_minishell *mnsh, t_list *assignments);
 
 // ======================== cmd_built_in ========================
 int					run_builtin(t_command *cmd);
+int					match_built_in(char *cmd_name);
 
 // ft_cd & helpers
 int					ft_cd(t_command *cmd);
@@ -58,6 +60,14 @@ void				append_env_var(char ***envp, char *new_var);
 int					run_external(t_command *cmd);
 
 char				*get_cmd_path(char *cmd_name, char **envp, char **cmd_path);
+
+// ======================== redirections ========================
+int					handle_redirections(t_command *cmd);
+int					handle_input_redirection(t_redirection *redir, t_command *cmd);
+int					handle_output_redirection(t_redirection *redir, t_command *cmd);
+int					handle_heredoc(t_redirection *redir, t_command *cmd);
+int					ft_is_limiter(char *line, char *del);
+void				ft_write_data_to_std(char *del, int fd);
 
 
 #endif

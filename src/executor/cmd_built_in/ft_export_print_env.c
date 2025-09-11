@@ -54,8 +54,6 @@ void	ft_export_print_env(char **envp, int fd)
 {
 	char	**sorted;
 	int		i;
-	int		j;
-	char	*tmp;
 
 	sorted = array_dup(envp);
 	if (!sorted)

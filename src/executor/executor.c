@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/09 20:50:15 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/11 19:45:59 by tracy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,35 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-void    execute_script(t_minishell *mnsh)
+int run_exectutor(t_minishell *mnsh)
 {
-    int i;
-    int last_exit_status;
-
-    if (!mnsh || !mnsh->script || !mnsh->script->nodes)
-        return;
-    i = 0;
-    while (i < mnsh->script->count)
-    {
-		init_signal_handler();
-        last_exit_status = execute_node(mnsh, mnsh->script->nodes);
-        mnsh->last_exit_status = last_exit_status;
-        i++;
-    }
+    return (execute_script(mnsh, mnsh->script->nodes));
 }
 
-// to get the last exit status of the last command executed
-// logical->pipeline->command
-// subshell contains a whole script AST
+t_ast_node *get_script(t_minishell *mnsh)
+{
+    if (!mnsh || !mnsh->script)
+        return (NULL);
+    return (mnsh->script->nodes);
+}
+
+int    execute_script(t_minishell *mnsh, t_ast_node *script)
+{
+    int last_exit_status;
+
+    if (!mnsh || !script)
+        return (EXIT_FAILURE);
+
+    init_signal_handler();
+    last_exit_status = execute_node(mnsh, script);
+    mnsh->last_exit_status = last_exit_status;
+    return (EXIT_SUCCESS);
+}
 
 int execute_node(t_minishell *mnsh, t_ast_node *node)
 {
-    int left_status;
-
     if (!node)
-        return (0);
+        return (EXIT_SUCCESS);
     if (node->type == COMMAND)
     {
         return (execute_command(mnsh, node->command));
@@ -57,5 +59,5 @@ int execute_node(t_minishell *mnsh, t_ast_node *node)
     {
         return (execute_subshell(mnsh, node->subshell));
     }
-    return (0);
+    return (EXIT_FAILURE);
 }

@@ -25,8 +25,7 @@ int execute_subshell(t_minishell *mnsh, t_subshell *subsh)
     {
         signal(SIGINT, SIG_DFL);// defult action: terminate the process
         signal(SIGQUIT, SIG_DFL); //defult action: core dump
-        execute_script(subsh->script);
-        exit(mnsh->last_exit_status);
+        exit(execute_script(mnsh, subsh->script));
     }
     else
     {
