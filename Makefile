@@ -6,7 +6,7 @@ NAME = minishell
 SRCS_DIR = src/
 
 COMMON = $(SRCS_DIR)common/
-EXEC = $(SRCS_DIR)exec/
+EXEC = $(SRCS_DIR)executor/
 LEXER = $(SRCS_DIR)lexer/
 PARSER = $(SRCS_DIR)parser/
 
@@ -14,8 +14,15 @@ PARSER = $(SRCS_DIR)parser/
 # Source files
 SRCS = $(wildcard $(COMMON)*.c)
 SRCS += $(wildcard $(EXEC)*.c)
+SRCS += $(wildcard $(EXEC)cmd_assignments/*.c)
+SRCS += $(wildcard $(EXEC)cmd_built_in/*.c)
+SRCS += $(wildcard $(EXEC)cmd_external/*.c)
+SRCS += $(wildcard $(EXEC)/pipe_utils/*.c)
 SRCS += $(wildcard $(LEXER)*.c)
 SRCS += $(wildcard $(PARSER)*.c)
+SRCS += $(wildcard $(PARSER)parse/*.c)
+SRCS += $(wildcard $(PARSER)utils/*.c)
+SRCS += $(wildcard $(PARSER)token_stream/*.c)
 SRCS += $(SRCS_DIR)main.c
 
 OBJS = $(SRCS:.c=.o)
@@ -26,7 +33,8 @@ LIBFT = $(LIBFT_PATH)/libft.a
 FT = ft
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iincludes -I$(LIBFT_PATH)/includes
+# CFLAGS = -Wall -Wextra -Werror -Iincludes
+CFLAGS = -Iincludes -g #-fsanitize=address
 
 all : $(NAME)
 
