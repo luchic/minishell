@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_tools.c                                       :+:      :+:    :+:   */
+/*   ft_free_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/09 21:47:08 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/11 18:21:17 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,15 @@ void	free_str_array(char **arr)
 	free(arr);
 }
 
+void ft_free_redir(t_redirection *redir)
+{
+	if (!redir)
+		return ;
+	if (redir->value)
+		free(redir->value);
+	free(redir);
+}
+
 
 void	free_cmd(t_command *cmd)
 {
@@ -45,17 +54,7 @@ void	free_cmd(t_command *cmd)
 	if (cmd->args)
 		free_str_array(cmd->args);
 	if (cmd->redirections)
-	{
-		redir = cmd->redirections;
-		while (redir)
-		{
-			tmp = redir;
-			redir = redir->next;
-			if (tmp->value)
-				free(tmp->value);
-			free(tmp);
-		}
-	}
+		ft_lstclear(&cmd->redirections, (void *)ft_free_redir);
 	if (cmd->assignments)
 		ft_lstclear(&cmd->assignments, free);
 	free(cmd);
