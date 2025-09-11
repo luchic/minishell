@@ -1,31 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_tools.c                                       :+:      :+:    :+:   */
+/*   ft_free_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/09 20:32:46 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/11 18:21:17 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
+#include "ft_common.h"
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
 
-void	free_array(char **arr)
+void	free_str_array(char **arr)
 {
 	int	i;
 
 	if (!arr)
 		return ;
-	i = -1;
-	while (arr[++i])
+	i = 0;
+	while (arr[i])
+	{
 		free(arr[i]);
+		i++;
+	}
 	free(arr);
 }
+
+void ft_free_redir(t_redirection *redir)
+{
+	if (!redir)
+		return ;
+	if (redir->value)
+		free(redir->value);
+	free(redir);
+}
+
 
 void	free_cmd(t_command *cmd)
 {
@@ -40,17 +54,7 @@ void	free_cmd(t_command *cmd)
 	if (cmd->args)
 		free_str_array(cmd->args);
 	if (cmd->redirections)
-	{
-		redir = cmd->redirections;
-		while (redir)
-		{
-			tmp = redir;
-			redir = redir->next;
-			if (tmp->value)
-				free(tmp->value);
-			free(tmp);
-		}
-	}
+		ft_lstclear(&cmd->redirections, (void *)ft_free_redir);
 	if (cmd->assignments)
 		ft_lstclear(&cmd->assignments, free);
 	free(cmd);

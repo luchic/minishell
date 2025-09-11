@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:24:52 by nluchini          #+#    #+#             */
-/*   Updated: 2025/08/30 16:40:14 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/04 16:01:55 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,18 @@ int					ft_strncmp(const char *s1, const char *s2, size_t n);
  *   equal to, or less than 0.
  */
 int					ft_strcmp(const char *s1, const char *s2);
+
+/**
+ * @brief  The ft_strstr() function locates the first occurrence of
+ *   the null-terminated string needle in the string haystack.
+ *   Characters that appear after a `\0' character are not searched.
+ * @param  haystack: String where looking for needle.
+ * @param  needle: Substring that we looking for.
+ * @retval If needle is an empty string, haystack is returned; if needle
+ *  occurs nowhere in haystack, NULL is returned; otherwise a pointer
+ *  to the first character of the first occurrence of needle is returned.
+ */
+char				*ft_strstr(const char *haystack, const char *needle);
 
 /**
  * @brief  The ft_strnstr() function locates the first occurrence of

@@ -60,17 +60,17 @@ typedef struct s_minishell
 // Represents a command
 typedef enum e_redir_type
 {
-	REDIR_INPUT,
-	REDIR_OUTPUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC
+	REDIR_INPUT, // < infile cat
+	REDIR_OUTPUT, // cat > outfile
+	REDIR_APPEND, // cat >> outfile
+	REDIR_HEREDOC // cat << delimiter
 } t_redir_type;
 
 typedef struct  s_redirection
 {
 	t_redir_type				type;
+	int							fd;
 	char						*value;
-	struct s_redirection		*next;
 } t_redirection;
 
 typedef struct s_command
@@ -81,7 +81,7 @@ typedef struct s_command
 	char						*name;
 	char						**args; //includes name, NULL-terminated
 	t_minishell					*mnsh;
-	t_redirection				*redirections;
+	t_list						*redirections; // list of t_redirection
 	t_list						*assignments; //list of t_var for assignments
 }								t_command;
 

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:39:04 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:29:58 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/11 18:23:06 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 #include "parser.h"
 #include <stdlib.h>
 
-static void	*create_redirection(t_redirection **lst, t_redir_type type,
+static void	*create_redirection(t_list **lst, t_redir_type type,
 		const char *value)
 {
 	t_redirection	*redir;
+	t_list			*new_node;
 
 	redir = ft_calloc(1, sizeof(t_redirection));
 	if (!redir)
@@ -27,8 +28,10 @@ static void	*create_redirection(t_redirection **lst, t_redir_type type,
 	redir->value = ft_strdup(value);
 	if (!redir->value)
 		return (free(redir), NULL);
-	redir->next = *lst;
-	*lst = redir;
+	new_node = ft_lstnew(redir);
+	if (!new_node)
+		return (free(redir->value), free(redir), NULL);
+	ft_lstadd_front(lst, new_node);
 	return (redir);
 }
 
