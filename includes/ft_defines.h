@@ -4,7 +4,6 @@
 # define FT_DEFINES_H
 # include "libft.h"
 
-# include "libft.h"
 // Forward declarations
 struct s_ast_node;
 struct s_script;
