@@ -6,14 +6,14 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 10:57:29 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 12:47:46 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:05:22 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_vfprintf_fd.h"
 
-int print_log_level(t_log_level level, int fd)
+int	ft_print_log_level(t_log_level level, int fd)
 {
 	if (level == LOG_DEBUG)
 		return (ft_printf_fd(fd, "[DEBUG] "));
@@ -30,15 +30,15 @@ int print_log_level(t_log_level level, int fd)
 
 int	ft_log_fd(t_log_level level, int fd, const char *format, ...)
 {
-	int		res;
-	va_list	ap;
+	int res;
+	va_list ap;
 
 	if (fd < 0)
 		return (-1);
 	va_start(ap, format);
 	if (level >= DEFLOG_LEVEL)
 	{
-		res = ftprint_log_level(level, fd);
+		res = ft_print_log_level(level, fd);
 		res += ft_vfprintf_fd(ap, format, fd);
 	}
 	else
