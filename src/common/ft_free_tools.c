@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/11 18:21:17 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 22:08:50 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ void	free_str_array(char **arr)
 	free(arr);
 }
 
-void ft_free_redir(t_redirection *redir)
+void ft_free_redir(void *redirection)
 {
+	t_redirection	*redir;
+
+	redir = (t_redirection *)redirection;	
 	if (!redir)
 		return ;
 	if (redir->value)

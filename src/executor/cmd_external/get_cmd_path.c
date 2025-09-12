@@ -32,18 +32,3 @@ char	*get_cmd_path(char *cmd_name, char **envp, char **cmd_path)
 	return (free_str_array(paths), NULL);
 }
 
-int	main(void)
-{
-	char	*cmd_path;
-
-	if (get_cmd_path("ls", NULL, &cmd_path))
-	{
-		ft_printf("Path to ls: %s\n", cmd_path);
-		free(cmd_path);
-	}
-	else
-	{
-		ft_printf("Command not found\n");
-	}
-	return (0);
-}
