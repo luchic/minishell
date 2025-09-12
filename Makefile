@@ -33,8 +33,8 @@ LIBFT = $(LIBFT_PATH)/libft.a
 FT = ft
 
 CC = cc
-# CFLAGS = -Wall -Wextra -Werror -Iincludes
-CFLAGS = -Iincludes -g #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -Iincludes
+DFLAGS = -Iincludes -g -D DEBUG_LEVEL=0 -fsanitize=address
 
 all : $(NAME)
 
@@ -45,7 +45,7 @@ $(NAME): $(OBJS) $(LIBFT)
 
 debug: 
 	$(MAKE) -C $(LIBFT_PATH) debug-re
-	$(MAKE) CFLAGS="$(CFLAGS) -g -DDEBUG_LEVEL=0" $(NAME)
+	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
