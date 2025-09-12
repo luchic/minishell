@@ -41,7 +41,11 @@ all : $(NAME)
 bonus : $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -l$(FT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -l$(FT) -o $(NAME) -lreadline
+
+debug: 
+	$(MAKE) -C $(LIBFT_PATH) debug-re
+	$(MAKE) CFLAGS="$(CFLAGS) -g -O0 -DDEBUG_LEVEL=0" $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
@@ -56,4 +60,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re bonus debug
