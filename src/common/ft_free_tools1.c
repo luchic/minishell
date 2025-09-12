@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_tools1.c                                      :+:      :+:    :+:   */
+/*   ft_free_tools1.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/09 21:46:51 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/11 18:46:55 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,48 @@ void	free_logical(t_logical_expression *logic)
 			free_ast_tree(logic->right);
 		free(logic);
 	}
+}
+
+void free_variable(t_var *var)
+{
+	t_var	*tmp;
+
+	if (var)
+	{
+		while (var)
+		{
+			tmp = var;
+			var = var->next;
+			free(tmp->name);
+			free(tmp->value);
+			free(tmp);
+		}
+	}
+}
+
+void free_script(t_script *script)
+{
+	if (script)
+	{
+		if (script->nodes)
+			free_ast_tree(script->nodes);
+		free(script);
+	}
+}
+
+void	free_minishell(t_minishell *mnsh)
+{
+	if (!mnsh)
+		return ;
+	if (mnsh->envp)
+		free_str_array(mnsh->envp);
+	if (mnsh->script)
+	{
+		free_script(mnsh->script);
+	}
+	if (mnsh->variables)
+	{
+		free_variable(mnsh->variables);
+	}
+	free(mnsh);
 }

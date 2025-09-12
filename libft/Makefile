@@ -6,7 +6,7 @@
 #    By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/07 13:35:53 by nluchini          #+#    #+#              #
-#    Updated: 2025/08/30 16:40:18 by nluchini         ###   ########.fr        #
+#    Updated: 2025/09/12 11:31:49 by nluchini         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,7 +90,8 @@ CORE = 			$(SRC)/$(PATH_PRINTF)/core
 ## Core
 PRINTF_CORE = 	$(CORE)/ft_vfprintf_fd.c \
 				$(CORE)/ft_printf.c \
-				$(CORE)/ft_printf_fd.c
+				$(CORE)/ft_printf_fd.c \
+				$(CORE)/ft_log_fd.c
 PROBJ_CORE = 	$(PRINTF_CORE:.c=.o)
 
 ## Parser
@@ -145,6 +146,12 @@ all : $(NAME)
 $(NAME) : $(CORE_OBJ_FIlES) $(OBJ_PRINTF) $(GNL_OBJ)
 	ar rcs $(NAME) $(CORE_OBJ_FIlES) $(OBJ_PRINTF) $(GNL_OBJ)
 
+debug:
+	$(MAKE) CFLAGS="$(CFLAGS) -g -D DEFLOG_LEVEL=0" $(NAME)
+
+debug-re:
+	$(MAKE) CFLAGS="$(CFLAGS) -g -D DEFLOG_LEVEL=0" re
+
 %.o : %.c
 	$(CC) $(CFLAGS) -I $(HEADER) -o $@ -c $<
 
@@ -156,4 +163,4 @@ fclean : clean
 clean : 
 	rm -f $(CORE_OBJ_FIlES) $(OBJ_PRINTF) $(GNL_OBJ)
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re debug debug-re
