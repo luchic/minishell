@@ -52,11 +52,11 @@ void	ft_write_data_to_std(char *del, int fd)
 
 static char	*create_heredoc_tempfile(void)
 {
-	static size_t	counter = 0;
+	static unsigned int	counter = 0;
 	char		*filename;
 	char		*num_str;
 
-	num_str = ft_itoa((int)counter++);
+	num_str = ft_itoa(counter++);
 	if (!num_str)
 		return (NULL);
 	filename = ft_strjoin("/tmp/heredoc_", num_str);
