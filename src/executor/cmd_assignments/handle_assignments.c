@@ -6,16 +6,16 @@
 
 // var=123 abc=
 
-char	**handle_assignments(t_minishell *mnsh, t_list **assignments)
+char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 {
 	t_list	*current;
-	char	*original_env;
+	char	**original_env;
 	char	*arg;
 
-	current = *assignments;
+	current = assignments;
 	original_env = ft_strdup_array(mnsh->envp);
 	if (!original_env)
-		return NULL;
+		return (NULL);
 	while (current)
 	{
 		if (!is_valid_identifier(current->content) || !ft_strchr(current->content, '='))
