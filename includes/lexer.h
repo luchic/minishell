@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lexer.h                                         :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/05 20:39:21 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:20:44 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LEXER_H
-# define FT_LEXER_H
+#ifndef LEXER_H
+# define LEXER_H
 
 # include "libft.h"
 
@@ -47,7 +47,6 @@ typedef enum e_token_type
 	HEREDOC,
 	PAREN_OPEN,
 	PAREN_CLOSE,
-	EOF,
 	VARIABLE
 }						t_token_type;
 
