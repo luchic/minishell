@@ -6,42 +6,41 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 13:21:20 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:22:32 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "ft_defines.h"
-#include "libft.h"
-#include "parser.h"
 #include "ft_executor.h"
-#include <readline/readline.h>
+#include "libft.h"
+#include "minishell.h"
+#include "parser.h"
 #include <readline/history.h>
+#include <readline/readline.h>
 
-
-void init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
+void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 {
-    int i;
+	int	i;
+	int	size;
 
-    ft_memset(mnsh, 0, sizeof(t_minishell));
-	
-	int size = count_args(envp);
-    mnsh->envp = ft_calloc((size + 1), sizeof(char *));
-    if (!mnsh->envp)
-        return;
-    for (i = 0; envp[i]; i++)
-    {
-        mnsh->envp[i] = ft_strdup(envp[i]);
-        if (!mnsh->envp[i])
-            return;
-    }
-    mnsh->envp[i] = NULL;
+	ft_memset(mnsh, 0, sizeof(t_minishell));
+	size = count_args(envp);
+	mnsh->envp = ft_calloc((size + 1), sizeof(char *));
+	if (!mnsh->envp)
+		return ;
+	for (i = 0; envp[i]; i++)
+	{
+		mnsh->envp[i] = ft_strdup(envp[i]);
+		if (!mnsh->envp[i])
+			return ;
+	}
+	mnsh->envp[i] = NULL;
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
 }
 
-void set_env(t_ast_node *node, t_minishell *mnsh)
+void	set_env(t_ast_node *node, t_minishell *mnsh)
 {
 	if (node->type == COMMAND)
 	{
@@ -61,35 +60,34 @@ void set_env(t_ast_node *node, t_minishell *mnsh)
 	{
 		set_env(node->subshell->script, mnsh);
 	}
-
 }
 
 // TODO: handle minishell> kkjhg execve: No such file or directory
 // TODO: change error messages to match bash ones
 
-void ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
+void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 {
-	char *input;
-	
+	char		*input;
+	t_list		*tokens;
+	t_ast_node	*ast;
+
 	while ((input = readline("minishell> ")))
 	{
-
-		t_list *tokens = run_lexer(input);
+		tokens = run_lexer(input);
 		if (!tokens)
 		{
 			ft_printf_fd(STDERR, "Lexer error\n");
 			free(input);
 			continue ;
 		};
-
 		if (mnsh->script == NULL)
 		{
 			ft_printf_fd(STDERR, "Memory allocation error\n");
 			free(input);
 			ft_lstclear(&tokens, free);
-			continue;
+			continue ;
 		}
-		t_ast_node *ast = run_parser(tokens, mnsh);
+		ast = run_parser(tokens, mnsh);
 		mnsh->script->nodes = ast;
 		if (!mnsh->script)
 		{
@@ -107,12 +105,12 @@ void ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	rl_clear_history();
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	mnsh;
-    char        *input;
+	char		*input;
 
 	init_minishell(&mnsh, argc, argv, envp);
 	ft_run_minishell(&mnsh, argc, argv, envp);
-    return (0);
+	return (0);
 }
