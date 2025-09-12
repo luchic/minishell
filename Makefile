@@ -45,7 +45,7 @@ $(NAME): $(OBJS) $(LIBFT)
 
 debug: 
 	$(MAKE) -C $(LIBFT_PATH) debug-re
-	$(MAKE) CFLAGS="$(CFLAGS) -g -O0 -DDEBUG_LEVEL=0" $(NAME)
+	$(MAKE) CFLAGS="$(CFLAGS) -g -DDEBUG_LEVEL=0" $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
