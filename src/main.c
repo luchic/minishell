@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 13:22:32 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:24:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,28 +38,6 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
-}
-
-void	set_env(t_ast_node *node, t_minishell *mnsh)
-{
-	if (node->type == COMMAND)
-	{
-		node->command->mnsh = mnsh;
-	}
-	else if (node->type == PIPELINE)
-	{
-		for (int i = 0; i < node->pipeline->count; i++)
-			set_env(node->pipeline->commands[i], mnsh);
-	}
-	else if (node->type == LOGICAL)
-	{
-		set_env(node->logical->left, mnsh);
-		set_env(node->logical->right, mnsh);
-	}
-	else if (node->type == SUBSHELL)
-	{
-		set_env(node->subshell->script, mnsh);
-	}
 }
 
 // TODO: handle minishell> kkjhg execve: No such file or directory
@@ -95,7 +73,6 @@ void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 			free(input);
 			ft_lstclear(&tokens, free);
 		}
-		set_env(ast, mnsh);
 		execute_script(mnsh, ast);
 		add_history(input);
 		ft_lstclear(&tokens, free);
