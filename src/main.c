@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 10:21:47 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:21:20 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 			ft_lstclear(&tokens, free);
 			continue;
 		}
-		t_ast_node *ast = run_parser(tokens, input, mnsh);
+		t_ast_node *ast = run_parser(tokens, mnsh);
 		mnsh->script->nodes = ast;
 		if (!mnsh->script)
 		{

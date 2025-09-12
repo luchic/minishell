@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 13:04:18 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:20:51 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void set_minishell_to_commands(t_ast_node *node, t_minishell *mnsh)
 	}
 }
 
-t_ast_node	*run_parser(t_list *tokens, const char *input, t_minishell *mnsh)
+t_ast_node	*run_parser(t_list *tokens, t_minishell *mnsh)
 {
 	t_tokenstream	ts;
 	t_ast_node		*ast;
