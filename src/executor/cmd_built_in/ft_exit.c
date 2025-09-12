@@ -41,7 +41,6 @@ static int	check_exit(char **args)
 int	ft_exit(t_command *cmd)
 {
 	int	status;
-	int	i;
 	char	**arg;
 
 	ft_printf_fd(cmd->fd_out, "exit\n");

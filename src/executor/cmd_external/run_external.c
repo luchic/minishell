@@ -20,7 +20,7 @@ int	run_external(t_command *cmd)
 	char	*path;
 	int		is_path_malloced;
 	int		current;
-	int		exit_code;
+	int		exit_code = 0;
 
 	pid = fork();
 	if (pid < 0)
@@ -82,6 +82,8 @@ int	run_external(t_command *cmd)
 			exit_code = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			exit_code = WTERMSIG(status);
+		else
+			exit_code = 1;
 	}
 	return (exit_code);
 }

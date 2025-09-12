@@ -7,7 +7,7 @@
 int execute_logical(t_minishell *mnsh, t_logical_expression *logic)
 {
     int left_status;
-    int right_status;
+    int right_status = 0;
 
     left_status = execute_node(mnsh, logic->left);
     if (logic->op == OP_AND)
