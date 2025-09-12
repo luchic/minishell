@@ -15,9 +15,7 @@ int	ft_is_limiter(char *line, char *del)
 	if (!line)
 		return (1);
 	if (ft_strchr(line, '\n'))
-		tmp = ft_substr(line, 0, ft_strlen(line) - 1);
-	else
-		tmp = ft_strdup(line);
+		line[ft_strlen(line) - 1] = '\0';
 	if (!tmp)
 		return (1);
 	if (del[0] != '\0' && !ft_strcmp(tmp, del))
@@ -54,11 +52,11 @@ void	ft_write_data_to_std(char *del, int fd)
 
 static char	*create_heredoc_tempfile(void)
 {
-	static int	counter = 0;
+	static size_t	counter = 0;
 	char		*filename;
 	char		*num_str;
 
-	num_str = ft_itoa(counter++);
+	num_str = ft_itoa((int)counter++);
 	if (!num_str)
 		return (NULL);
 	filename = ft_strjoin("/tmp/heredoc_", num_str);
@@ -86,34 +84,14 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 	}
 
 	delimiter = redir->value;
-	ft_printf_fd(STDERR, "> ");  // heredoc prompt
-
-	while ((line = get_next_line(STDIN)))
-	{
-		// Remove newline from line for comparison
-		if (line[ft_strlen(line) - 1] == '\n')
-			line[ft_strlen(line) - 1] = '\0';
-
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break;
-		}
-
-		// Write line back with newline
-		ft_putstr_fd(line, temp_fd);
-		ft_putchar_fd('\n', temp_fd);
-		free(line);
-		ft_printf_fd(STDERR, "> ");
-	}
-
+	ft_write_data_to_std(delimiter, temp_fd);
 	close(temp_fd);
 
 	// Open temp file for reading
 	temp_fd = open(temp_filename, O_RDONLY);
 	if (temp_fd == -1)
 	{
-		perror("heredoc temp file");
+		ft_printf_fd(STDERR, "heredoc: cannot open temp file for reading\n");
 		unlink(temp_filename);
 		free(temp_filename);
 		return (0);

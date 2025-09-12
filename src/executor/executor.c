@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/11 19:45:59 by tracy            ###   ########.fr       */
+/*   Updated: 2025/09/12 13:27:31 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 int run_exectutor(t_minishell *mnsh)
 {
-    return (execute_script(mnsh, mnsh->script->nodes));
+    return (execute_script(mnsh, get_script(mnsh)));
 }
 
 t_ast_node *get_script(t_minishell *mnsh)
