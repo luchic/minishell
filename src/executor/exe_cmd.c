@@ -12,7 +12,9 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	if (cmd->assignments && !cmd->name)
 		return (handle_assignments(mnsh, cmd->assignments), 0);
 
-
+	// Handle redirections
+	if (!handle_redirections(cmd))
+		return (EXIT_FAILURE);
 
 	//execute based on command type
 	if (cmd->type == CMD_BUILTIN)

@@ -72,7 +72,6 @@ void	append_env_var(char ***envp, char *new_var)
 void	update_env_var(char *arg, char ***envp)
 {
 	char	*var;
-	char	**tmp;
 	int		i;
 
 	if (ft_strchr(arg, '='))
@@ -104,7 +103,6 @@ void	update_env_var(char *arg, char ***envp)
 
 int	ft_export(t_command *cmd)
 {
-	char	**args;
 	char	**envp;
 	int		i;
 
