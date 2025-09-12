@@ -26,6 +26,6 @@ void	free_subshell(t_subshell *subshell);
 void	free_str_array(char **arr);
 void	free_logical(t_logical_expression *logic);
 void	free_script(t_script *script);
-void	free_minishell(t_minishell *mnsh);
+void	free_stack_minishell(t_minishell *mnsh);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/11 18:46:55 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/12 13:57:11 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	free_logical(t_logical_expression *logic)
 	}
 }
 
-void free_variable(t_var *var)
+void	free_variable(t_var *var)
 {
 	t_var	*tmp;
 
@@ -52,7 +52,7 @@ void free_variable(t_var *var)
 	}
 }
 
-void free_script(t_script *script)
+void	free_script(t_script *script)
 {
 	if (script)
 	{
@@ -62,7 +62,7 @@ void free_script(t_script *script)
 	}
 }
 
-void	free_minishell(t_minishell *mnsh)
+void	free_stack_minishell(t_minishell *mnsh)
 {
 	if (!mnsh)
 		return ;
@@ -76,5 +76,4 @@ void	free_minishell(t_minishell *mnsh)
 	{
 		free_variable(mnsh->variables);
 	}
-	free(mnsh);
 }
