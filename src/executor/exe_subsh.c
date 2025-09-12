@@ -25,6 +25,9 @@ int	execute_subshell(t_minishell *mnsh, t_subshell *subsh)
 	{
 		signal(SIGINT, SIG_DFL);  // defult action: terminate the process
 		signal(SIGQUIT, SIG_DFL); // defult action: core dump
+        // TODO: free minishell memory in child process
+        //free_stack_minishell(mnsh); // free parent process memory
+        //rl_clear_history();
 		exit(execute_script(mnsh, subsh->script));
 	}
 	else
