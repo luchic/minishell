@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 13:27:31 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/12 13:35:08 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int    execute_script(t_minishell *mnsh, t_ast_node *script)
 int execute_node(t_minishell *mnsh, t_ast_node *node)
 {
     if (!node)
-        return (EXIT_SUCCESS);
+        return (EXIT_FAILURE);
     if (node->type == COMMAND)
     {
         return (execute_command(mnsh, node->command));
