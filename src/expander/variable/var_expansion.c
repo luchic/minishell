@@ -96,24 +96,26 @@ static char	*expand_variable_if_need(char *arg, t_minishell *mnsh)
 	return (arg);
 }
 
-void	expand_variable(t_command *cmd)
+// TODO: add returning int for error handling
+void	run_variable_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
 
 	if (!cmd || !cmd->args)
-		return ;
+		return 0;
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
 	if (!cmd->mnsh)
 	{
 		ft_log_fd(LOG_DEBUG, STDOUT,
 			"expand_variable: minishell: Internal error: mnsh is NULL\n");
-		return ;
+		return 0;
 	}
 	args = (cmd->args + 1);
 	for (i = 0; args && args[i]; i++)
 	{
 		args[i] = expand_variable_if_need(args[i], cmd->mnsh);
 	}
+	return 1;
 }
 
