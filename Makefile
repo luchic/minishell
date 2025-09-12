@@ -25,7 +25,7 @@ SRCS += $(wildcard $(PARSER)parse/*.c)
 SRCS += $(wildcard $(PARSER)utils/*.c)
 SRCS += $(wildcard $(PARSER)token_stream/*.c)
 SRCS += $(wildcard $(EXPANDER)variable/*.c)
-SRCS += $(wildcard $(EXPANDER)wildcard/*.c)
+SRCS += $(wildcard $(EXPANDER)wildcards/*.c)
 SRCS += $(SRCS_DIR)main.c
 
 OBJS = $(SRCS:.c=.o)
