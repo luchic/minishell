@@ -199,7 +199,7 @@ char	**get_matching_files(char *path, char *pattern)
 	return (matched);
 }
 
-char **expand_wildcard_recursive(char *path, char *pattern)
+char **expand_wildcard_recursive(char *path, char *pattern, int *status)
 {
 	char **expanded = NULL;
 	char **matched = NULL;
@@ -211,17 +211,27 @@ char **expand_wildcard_recursive(char *path, char *pattern)
 	// NOTE: what if '.src/*/common/tmp.h' ?
 	extracted_pattern = extract_pattern(pattern);
 	if (!extracted_pattern)
+	{
+		if (status)
+			*status = -1;
 		return (NULL);
+	}
 	matched = get_matching_files(path, extracted_pattern);
 	free(extracted_pattern);
 	if (!matched)
+	{
+		if (status)
+			*status = -1;
 		return (NULL);
-	if(path[ft_strlen(path) - 1] != '/')
+	}
+	if (path[ft_strlen(path) - 1] != '/')
 		prefix = ft_strjoin(path, "/");
 	else
 		prefix = ft_strdup(path);
 	if (!prefix)
 	{
+		if (status)
+			*status = -1;
 		free_str_array(matched);
 		return (NULL);
 	}
@@ -232,13 +242,19 @@ char **expand_wildcard_recursive(char *path, char *pattern)
 		joined = ft_strjoin(prefix, matched[i]);
 		if (!joined)
 		{
+			if (status)
+				*status = -1;
+			free(prefix);
 			free_str_array(matched);
 			return (NULL);
 		}
 		// NOTE: memory leak here possibly
 		expanded = ft_array_append(expanded, joined);
 		if (!expanded)
-		{
+		{	
+			if (status)
+				*status = -1;
+			free(prefix);
 			free_str_array(matched);
 			free(joined);
 			return (NULL);
@@ -250,17 +266,23 @@ char **expand_wildcard_recursive(char *path, char *pattern)
 	char *last_slash = get_slash_after(pattern);
 	if (!last_slash  || last_slash == pattern)
 	{
+		if (status)
+			*status = 0;
 		return (expanded);
 	}
 
 	char *new_pattern = ft_strdup(last_slash);
 	if (!new_pattern)
+	{
+		if (status)
+			*status = -1;
 		return (free_str_array(expanded), NULL);
+	}
 	i = 0;
 	char **new_expanded = NULL;
 	while (expanded	&& expanded[i])
 	{
-		char **sub_matched = expand_wildcard_recursive(expanded[i], new_pattern);
+		char **sub_matched = expand_wildcard_recursive(expanded[i], new_pattern, status);
 		if (!sub_matched)
 		{
 			i++;
@@ -272,6 +294,8 @@ char **expand_wildcard_recursive(char *path, char *pattern)
 			char **tmp = ft_array_append(new_expanded, ft_strdup(sub_matched[j]));
 			if (!tmp)
 			{
+				if (status)
+					*status = -1;
 				if (new_expanded)
 					free_str_array(new_expanded);
 				free_str_array(sub_matched);
@@ -288,57 +312,78 @@ char **expand_wildcard_recursive(char *path, char *pattern)
 
 	free(new_pattern);
 	free_str_array(expanded);
+	if (status)
+		*status = 0;
 	return (new_expanded);
 }
 
-char **tmp_fun(char *pattern)
+char **expand_wildcard_internal(char *pattern, int *status)
 {
 	char *curr_path;
+	char **matched;
+	char **tmp;
 
 	curr_path = get_current_path(pattern);
 	if (!curr_path)
+	{
+		if (status)
+			*status = -1;
 		return (NULL);
-	char **matched = expand_wildcard_recursive(curr_path, pattern);
+	}
+	matched = expand_wildcard_recursive(curr_path, pattern, status);
 	free(curr_path);
 	return (matched);
 }
 
 int expand_wildcard(char ***new_args, char *arg, t_command *cmd)
 {
+	char *matched_file;
 	char **matched;
 	char **tmp;
+	int status;
 	int i;
 
-	matched = NULL;
-	matched = tmp_fun(arg);
-	if (!matched)
+	matched = expand_wildcard_internal(arg, &status);
+	if (!matched && status == -1)
 		return (-1);
+	else if (!matched)
+	{
+		matched_file = ft_strdup(arg);
+		if (!matched_file)
+			return (-1);
+		tmp = ft_array_append(*new_args, matched_file);
+		if (!tmp)
+			return (free(matched_file), -1);
+		*new_args = tmp;
+		return (0);
+	}
 	i = 0;
 	while (matched[i])
 	{
-		tmp = ft_array_append(*new_args, ft_strdup(matched[i]));
-		if (!tmp)
+		matched_file = ft_strdup(matched[i]);
+		if (!matched_file)
 			return (free_str_array(matched), -1);
+		tmp = ft_array_append(*new_args, matched_file);
+		if (!tmp)
+			return (free_str_array(matched), free(matched_file), -1);
 		*new_args = tmp;
 		i++;
 	}
+	free_str_array(matched);
 	return (0);
 }
 
 int	expand_wildcard_if_need(char ***new_arg, char *arg, t_command *cmd)
 {
-	int		count;
 	char	*copy_arg;
 	char	**tmp;
 
 	if (ft_strchr(arg, '*'))
-	{
 		return (expand_wildcard(new_arg, arg, cmd));
-	}
 	copy_arg = ft_strdup(arg);
 	if (!copy_arg)
 		return (-1);
-	tmp = ft_array_append(*new_arg, copy_arg); // inside will be freed
+	tmp = ft_array_append(*new_arg, copy_arg);
 	if (!tmp)
 		return (free(copy_arg), -1);
 	*new_arg = tmp;
@@ -347,6 +392,12 @@ int	expand_wildcard_if_need(char ***new_arg, char *arg, t_command *cmd)
 
 int is_wildcard(char **arg)
 {
+	if (!arg)
+	{
+		ft_log_fd(LOG_DEBUG, STDERR_FILENO,
+			"expand_wildcards: Internal error: args is NULL\n");
+		return (0);
+	}
 	while (**arg)
 	{
 		if (ft_strchr(*arg, '*'))
@@ -383,28 +434,3 @@ int	run_wildcards_expander(t_command *cmd)
 	cmd->args = new_args;
 	return (0);
 }
-
-// DIR *dir;
-// struct dirent *entry;
-
-// dir = opendir("./");
-// if (!dir)
-// 	return (-1);
-// while ((entry = readdir(dir)) != NULL)
-// {
-// 	ft_printf("Found file: %s\n", entry->d_name);
-// }
-// return (0);
-// ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
-// if (!cmd->mnsh)
-// {
-// 	ft_log_fd(LOG_DEBUG, STDOUT,
-// 		"expand_variable: minishell: Internal error: mnsh is NULL\n");
-// 	return ;
-// }
-// args = (cmd->args + 1);
-// for (i = 0; args && args[i]; i++)
-// {
-// 	args[i] = expand_variable_if_need(args[i], cmd->mnsh);
-// }
-// }
