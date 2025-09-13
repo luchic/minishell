@@ -97,7 +97,7 @@ static char	*expand_variable_if_need(char *arg, t_minishell *mnsh)
 }
 
 // TODO: add returning int for error handling
-void	run_variable_expander(t_command *cmd)
+int	run_variable_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
