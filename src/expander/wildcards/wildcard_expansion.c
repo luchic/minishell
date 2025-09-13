@@ -72,8 +72,6 @@ char	*get_current_path(char *format)
 	*star = '*';
 	if (!slash)
 		return (ft_strdup("."));
-	if (!slash)
-		return (NULL);
 	current_path = ft_substr(format, 0, slash - format);
 	return (current_path);
 }
@@ -201,6 +199,22 @@ char	**get_matching_files(char *path, char *pattern)
 	return (matched);
 }
 
+char *get_file_prefix(char *path, char *pattern)
+{
+	char *prefix;
+
+	if (path[ft_strlen(path) - 1] != '/')
+		prefix = ft_strjoin(path, "/");
+	else 
+		prefix = ft_strdup(path);
+	if (ft_strcmp(prefix, "./") == 0 && ft_strncmp(pattern, "./", 2) != 0)
+	{
+		free(prefix);
+		return (ft_strdup(""));
+	}
+	return (prefix);
+}
+
 char **expand_wildcard_recursive(char *path, char *pattern, int *status)
 {
 	char **expanded = NULL;
@@ -226,10 +240,7 @@ char **expand_wildcard_recursive(char *path, char *pattern, int *status)
 			*status = -1;
 		return (NULL);
 	}
-	if (path[ft_strlen(path) - 1] != '/')
-		prefix = ft_strjoin(path, "/");
-	else
-		prefix = ft_strdup(path);
+	prefix = get_file_prefix(path, pattern);
 	if (!prefix)
 	{
 		if (status)
