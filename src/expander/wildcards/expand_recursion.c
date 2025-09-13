@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:06:49 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:08:52 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/13 21:27:45 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static int	expand_wildcard_recursive_core(char *npattern, char **expanded,
 	while (expanded && expanded[i])
 	{
 		sub_matched = expand_wildcard_recursive(expanded[i], npattern, status);
-		if (!sub_matched)
+		if (sub_matched)
 		{
 			if (ft_append_matched(NULL, sub_matched, new) == -1)
 				return (free_str_array(sub_matched), -1);
