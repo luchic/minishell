@@ -71,6 +71,8 @@ char	*get_current_path(char *format)
 	slash = ft_strrchr(format, '/');
 	*star = '*';
 	if (!slash)
+		return (ft_strdup("."));
+	if (!slash)
 		return (NULL);
 	current_path = ft_substr(format, 0, slash - format);
 	return (current_path);
@@ -326,6 +328,8 @@ char **expand_wildcard_internal(char *pattern, int *status)
 	curr_path = get_current_path(pattern);
 	if (!curr_path)
 	{
+		ft_log_fd(LOG_DEBUG, STDERR_FILENO,
+			"expand_wildcards: Internal error: failed to get current path from pattern: %s\n", pattern);
 		if (status)
 			*status = -1;
 		return (NULL);
