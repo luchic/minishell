@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:26 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:10:27 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/13 21:34:27 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ char	*get_current_path(char *format)
 	char	*slash;
 
 	star = ft_strchr(format, '*');
+	if (!star)
+		return (NULL);
 	slash = ft_strrchr(format, '/');
 	if (!slash)
 		return (ft_strdup("."));
