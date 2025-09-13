@@ -4,7 +4,58 @@
 #include "ft_printf.h"
 #include "libft.h"
 #include "parser.h"
+#include <sys/stat.h>
 #include <dirent.h>
+
+// =============================================================================
+// ============================== UTILS functions ==============================
+// =============================================================================
+
+char *get_last_slash(const char *pattern)
+{
+	char *slash;
+	char *star;
+
+	star = ft_strchr(pattern, '*');
+	if (!star)
+		return (NULL);
+	*star = '\0';
+	slash = ft_strrchr(pattern, '/');
+	*star = '*';
+	if (!slash)
+		return ((char *)pattern);
+	return (slash + 1);
+}
+
+char *extract_pattern(char *pattern)
+{
+	char *start = get_last_slash(pattern);
+	if (!start)
+		return ft_strdup(pattern);
+	char *slash = ft_strrchr(start, '/');
+	if (!slash)
+		slash = ft_strchr(start, '\0');
+	return (ft_substr(start, 0, slash - start));
+}
+
+char *get_prefix(char *pattern)
+{
+	char *slash = get_last_slash(pattern);
+	if (!slash || slash == pattern)
+		return (ft_strdup(""));
+	return (ft_substr(pattern, 0, slash - pattern));
+}
+
+int is_directory(const char *path)
+{
+
+	struct stat path_stat;
+	if (stat(path, &path_stat) != 0)
+		return (0);
+	if (S_ISDIR(path_stat.st_mode))
+		return (1);
+	return (0);
+}
 
 char	*get_current_path(char *format)
 {
@@ -18,14 +69,16 @@ char	*get_current_path(char *format)
 		return (ft_strdup("."));
 	*star = '\0';
 	slash = ft_strrchr(format, '/');
+	*star = '*';
 	if (!slash)
 		return (NULL);
-	*star = '*';
 	current_path = ft_substr(format, 0, slash - format);
 	return (current_path);
 }
 
-char *get_last_slash(const char *pattern)
+
+
+char *get_slash_after(const char *pattern)
 {
 	char *slash;
 	char *star;
@@ -33,52 +86,53 @@ char *get_last_slash(const char *pattern)
 	star = ft_strchr(pattern, '*');
 	if (!star)
 		return (NULL);
-	*star = '\0';
-	slash = ft_strrchr(pattern, '/');
+	slash = ft_strrchr(star, '/');
 	if (!slash)
-		return (pattern);
-	*star = '*';
+		return ((char *)pattern);
 	return (slash + 1);
 }
 
-int ft_fnmatch(const char *pattern, const char *string)
+int ft_fnmatch(char *pattern, const char *filename)
 {
-	char *start;
-	char *star;
-	start = get_last_slash(pattern);
-	if (!start)
-		return (0);
-	star = ft_strchr(start, '*');
-	if (!star)
-		return (0);
-	int matched = ft_strncmp(start, string, star - start);
-	while (*start && *start !=  '*')
+	if (*pattern == '\0')
+		return (*filename == '\0');
+
+	if (*pattern == '*')
 	{
-		if (*start != *string)
-			return (0);
-		start++;
-		string++;
+		while (*pattern == '*')
+			pattern++;
+		if (*pattern == '\0')
+			return (1);
+
+		while (*filename)
+		{
+			if (ft_fnmatch(pattern, filename))
+				return (1);
+			filename++;
+		}
 	}
-	if (*start == '*')
-		start++;
-	return (1);
+	if (*pattern == *filename)
+		return (ft_fnmatch(pattern + 1, filename + 1));
+	return (0);
 }
+
+// =============================================================================
+// =============================== CORE Expander ===============================
+// =============================================================================
 
 /// @brief
 /// NOTE: don't support hidden files now
-char **get_current_files(char *pattern)
+char **get_current_files(char *path)
 {
 	DIR *dir;
 	struct dirent *entry;
-	char **files;
+	char **files = NULL;
 	char **tmp;
 	char *cur_file;
-	char *cur_path;
 
-	cur_path = get_current_path(pattern);
-	if (!cur_path)
+	if (!is_directory(path))
 		return (NULL);
-	dir = opendir(cur_path);
+	dir = opendir(path);
 	if (!dir)
 		return (NULL);
 	while ((entry = readdir(dir)) != NULL)
@@ -106,18 +160,20 @@ char **get_current_files(char *pattern)
 	return (files);
 }
 
-char	**get_matching_files(char *pattern)
+
+
+char	**get_matching_files(char *path, char *pattern)
 {
 	char **matched = NULL;
 	char **tmp;
 	char **files;
-	int i;
 	char *cur_file;
+	int i;
 
-	files = get_current_files(pattern);
+	i = 0;
+	files = get_current_files(path);
 	if (!files)
 		return (NULL);
-	i = 0;
 	while (files[i])
 	{
 		if (ft_fnmatch(pattern, files[i]))
@@ -137,29 +193,114 @@ char	**get_matching_files(char *pattern)
 			}
 			matched = tmp;
 		}
+		i++;
 	}
 	free_str_array(files);
 	return (matched);
 }
 
-char **expand_wildcard_recursive(char **matched, char *pattern)
+char **expand_wildcard_recursive(char *path, char *pattern)
 {
-	char **expanded;
+	char **expanded = NULL;
+	char **matched = NULL;
+	char *joined;
+	char *prefix;
+	char *extracted_pattern;
 	int i;
 
-	expanded = get_matching_files(pattern);
-	// while (matched && matched[i])
-	// {
-	// 	expanded = ft_array_append(expanded, ft_strdup(matched[i]));
-	// 	if (!expanded)
-	// 	{
-	// 		free_str_array(matched);
-	// 		return (NULL);
-	// 	}
-	// 	i++;
-	// }
-	// free_str_array(matched);
-	return (expanded);
+	// NOTE: what if '.src/*/common/tmp.h' ?
+	extracted_pattern = extract_pattern(pattern);
+	if (!extracted_pattern)
+		return (NULL);
+	matched = get_matching_files(path, extracted_pattern);
+	free(extracted_pattern);
+	if (!matched)
+		return (NULL);
+	if(path[ft_strlen(path) - 1] != '/')
+		prefix = ft_strjoin(path, "/");
+	else
+		prefix = ft_strdup(path);
+	if (!prefix)
+	{
+		free_str_array(matched);
+		return (NULL);
+	}
+	i = 0;
+	while (matched && matched[i])
+	{
+
+		joined = ft_strjoin(prefix, matched[i]);
+		if (!joined)
+		{
+			free_str_array(matched);
+			return (NULL);
+		}
+		// NOTE: memory leak here possibly
+		expanded = ft_array_append(expanded, joined);
+		if (!expanded)
+		{
+			free_str_array(matched);
+			free(joined);
+			return (NULL);
+		}
+		i++;
+	}
+	free(prefix);
+	free_str_array(matched);
+	char *last_slash = get_slash_after(pattern);
+	if (!last_slash  || last_slash == pattern)
+	{
+		return (expanded);
+	}
+
+	char *new_pattern = ft_strdup(last_slash);
+	if (!new_pattern)
+		return (free_str_array(expanded), NULL);
+	i = 0;
+	char **new_expanded = NULL;
+	while (expanded	&& expanded[i])
+	{
+		char **sub_matched = expand_wildcard_recursive(expanded[i], new_pattern);
+		if (!sub_matched)
+		{
+			i++;
+			continue;
+		}
+		int j = 0;
+		while (sub_matched[j])
+		{
+			char **tmp = ft_array_append(new_expanded, ft_strdup(sub_matched[j]));
+			if (!tmp)
+			{
+				if (new_expanded)
+					free_str_array(new_expanded);
+				free_str_array(sub_matched);
+				free(new_pattern);
+				free_str_array(expanded);
+				return (NULL);
+			}
+			new_expanded = tmp;
+			j++;
+		}
+		free_str_array(sub_matched);
+		i++;
+	}	
+
+	free(new_pattern);
+	free_str_array(expanded);
+	return (new_expanded);
+}
+
+char **tmp_fun(char *pattern)
+{
+	char *curr_path;
+
+	curr_path = get_current_path(pattern);
+	if (!curr_path)
+		return (NULL);
+	char **matched = expand_wildcard_recursive(curr_path, pattern);
+	free(curr_path);
+	return (matched);
 }
 
 int expand_wildcard(char ***new_args, char *arg, t_command *cmd)
@@ -169,7 +310,7 @@ int expand_wildcard(char ***new_args, char *arg, t_command *cmd)
 	int i;
 
 	matched = NULL;
-	matched = expand_wildcard_recursive(matched, arg);
+	matched = tmp_fun(arg);
 	if (!matched)
 		return (-1);
 	i = 0;
