@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:13:41 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/13 21:25:38 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ int	run_variable_expander(t_command *cmd)
 		return (0);
 	}
 	args = (cmd->args + 1);
+	i = 0;
 	while (args && args[i])
 	{
 		args[i] = expand_variable_if_need(args[i], cmd->mnsh);
