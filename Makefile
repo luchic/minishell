@@ -19,6 +19,7 @@ SRCS += $(wildcard $(EXEC)cmd_assignments/*.c)
 SRCS += $(wildcard $(EXEC)cmd_built_in/*.c)
 SRCS += $(wildcard $(EXEC)cmd_external/*.c)
 SRCS += $(wildcard $(EXEC)/pipe_utils/*.c)
+SRCS += $(wildcard $(EXEC)redirections/*.c)
 SRCS += $(wildcard $(LEXER)*.c)
 SRCS += $(wildcard $(PARSER)*.c)
 SRCS += $(wildcard $(PARSER)parse/*.c)
@@ -37,7 +38,7 @@ FT = ft
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -Iincludes
-DFLAGS = -Iincludes -g -D DEBUG_LEVEL=0 #-fsanitize=address
+DFLAGS = -Iincludes -g -D DEBUG_LEVEL=0 -fsanitize=address
 
 all : $(NAME)
 
