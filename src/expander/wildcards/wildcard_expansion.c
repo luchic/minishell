@@ -1,5 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard_expansion.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/13 21:15:44 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "expander.h"
 #include "expander_internal.h"
 #include "ft_defines.h"
 #include "ft_printf.h"
@@ -8,9 +18,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-// =============================================================================
-// =============================== CORE Expander ===============================
-// =============================================================================
+#define ERR
 
 char	**expand_wildcard_internal(char *pattern, int *status)
 {
@@ -21,9 +29,9 @@ char	**expand_wildcard_internal(char *pattern, int *status)
 	curr_path = get_current_path(pattern);
 	if (!curr_path)
 	{
-		ft_log_fd(LOG_DEBUG, STDERR_FILENO,
-			"expand_wildcards: Internal error: failed to \
-			get current path from pattern: %s\n", pattern);
+		ft_log_fd(LOG_DEBUG, STDERR,
+			"expand_wildcards: Internal error: %s: %s\n",
+			"failed to get current path from pattern", pattern);
 		if (status)
 			*status = -1;
 		return (NULL);

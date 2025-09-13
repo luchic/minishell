@@ -1,5 +1,17 @@
-#include "ft_printf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wld_utils1.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/13 21:10:30 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/13 21:10:49 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_defines.h"
+#include "ft_printf.h"
 #include "libft.h"
 #include <dirent.h>
 #include <sys/stat.h>

@@ -6,12 +6,12 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:11:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 19:26:40 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/13 21:16:56 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_common.h"
 #include "expander_internal.h"
+#include "ft_common.h"
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -47,7 +47,8 @@ static char	**get_current_files(char *path)
 	dir = opendir(path);
 	if (!dir)
 		return (NULL);
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry != NULL)
 	{
 		if (ft_strncmp(entry->d_name, ".", 1) == 0)
 			continue ;
@@ -57,6 +58,7 @@ static char	**get_current_files(char *path)
 			free_str_array(files);
 			return (NULL);
 		}
+		entry = readdir(dir);
 	}
 	closedir(dir);
 	return (files);
