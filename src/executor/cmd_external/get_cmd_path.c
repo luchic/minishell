@@ -4,7 +4,7 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-char	*get_cmd_path(char *cmd_name, char **envp, char **cmd_path)
+void	get_cmd_path(char *cmd_name, char **envp, char **cmd_path)
 {
 	char	**paths;
 	char	*tmp;

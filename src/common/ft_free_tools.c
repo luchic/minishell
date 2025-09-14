@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 22:08:50 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/14 13:32:52 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,16 @@ void	free_str_array(char **arr)
 	free(arr);
 }
 
-void ft_free_redir(void *redirection)
+void ft_free_redir(void *redir)
 {
-	t_redirection	*redir;
+	t_redirection *r;
 
-	redir = (t_redirection *)redirection;	
-	if (!redir)
+	r = (t_redirection *)redir;
+	if (!r)
 		return ;
-	if (redir->value)
-		free(redir->value);
-	free(redir);
+	if (r->value)
+		free(r->value);
+	free(r);
 }
 
 

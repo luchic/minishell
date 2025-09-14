@@ -6,13 +6,32 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:30:13 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:30:05 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:17:21 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "lexer.h"
 #include "parser.h"
+
+int	is_built_in(char *cmd_name)
+{
+	if (ft_strcmp(cmd_name, "echo") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd_name, "exit") == 0)
+		return (1);
+	return (0);
+}
 
 static int	set_command_args(t_command *cmd, t_tokenstream *ts)
 {
@@ -74,5 +93,7 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts)
 	ast_node = create_ast_node(COMMAND);
 	if (!ast_node)
 		return (free_cmd(command), NULL);
+	if (is_built_in(command->name))
+		command->type = CMD_BUILTIN;
 	return (ast_node->command = command, ast_node);
 }

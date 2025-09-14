@@ -22,6 +22,19 @@ int	run_external(t_command *cmd)
 	int		current;
 	int		exit_code = 0;
 
+	is_path_malloced = 0;
+	if (ft_strchr((cmd->args)[0], '/'))
+		path = (cmd->args)[0];
+	else
+	{
+		get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
+		if (!path)
+		{
+			ft_log_fd("minishell: %s: command not found\n", cmd->name, STDERR);
+			return (127);
+		}
+		is_path_malloced = 1;
+	}
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"),EXIT_FAILURE);
@@ -49,14 +62,6 @@ int	run_external(t_command *cmd)
 			}
 			close(cmd->fd_out);
 		}
-		is_path_malloced = 0;
-		if (ft_strchr((cmd->args)[0], '/'))
-			path = (cmd->args)[0];
-		else
-		{
-			get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
-			is_path_malloced = 1;
-		}
 		execve(path, cmd->args, cmd->mnsh->envp);
 		perror("execve");
 		if (is_path_malloced)
@@ -66,18 +71,17 @@ int	run_external(t_command *cmd)
 	else
 	{
 		// Parent process
-		if (cmd->mnsh->is_background) // background process
+		if (is_path_malloced)
+			free(path);
+		if (cmd->mnsh->is_background)
 			return (EXIT_SUCCESS);
-		if (cmd->fd_in != STDIN) //should put: && cmd->fd_in != -1?
+		if (cmd->fd_in != STDIN)
 			close(cmd->fd_in);
 		if (cmd->fd_out != STDOUT)
 			close(cmd->fd_out);
 		current = waitpid(pid, &status, 0);
 		if (current == -1)
-		{
-			perror("waitpid");
-			return (EXIT_FAILURE);
-		}
+			return (perror("waitpid"), EXIT_FAILURE);
 		if (WIFEXITED(status))
 			exit_code = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))

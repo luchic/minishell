@@ -59,7 +59,7 @@ void				append_env_var(char ***envp, char *new_var);
 // ======================== cmd_external ========================
 int					run_external(t_command *cmd);
 
-char				*get_cmd_path(char *cmd_name, char **envp, char **cmd_path);
+void				get_cmd_path(char *cmd_name, char **envp, char **cmd_path);
 
 // ======================== redirections ========================
 int					handle_redirections(t_command *cmd);
