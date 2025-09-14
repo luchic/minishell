@@ -1,9 +1,9 @@
 
 #include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
-#include "ft_printf.h"
 #include "ft_executor.h"
+#include "ft_printf.h"
+#include "libft.h"
+#include "minishell.h"
 
 void	cmd_false_exit(void)
 {
@@ -20,8 +20,9 @@ int	run_external(t_command *cmd)
 	char	*path;
 	int		is_path_malloced;
 	int		current;
-	int		exit_code = 0;
+	int		exit_code;
 
+	exit_code = 0;
 	is_path_malloced = 0;
 	if (ft_strchr((cmd->args)[0], '/'))
 		path = (cmd->args)[0];
@@ -30,18 +31,19 @@ int	run_external(t_command *cmd)
 		get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
 		if (!path)
 		{
-			ft_log_fd("minishell: %s: command not found\n", cmd->name, STDERR);
+			ft_log_fd(LOG_ERROR, STDERR, "minishell: %s: command not found\n",
+				cmd->name);
 			return (127);
 		}
 		is_path_malloced = 1;
 	}
 	pid = fork();
 	if (pid < 0)
-		return (perror("fork"),EXIT_FAILURE);
+		return (perror("fork"), EXIT_FAILURE);
 	else if (pid == 0)
 	{
 		// Child process
-		signal(SIGINT, SIG_DFL); // Ctrl+C
+		signal(SIGINT, SIG_DFL);  // Ctrl+C
 		signal(SIGQUIT, SIG_DFL); // core dump
 		handle_assignments(cmd->mnsh, cmd->assignments);
 		if (cmd->fd_in != STDIN)

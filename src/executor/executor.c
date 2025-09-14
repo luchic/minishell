@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 13:35:08 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/14 16:56:30 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-int run_exectutor(t_minishell *mnsh)
+int run_executor(t_minishell *mnsh)
 {
     return (execute_script(mnsh, get_script(mnsh)));
 }

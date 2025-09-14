@@ -11,6 +11,7 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	int pipe_fds[2];
 	pid_t *pids;
 	int i;
+	int result;
 
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
@@ -38,9 +39,8 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 
 		i++;
 	}
-	int result = finish_execution(pids, pipeline->count);
+	result = finish_execution(pids, pipeline->count);
 	free(pids);
 	return (result);
 }
-
 

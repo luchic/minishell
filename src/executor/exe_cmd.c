@@ -15,6 +15,25 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	// Handle redirections
 	if (!handle_redirections(cmd))
 		return (EXIT_FAILURE);
+	
+	// handle fd_in and fd_out for pipeline
+	if (cmd->fd_in != STDIN && cmd->fd_in != -1)
+	{
+		if (dup2(cmd->fd_in, STDIN) == -1)
+		{
+			return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), EXIT_FAILURE);
+		}
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT && cmd->fd_out != -1)
+	{
+		if (dup2(cmd->fd_out, STDOUT) == -1)
+		{
+			return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), EXIT_FAILURE);
+		}
+		close(cmd->fd_out);
+	}
+
 
 	//execute based on command type
 	if (cmd->type == CMD_BUILTIN)
