@@ -15,6 +15,7 @@ char	**ft_strdup_array(char **array);
 int		count_args(char **args);
 
 // ======================== signal handling ========================
+void	signal_check(void);
 void	init_signal_handler(void);
 void	handle_signal(int signum);
 

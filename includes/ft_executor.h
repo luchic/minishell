@@ -9,11 +9,12 @@
 #include "ft_common.h"
 
 // ======================== executor ========================
-int 				run_exectutor(t_minishell *mnsh);
+int 				run_executor(t_minishell *mnsh);
 int					execute_script(t_minishell *mnsh, t_ast_node *script);
 int					execute_node(t_minishell *mnsh, t_ast_node *node);
 
 int					execute_command(t_minishell *mnsh, t_command *cmd);
+int					execute_command_pipeline(t_minishell *mnsh, t_command *cmd);
 int					execute_logical(t_minishell *mnsh, t_logical_expression *logic);
 int					execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
 int					execute_subshell(t_minishell *mnsh, t_subshell *subsh);
@@ -58,7 +59,7 @@ void				append_env_var(char ***envp, char *new_var);
 
 // ======================== cmd_external ========================
 int					run_external(t_command *cmd);
-
+int					run_external_no_fork(t_command *cmd);
 void				get_cmd_path(char *cmd_name, char **envp, char **cmd_path);
 
 // ======================== redirections ========================

@@ -32,7 +32,7 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 		}
 		if (i < pipeline->count - 1)
 			close_pipes(pipe_fds);
-		execute_command(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
+		execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
 		exit(EXIT_FAILURE);
 	}
 	else
