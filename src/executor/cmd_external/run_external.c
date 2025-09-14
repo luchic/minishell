@@ -36,11 +36,10 @@ int	run_external_no_fork(t_command *cmd)
 	handle_assignments(cmd->mnsh, cmd->assignments);
 	execve(path, cmd->args, cmd->mnsh->envp);
 	perror("execve");
-	if (is_path_malloced)
+	if (is_path_malloced && path)
 		free(path);
 	return (cmd_false_exit(), EXIT_FAILURE);
 }
-
 
 
 int	run_external(t_command *cmd)
