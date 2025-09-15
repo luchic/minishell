@@ -5,8 +5,9 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	cmd_false_exit(void)
+void	cmd_false_exit(t_minishell *mnsh)
 {
+	free_stack_minishell(mnsh);
 	if (errno == ENOENT)
 		exit(127);
 	else
@@ -26,19 +27,26 @@ int	run_external_no_fork(t_command *cmd)
 		get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
 		if (!path)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "minishell: %s: command not found\n",
+			ft_log_fd(LOG_ERROR, STDERR, "%s: command not found\n",
 				cmd->name);
 			return (127);
 		}
 		is_path_malloced = 1;
 	}
+	if (access(path, X_OK) != 0)
+	{
+		ft_log_fd(LOG_ERROR, STDERR, "%s: Permission denied\n",
+			path);
+		return (127);
+	}
 	signal_check();
 	handle_assignments(cmd->mnsh, cmd->assignments);
 	execve(path, cmd->args, cmd->mnsh->envp);
-	perror("execve");
+	ft_log_fd(LOG_ERROR, STDERR, "minishell: %s: %s\n",
+		path, strerror(errno));
 	if (is_path_malloced && path)
 		free(path);
-	return (cmd_false_exit(), EXIT_FAILURE);
+	return (cmd_false_exit(cmd->mnsh), EXIT_FAILURE);
 }
 
 
@@ -46,7 +54,6 @@ int	run_external(t_command *cmd)
 {
 	pid_t	pid;
 	int		status;
-	char	*path;
 	int		current;
 	int		exit_code;
 

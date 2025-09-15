@@ -48,7 +48,7 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
     else if (cmd->type == CMD_EXTERNAL)
 		return (run_external_no_fork(cmd));
     else
-        ft_printf_fd(STDERR, ": command not found: %s\n", cmd->name);
+        ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
     return (0);
 }
 
@@ -65,24 +65,13 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	if (!handle_redirections(cmd))
 		return (EXIT_FAILURE);
 	
-	//handle fd_in and fd_out for pipeline
-	if (cmd->fd_in != STDIN && cmd->fd_in != -1)
-	{
-		if (dup2(cmd->fd_in, STDIN) == -1)
-		{
-			return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), EXIT_FAILURE);
-		}
-		close(cmd->fd_in);
-	}
-	if (cmd->fd_out != STDOUT && cmd->fd_out != -1)
-	{
-		if (dup2(cmd->fd_out, STDOUT) == -1)
-		{
-			return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), EXIT_FAILURE);
-		}
-		close(cmd->fd_out);
-	}
+	
 
+	//handle fd_in and fd_out for pipeline
+	if (cmd->fd_in != -1)
+		cmd->fd_in = STDIN;
+	if (cmd->fd_out != -1)
+		cmd->fd_out = STDOUT;
 
 	//execute based on command type
 	if (cmd->type == CMD_BUILTIN)
@@ -99,6 +88,6 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
     else if (cmd->type == CMD_EXTERNAL)
 		return (run_external(cmd));
     else
-        ft_printf_fd(STDERR, ": command not found: %s\n", cmd->name);
+        ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
     return (0);
 }

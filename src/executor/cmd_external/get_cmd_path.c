@@ -25,7 +25,7 @@ void	get_cmd_path(char *cmd_name, char **envp, char **cmd_path)
 		if (!*cmd_path)
 			return (free(tmp), free_str_array(paths));
 		free(tmp);
-		if (access(*cmd_path, X_OK) == 0)
+		if (access(*cmd_path, F_OK) == 0)
 			return (free_str_array(paths)); // pass the malloced path
 		free(*cmd_path);
 	}
