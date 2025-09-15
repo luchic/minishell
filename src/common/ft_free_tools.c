@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:29:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 15:40:18 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/13 15:47:12 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/13 15:47:17 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void	free_str_array(char **arr)
 	free(arr);
 }
 
-void ft_free_redir(void *redir)
+void	ft_free_redir(void *redir)
 {
-	t_redirection *r;
+	t_redirection	*r;
 
 	r = (t_redirection *)redir;
 	if (!r)

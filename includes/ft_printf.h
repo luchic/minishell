@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:43:25 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 11:26:42 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/13 19:23:35 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ typedef enum e_log_level
 	LOG_INFO = 1,
 	LOG_WARNING = 2,
 	LOG_ERROR = 3,
-	LOG_CRITICAL = 4
+	LOG_CRITICAL = 4,
+	NO_LOG = 5
 }	t_log_level;
 
 # ifndef DEFLOG_LEVEL
-#  define DEFLOG_LEVEL LOG_ERROR
+#  define DEFLOG_LEVEL NO_LOG
 # endif
 
 /**

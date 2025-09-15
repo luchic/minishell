@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 17:46:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/11 19:37:36 by tracy            ###   ########.fr       */
+/*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/12 21:38:50 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LEXER_H
-# define FT_LEXER_H
+#ifndef LEXER_H
+# define LEXER_H
 
 # include "libft.h"
 

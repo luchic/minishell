@@ -6,7 +6,7 @@
 #    By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/07 13:35:53 by nluchini          #+#    #+#              #
-#    Updated: 2025/09/12 11:31:49 by nluchini         ###   ########.fr        #
+#    Updated: 2025/09/13 19:23:44 by nluchini         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -138,7 +138,9 @@ GNL_OBJ = $(GNL_SRC:.c=.o)
 HEADER = includes
 
 # Compiler and flags
-CFLAGS = -Wall -Wextra -Werror -I$(HEADER) 
+CFLAGS = -Wall -Wextra -Werror -I$(HEADER)
+DFLAGS = -I$(HEADER) -g -D DEFLOG_LEVEL=0
+
 CC = cc
 
 all : $(NAME)
@@ -147,10 +149,10 @@ $(NAME) : $(CORE_OBJ_FIlES) $(OBJ_PRINTF) $(GNL_OBJ)
 	ar rcs $(NAME) $(CORE_OBJ_FIlES) $(OBJ_PRINTF) $(GNL_OBJ)
 
 debug:
-	$(MAKE) CFLAGS="$(CFLAGS) -g -D DEFLOG_LEVEL=0" $(NAME)
+	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
 
 debug-re:
-	$(MAKE) CFLAGS="$(CFLAGS) -g -D DEFLOG_LEVEL=0" re
+	$(MAKE) CFLAGS="$(DFLAGS)" re
 
 %.o : %.c
 	$(CC) $(CFLAGS) -I $(HEADER) -o $@ -c $<

@@ -9,6 +9,7 @@ COMMON = $(SRCS_DIR)common/
 EXEC = $(SRCS_DIR)executor/
 LEXER = $(SRCS_DIR)lexer/
 PARSER = $(SRCS_DIR)parser/
+EXPANDER = $(SRCS_DIR)expander/
 
 
 # Source files
@@ -18,11 +19,14 @@ SRCS += $(wildcard $(EXEC)cmd_assignments/*.c)
 SRCS += $(wildcard $(EXEC)cmd_built_in/*.c)
 SRCS += $(wildcard $(EXEC)cmd_external/*.c)
 SRCS += $(wildcard $(EXEC)/pipe_utils/*.c)
+SRCS += $(wildcard $(EXEC)redirections/*.c)
 SRCS += $(wildcard $(LEXER)*.c)
 SRCS += $(wildcard $(PARSER)*.c)
 SRCS += $(wildcard $(PARSER)parse/*.c)
 SRCS += $(wildcard $(PARSER)utils/*.c)
 SRCS += $(wildcard $(PARSER)token_stream/*.c)
+SRCS += $(wildcard $(EXPANDER)variable/*.c)
+SRCS += $(wildcard $(EXPANDER)wildcards/*.c)
 SRCS += $(SRCS_DIR)main.c
 
 OBJS = $(SRCS:.c=.o)
@@ -43,7 +47,11 @@ bonus : $(NAME)
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -l$(FT) -o $(NAME) -lreadline
 
-debug: 
+debug:
+	$(MAKE) -C $(LIBFT_PATH) debug
+	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
+
+debug-re: 
 	$(MAKE) -C $(LIBFT_PATH) debug-re
 	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
 
