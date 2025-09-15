@@ -57,26 +57,25 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	char	**original_env;
 	int		status;
 
-	// assignemnts without command
 	if (cmd->assignments && !cmd->name)
 		return (handle_assignments(mnsh, cmd->assignments), 0);
 
-	// Handle redirections
 	if (!handle_redirections(cmd))
 		return (EXIT_FAILURE);
-	
-	
 
-	//handle fd_in and fd_out for pipeline
-	if (cmd->fd_in != -1)
+	if (cmd->fd_in == -1)
 		cmd->fd_in = STDIN;
-	if (cmd->fd_out != -1)
+	if (cmd->fd_out == -1)
 		cmd->fd_out = STDOUT;
 
-	//execute based on command type
+	// ft_printf_fd(STDOUT, "Command fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "Command name: %s\n", cmd->name); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "Command type: %d\n", cmd->type);
+
 	if (cmd->type == CMD_BUILTIN)
     {
-        original_env = handle_assignments(mnsh, cmd->assignments);
+		// ft_printf_fd(STDOUT, "Running built-in command: %s\n", cmd->name); ///to delete --- IGNORE ---
+		original_env = handle_assignments(mnsh, cmd->assignments);
 		status = run_builtin(cmd);
 		if (original_env)
 		{
@@ -86,8 +85,11 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		return (status);
     }
     else if (cmd->type == CMD_EXTERNAL)
-		return (run_external(cmd));
-    else
-        ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
+		return (/* ft_printf_fd(STDOUT, "Running external command: %s\n", cmd->name),  */run_external(cmd));
+    // else
+	// {
+    //     ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
+	// 	exit(127);
+	// }
     return (0);
 }

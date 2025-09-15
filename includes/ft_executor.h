@@ -10,6 +10,7 @@
 
 // ======================== executor ========================
 int 				run_executor(t_minishell *mnsh);
+t_ast_node          *get_script(t_minishell *mnsh);
 int					execute_script(t_minishell *mnsh, t_ast_node *script);
 int					execute_node(t_minishell *mnsh, t_ast_node *node);
 
@@ -60,7 +61,7 @@ void				append_env_var(char ***envp, char *new_var);
 // ======================== cmd_external ========================
 int					run_external(t_command *cmd);
 int					run_external_no_fork(t_command *cmd);
-void				get_cmd_path(char *cmd_name, char **envp, char **cmd_path);
+char	            *get_cmd_path(char *cmd_name, char **envp);
 
 // ======================== redirections ========================
 int					handle_redirections(t_command *cmd);

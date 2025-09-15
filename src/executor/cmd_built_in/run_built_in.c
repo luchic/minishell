@@ -34,7 +34,7 @@ int run_builtin(t_command *cmd)
 	{
 		if (dup2(cmd->fd_in, STDIN) == -1)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n");
+			ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_in\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_in);
@@ -42,7 +42,7 @@ int run_builtin(t_command *cmd)
 	if (cmd->fd_out != STDOUT)
 	{
 		if (dup2(cmd->fd_out, STDOUT) == -1)
-			return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
+			return (ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_out\n"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
 		close(cmd->fd_out);
 	}
 	//execute built-in
