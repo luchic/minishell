@@ -7,7 +7,8 @@
 
 void	cmd_false_exit(t_minishell *mnsh)
 {
-	free_stack_minishell(mnsh);
+	if (mnsh)
+		free_stack_minishell(mnsh);
 	if (errno == ENOENT)
 		exit(127);
 	else
@@ -20,33 +21,37 @@ int	run_external_no_fork(t_command *cmd)
 	int		is_path_malloced;
 
 	is_path_malloced = 0;
+	path = NULL;
 	if (ft_strchr((cmd->args)[0], '/'))
 		path = (cmd->args)[0];
 	else
 	{
-		get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
+		path = get_cmd_path(cmd->name, cmd->mnsh->envp);
+		ft_printf_fd(STDERR, "Resolved path: %s\n", path);
 		if (!path)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s: command not found\n",
+			ft_printf_fd(STDERR, "%s: command not found\n",
 				cmd->name);
-			return (127);
+			free(path);
+			exit (127);
 		}
 		is_path_malloced = 1;
 	}
-	if (access(path, X_OK) != 0)
+	if (access(path, X_OK) != 0) // no need to check. if failed, will go to ft_log fd
 	{
-		ft_log_fd(LOG_ERROR, STDERR, "%s: Permission denied\n",
-			path);
-		return (127);
+		ft_printf_fd(STDERR, "%s: Permission denied\n",
+			cmd->name);
+		free(path);
+		exit (126);
 	}
 	signal_check();
 	handle_assignments(cmd->mnsh, cmd->assignments);
 	execve(path, cmd->args, cmd->mnsh->envp);
-	ft_log_fd(LOG_ERROR, STDERR, "minishell: %s: %s\n",
-		path, strerror(errno));
+	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",
+		cmd->name);
 	if (is_path_malloced && path)
 		free(path);
-	return (cmd_false_exit(cmd->mnsh), EXIT_FAILURE);
+	exit (/* cmd_false_exit(cmd->mnsh),  */EXIT_FAILURE);
 }
 
 
