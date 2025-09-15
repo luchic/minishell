@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 13:49:24 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/15 20:01:53 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:33:47 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	is_special_char(char c)
 {
 	return ((c == '|' || c == '&' || c == '<' || c == '>' || c == '('
 			|| c == ')' || c == ';' || c == '\'' || c == '\"' /* || c == '$'*/
-			|| c == '?' /* || c == '=' */));
+			|| c == '?' || c == '=' ));
 }
 
 int	is_double_quote(char c, int *escaped)
@@ -69,6 +69,9 @@ void	*add_new_token(t_list **head, char *value, t_quote_status quote,
 		token->no_space_before = 1;
 	token->quote_status = quote;
 	token->value = value;
+	token->type = get_token_type(value);
+	if (quote == SINGLE_QUOTED || quote == DOUBLE_QUOTED)
+		token->type = WORD;
 	new_node = ft_lstnew(token);
 	if (!new_node)
 		return (NULL);
