@@ -1,44 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_assignment.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/15 20:59:08 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/15 21:04:22 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_defines.h"
 #include "lexer.h"
 #include <stdlib.h>
 
-// TODO: Where I should handle variables assigments like ARG=value
-
-static t_token	*get_next_token(char *str_token)
-{
-	t_token	*token;
-
-	token = ft_calloc(1, sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->value = ft_strdup(str_token);
-	token->type = get_token_type(str_token);
-	return (token);
-}
-
-t_list	*token_assigment(const char *input)
+int	token_assignment(t_list **token, const char *input)
 {
 	t_list	*head;
-	t_list	*new_node;
-	t_list	*splits;
-	t_list	*splits_copy;
-	t_token	*token;
+	int		exit_code;
 
 	head = NULL;
-	splits = ft_split_tokens(input);
-	splits_copy = splits;
-	while (splits)
+	exit_code = ft_split_tokens(&head, input);
+	if (exit_code == FAIL)
+		return (FAIL);
+	else if (exit_code == SYNTAX_ERROR)
 	{
-		token = get_next_token((char *)splits->content);
-		if (!token)
-			return (ft_lstclear(&splits, free), ft_lstclear(&head, free_tokens),
-				NULL);
-		new_node = ft_lstnew(token);
-		if (!new_node)
-			return (free_tokens(token), ft_lstclear(&splits, free),
-				ft_lstclear(&head, free_tokens), NULL);
-		ft_lstadd_back(&head, new_node);
-		splits = splits->next;
+		ft_lstclear(&head, free_tokens);
+		return (SYNTAX_ERROR);
 	}
-	ft_lstclear(&splits_copy, free);
-	return (head);
+	*token = head;
+	return (0);
 }

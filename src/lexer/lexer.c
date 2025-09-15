@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:46 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/09 12:19:17 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:04:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,24 @@
 #include "ft_printf.h"
 #include "lexer.h"
 
-t_list	*run_lexer(const char *input)
+int	run_lexer(t_list **tokens, const char *input)
 {
-	t_list	*tokens;
-	t_list	*merged;
+	t_list	*head;
+	int		exit_code;
 
-	if (!validate_parantheses(input))
-		return (ft_printf_fd(STDERR, "minishell: Unmatched parentheses\n"),
-			NULL);
-	tokens = token_assigment(input);
-	if (!tokens)
-		return (ft_printf_fd(STDERR,
-				"minishell: Lexer error (token assignment)\n"), NULL);
-	merged = merge_word_token(tokens, input);
-	if (!merged)
-		return (ft_printf_fd(STDERR, "minishell: Lexer error (merge)\n"), NULL);
-	ft_lstclear(&tokens, free_tokens);
-	return (merged);
+	head = NULL;
+	ft_log_fd(LOG_INFO, STDERR, "Run lexer\n");
+	if (validate_parantheses(input) == SYNTAX_ERROR)
+	{
+		return (SYNTAX_ERROR);
+	}
+	exit_code = token_assignment(&head, input);
+	if (exit_code == FAIL)
+		return (ft_log_fd(LOG_ERROR, STDERR,
+				"minishell: Lexer error (token assignment)\n"), FAIL);
+	else if (exit_code == SYNTAX_ERROR)
+		return (ft_printf("%s: %s: quote\n", PREFIX, UNEXPECTED_TOKEN),
+			SYNTAX_ERROR);
+	*tokens = head;
+	return (0);
 }

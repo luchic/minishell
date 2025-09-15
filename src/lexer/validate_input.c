@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate_input.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/15 20:59:17 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/15 20:59:28 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_defines.h"
 #include "ft_printf.h"
 
@@ -67,5 +79,5 @@ static int	is_valid(const char *str)
 
 int	validate_parantheses(const char *input)
 {
-	return (is_valid(input) == 0);
+	return (is_valid(input));
 }
