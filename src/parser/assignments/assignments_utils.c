@@ -6,11 +6,12 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 17:56:08 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:50:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "ft_common.h"
 #include <stdlib.h>
 
 static int is_variable_name(char *name)
@@ -63,23 +64,6 @@ static int	get_assignment_if_exist(t_command *cmd, t_tokenstream *ts)
 	if (!clone)
 		return (-1);
 	return (1);
-}
-
-static int	ft_append_str(char **dest, const char *src)
-{
-	char	*new_str;
-
-	if (!dest || !src)
-		return (-1);
-	if (!*dest)
-		new_str = ft_strdup(src);
-	else
-		new_str = ft_strjoin(*dest, src);
-	if (!new_str)
-		return (-1);
-	free(*dest);
-	*dest = new_str;
-	return (0);
 }
 
 static t_assignment *allocate_assignment(void) 
@@ -138,7 +122,27 @@ static int handle_var(int size, char *var_pos, t_token *token, t_assignment *ass
 	return (1);
 }
 
-static int handle_expander_if_need(int size, t_token *token, t_assignment *assignment)
+static char		*ft_strchr_not_escaped(const char *s, int c)
+{
+	char	*pos;
+	int		escaped;
+
+	pos = (char *)s;
+	escaped = 0;
+	while (*pos)
+	{
+		if (*pos == '\\' && !escaped)
+			escaped = 1;
+		else if (*pos == (char)c && !escaped)
+			return (pos);
+		else
+			escaped = 0;
+		pos++;
+	}
+	return (NULL);
+}
+
+static int handle_expander_if_need(int size, char **res, t_token *token, t_assignment *assignment)
 {
 	char *value;
 	char *var_pos;
@@ -147,15 +151,12 @@ static int handle_expander_if_need(int size, t_token *token, t_assignment *assig
 	value = token->value;
 	if (!value)
 		return (0);
-	var_pos = ft_strchr(value, '$');
+	var_pos = ft_strchr_not_escaped(value, '$');
 	while (var_pos)
 	{
-		if (var_pos && (var_pos == value || *(var_pos - 1) != '\\'))
-		{
-			if (handle_var(size, var_pos, token, assignment) == -1)
-				return (-1);
-		}
-		var_pos = ft_strchr(var_pos + 1, '$');
+		if (handle_var(size, var_pos, token, assignment) == -1)
+			return (-1);
+		var_pos = ft_strchr_not_escaped(var_pos + 1, '$');
 	}
 	return (1);
 }
@@ -187,14 +188,12 @@ static t_assignment	*get_construct_assignment_value(char *value,
 		size = ft_strlen(res);
 		if (ft_append_str(&res, token->value) == -1)
 			return (free(res), NULL);
-		if (handle_expander_if_need(size, token, assignment) == -1)
-			return (free(res), NULL); // TODO: free assignment
+		if (handle_expander_if_need(size, &res, token, assignment) == -1)
+			return (free(res), free_assignment(assignment), NULL); // TODO: free assignment
 	}
 	assignment->value = res;
 	return (assignment);
 }
-
-
 
 static char	*ft_copy_until_equal(t_tokenstream *ts)
 {
@@ -262,82 +261,50 @@ t_list	*create_assignments(t_tokenstream *ts)
 	return (head);
 }
 
-#include "lexer.h"
-#include "ft_printf.h"
-#include "ft_common.h"
-
-void free_expander(void *expander)
-{
-	t_expander	*exp;
-
-	if (!expander)
-		return ;
-	exp = (t_expander *)expander;
-	if (exp->type == VAR && exp->var)
-	{
-		free(exp->var->var_name);
-		free(exp->var);
-	}
-	if (exp->type == WILDCARD && exp->wildcard)
-	{
-		free(exp->wildcard);
-	}
-	free(exp);
-}
-
-void free_assignment(void *param)
-{
-	t_assignment	*assignment;
-
-	assignment = (t_assignment *)param;
-	if (!assignment)
-		return ;
-	free(assignment->value);
-	if (assignment->expand)
-		ft_lstclear(&assignment->expand, free_expander);
-	free(assignment);
-}
+// #include "lexer.h"
+// #include "ft_printf.h"
+// #include "ft_common.h"
 
 
-void print_assignments(t_list *assignments)
-{
-	t_list			*current;
-	t_list			*exp_cur;
-	t_assignment	*assignment;
-	t_expander		*exp;
-	t_var_expand	*var;
+// void print_assignments(t_list *assignments)
+// {
+// 	t_list			*current;
+// 	t_list			*exp_cur;
+// 	t_assignment	*assignment;
+// 	t_expander		*exp;
+// 	t_var_expand	*var;
 
-	current = assignments;
-	while (current)
-	{
-		assignment = (t_assignment *)current->content;
-		if (!assignment)
-		{
-			printf("NULL assignment\n");
-			current = current->next;
-			continue;
-		}
-		printf("Assignment value: >%s<\n", assignment->value);
-		exp_cur = assignment->expand;
-		while (exp_cur)
-		{
-			exp = (t_expander *)exp_cur->content;
-			if (exp->type == VAR)
-			{
-				var = exp->var;
-				if (var)
-					printf("  Var expander: name: %s, start: %d, end: %d\n",
-						var->var_name, var->var_start, var->var_end);
-				else
-					printf("  Var expander: NULL var\n");
-			}
-			else
-				printf("  Unknown expander type\n");
-			exp_cur = exp_cur->next;
-		}
-		current = current->next;
-	}
-}
+// 	current = assignments;
+// 	while (current)
+// 	{
+// 		assignment = (t_assignment *)current->content;
+// 		if (!assignment)
+// 		{
+// 			printf("NULL assignment\n");
+// 			current = current->next;
+// 			continue;
+// 		}
+// 		printf("Assignment value: >%s<\n", assignment->value);
+// 		exp_cur = assignment->expand;
+// 		while (exp_cur)
+// 		{
+// 			exp = (t_expander *)exp_cur->content;
+// 			if (exp->type == VAR)
+// 			{
+// 				var = exp->var;
+// 				if (var)
+// 					printf("  Var expander: name: %s, start: %d, end: %d\n",
+// 						var->var_name, var->var_start, var->var_end);
+// 				else
+// 					printf("  Var expander: NULL var\n");
+// 			}
+// 			else
+// 				printf("  Unknown expander type\n");
+// 			exp_cur = exp_cur->next;
+// 		}
+// 		current = current->next;
+// 	}
+// }
 
 // int main(int argc, char **argv)
 // {
