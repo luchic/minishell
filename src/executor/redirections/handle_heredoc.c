@@ -15,7 +15,9 @@ int	ft_is_limiter(char *line, char *del)
 	if (!line)
 		return (1);
 	if (ft_strchr(line, '\n'))
-		line[ft_strlen(line) - 1] = '\0';
+		tmp = ft_substr(line, 0, ft_strlen(line) - 1);
+	else
+		tmp = ft_strdup(line);
 	if (!tmp)
 		return (1);
 	if (del[0] != '\0' && !ft_strcmp(tmp, del))
@@ -68,7 +70,6 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 {
 	char	*temp_filename;
 	int		temp_fd;
-	char	*line;
 	char	*delimiter;
 
 	temp_filename = create_heredoc_tempfile();

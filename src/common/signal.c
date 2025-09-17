@@ -3,16 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:39:16 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/09 21:20:59 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/14 18:24:39 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
+void	signal_check(void)
+{
+	signal(SIGINT, SIG_DFL);  // Ctrl+C
+	signal(SIGQUIT, SIG_DFL); // core dump
+}
+	
 void    handle_signal(int signum)
 {
 	if (signum == SIGINT) //(Ctrl+C)
