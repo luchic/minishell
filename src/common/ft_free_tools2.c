@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:37:19 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 19:03:50 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 20:10:54 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	free_assignment(void *param)
 	if (!assignment)
 		return ;
 	if (assignment->value)
+		free(assignment->value);
+	if (assignment->expand)
 		ft_lstclear(&assignment->expand, free_expander);
 	free(assignment);
 }
