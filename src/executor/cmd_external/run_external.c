@@ -1,85 +1,87 @@
 
 #include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
-#include "ft_printf.h"
 #include "ft_executor.h"
+#include "ft_printf.h"
+#include "libft.h"
+#include "minishell.h"
 
-void	cmd_false_exit(void)
+void	cmd_false_exit(t_minishell *mnsh)
 {
+	if (mnsh)
+		free_stack_minishell(mnsh);
 	if (errno == ENOENT)
 		exit(127);
 	else
 		exit(126);
 }
 
+int	run_external_no_fork(t_command *cmd)
+{
+	char	*path;
+	int		is_path_malloced;
+
+	is_path_malloced = 0;
+	path = NULL;
+	if (ft_strchr((cmd->args)[0], '/'))
+		path = (cmd->args)[0];
+	else
+	{
+		path = get_cmd_path(cmd->name, cmd->mnsh->envp);
+		// ft_printf_fd(STDERR, "Resolved path: %s\n", path); ///to delete --- IGNORE ---
+		if (!path)
+		{
+			// ft_printf_fd(STDERR, "%s: command not found\n",cmd->name);
+			free(path);
+			// ft_printf_fd(STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
+			exit (127);
+		}
+		is_path_malloced = 1;
+	}
+	// if (access(path, X_OK) != 0) // no need to check. if failed, will go to ft_log fd
+	{
+		ft_printf_fd(STDERR, "%s: Permission denied\n",
+			cmd->name);
+		free(path);
+		exit (126);
+	}
+	signal_check();
+	handle_assignments(cmd->mnsh, cmd->assignments);
+	// ft_printf_fd(STDERR, "Executing external command: %s\n", path); ///to delete --- IGNORE ---
+	execve(path, cmd->args, cmd->mnsh->envp);
+	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",
+		cmd->name);
+	if (is_path_malloced && path)
+		free(path);
+	// ft_printf_fd(STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
+	exit (/* cmd_false_exit(cmd->mnsh),  */126);
+}
+
+
 int	run_external(t_command *cmd)
 {
 	pid_t	pid;
 	int		status;
-	char	*path;
-	int		is_path_malloced;
 	int		current;
-	int		exit_code = 0;
+	int		exit_code;
 
 	pid = fork();
 	if (pid < 0)
-		return (perror("fork"),EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"), EXIT_FAILURE);
 	else if (pid == 0)
-	{
-		// Child process
-		signal(SIGINT, SIG_DFL); // Ctrl+C
-		signal(SIGQUIT, SIG_DFL); // core dump
-		handle_assignments(cmd->mnsh, cmd->assignments);
-		if (cmd->fd_in != STDIN)
-		{
-			if (dup2(cmd->fd_in, STDIN) == -1)
-			{
-				perror("dup2");
-				cmd_false_exit();
-			}
-			close(cmd->fd_in);
-		}
-		if (cmd->fd_out != STDOUT)
-		{
-			if (dup2(cmd->fd_out, STDOUT) == -1)
-			{
-				perror("dup2");
-				cmd_false_exit();
-			}
-			close(cmd->fd_out);
-		}
-		is_path_malloced = 0;
-		if (ft_strchr((cmd->args)[0], '/'))
-			path = (cmd->args)[0];
-		else
-		{
-			get_cmd_path(cmd->name, cmd->mnsh->envp, &path);
-			is_path_malloced = 1;
-		}
-		execve(path, cmd->args, cmd->mnsh->envp);
-		perror("execve");
-		if (is_path_malloced)
-			free(path);
-		cmd_false_exit();
-	}
+		return (run_external_no_fork(cmd));
 	else
 	{
-		// Parent process
-		if (cmd->mnsh->is_background) // background process
+		if (cmd->mnsh->is_background)
 			return (EXIT_SUCCESS);
-		if (cmd->fd_in != STDIN) //should put: && cmd->fd_in != -1?
+		if (cmd->fd_in != STDIN)
 			close(cmd->fd_in);
 		if (cmd->fd_out != STDOUT)
 			close(cmd->fd_out);
 		current = waitpid(pid, &status, 0);
 		if (current == -1)
-		{
-			perror("waitpid");
-			return (EXIT_FAILURE);
-		}
+			return (perror("waitpid"), EXIT_FAILURE);
 		if (WIFEXITED(status))
-			exit_code = WEXITSTATUS(status);
+			return (WEXITSTATUS(status));
 		else if (WIFSIGNALED(status))
 			exit_code = WTERMSIG(status);
 		else

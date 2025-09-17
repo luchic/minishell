@@ -36,6 +36,7 @@ char	*ft_strchr_not_escaped(const char *s, int c);
 void	set_exit_code(t_minishell *mnsh, int code);
 
 // ======================== signal handling ========================
+void	signal_check(void);
 void	init_signal_handler(void);
 void	handle_signal(int signum);
 

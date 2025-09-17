@@ -34,7 +34,7 @@ int run_builtin(t_command *cmd)
 	{
 		if (dup2(cmd->fd_in, STDIN) == -1)
 		{
-			perror("dup2");
+			ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_in\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_in);
@@ -42,7 +42,7 @@ int run_builtin(t_command *cmd)
 	if (cmd->fd_out != STDOUT)
 	{
 		if (dup2(cmd->fd_out, STDOUT) == -1)
-			return (perror("dup2"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
+			return (ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_out\n"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
 		close(cmd->fd_out);
 	}
 	//execute built-in
@@ -64,9 +64,9 @@ int run_builtin(t_command *cmd)
 		status = 0;
 
 	if (dup2(orig_fds[0], STDIN) == -1)
-		return (perror("dup2"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	if (dup2(orig_fds[1], STDOUT) == -1)
-		return (perror("dup2"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	close(orig_fds[0]);
 	close(orig_fds[1]);
     return (status);
