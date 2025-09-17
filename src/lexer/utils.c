@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 13:49:24 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 10:36:14 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:05:25 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_tokens(void *param)
 	}
 }
 
-int	is_doble_char_token(const char *str)
+int	is_double_char_token(const char *str)
 {
 	if (!str || !str[0] || !str[1])
 		return (0);
@@ -38,7 +38,43 @@ int	is_doble_char_token(const char *str)
 
 int	is_special_char(char c)
 {
-	return (c == '|' || c == '&' || c == '<' || c == '>' || c == '(' || c == ')'
-		|| c == ';' || c == ' ' || c == '\'' || c == '\"' /*|| c == '$'*/
-		|| c == '?' || c == '=');
+	return ((c == '|' || c == '&' || c == '<' || c == '>' || c == '('
+			|| c == ')' || c == ';' || c == '\'' || c == '\"' /* || c == '$'*/
+			|| c == '=' ));
+}
+
+int	is_double_quote(char c, int *escaped)
+{
+	if (c == '\\' && !*escaped)
+		*escaped = 1;
+	else if (c == '\"' && !*escaped)
+		return (1);
+	else
+		*escaped = 0;
+	return (0);
+}
+
+void	*add_new_token(t_list **head, char *value, t_quote_status quote,
+		const char *input)
+{
+	t_list	*new_node;
+	t_token	*token;
+
+	token = ft_calloc(1, sizeof(t_token));
+	if (!token)
+		return (NULL);
+	if (*input == ' ')
+		token->is_space_after = 1;
+	else
+		token->is_space_after = 0;
+	token->quote_status = quote;
+	token->value = value;
+	token->type = get_token_type(value);
+	if (quote == SINGLE_QUOTED || quote == DOUBLE_QUOTED)
+		token->type = WORD;
+	new_node = ft_lstnew(token);
+	if (!new_node)
+		return (free(token), NULL);
+	ft_lstadd_back(head, new_node);
+	return (new_node);
 }

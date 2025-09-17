@@ -5,31 +5,54 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:29:49 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/16 18:55:06 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/17 18:55:50 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_defines.h"
 #include "parser.h"
-#include <stdlib.h>
 
-t_list	*create_assignments_node(t_tokenstream *ts)
+static int	is_variable_name(char *name)
 {
-	t_list	*head;
-	t_list	*node;
-	char	*assignment;
-
-	head = NULL;
-	while (ts_match(ts, VARIABLE))
+	if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
+		return (0);
+	name++;
+	while (*name)
 	{
-		assignment = ft_strdup(ts_advance(ts)->value);
-		if (!assignment)
-			return (ft_lstclear(&head, free), NULL);
-		node = ft_lstnew(assignment);
-		if (!node)
-			return (free(assignment), ft_lstclear(&head, free), NULL);
-		ft_lstadd_back(&head, node);
+		if (!ft_isalnum(*name) && *name != '_')
+			return (0);
+		name++;
 	}
+	return (1);
+}
 
-	return (head);
+int	is_assignment(t_tokenstream *ts)
+{
+	t_tokenstream	*clone;
+	t_token			*token;
+
+	clone = ts_clone(ts);
+	if (!clone)
+		return (0);
+	token = ts_advance(clone);
+	if (!token || token->type != WORD || token->quote_status != UNQUOTED
+		|| token->is_space_after)
+		return (ts_free(clone), 0);
+	if (!is_variable_name(token->value))
+		return (ts_free(clone), 0);
+	token = ts_advance(clone);
+	if (!token || token->type != WORD || ft_strcmp(token->value, "=") != 0
+		|| token->quote_status != UNQUOTED)
+		return (ts_free(clone), 0);
+	ts_free(clone);
+	return (1);
+}
+
+t_assignment	*allocate_assignment(void)
+{
+	t_assignment	*assignment;
+
+	assignment = ft_calloc(1, sizeof(t_assignment));
+	return (assignment);
 }

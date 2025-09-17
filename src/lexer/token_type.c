@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 13:49:41 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/07 13:49:42 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:43:02 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ t_token_type	get_token_type(const char *value)
 		return (PIPE);
 	else if (ft_strcmp(value, "$?") == 0)
 		return (EXIT_STATUS);
-	else if (ft_strcmp(value, "=") == 0)
-		return (EQUAL);
 	else if (ft_strcmp(value, "&") == 0)
 		return (AMPERSAND);
 	else if (ft_strcmp(value, "&&") == 0)

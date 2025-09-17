@@ -7,8 +7,8 @@
 // Forward declarations
 struct s_ast_node;
 struct s_script;
-typedef struct s_ast_node t_ast_node;
-typedef struct s_script t_script;
+typedef struct s_ast_node		t_ast_node;
+typedef struct s_script			t_script;
 
 typedef enum e_node_type
 {
@@ -33,10 +33,17 @@ typedef enum e_cmd_type
 	CMD_BUILTIN,
 	CMD_EXTERNAL,
 	// CMD_ASSIGNMENT, //if no cmd name, but just assignemnt links
-	//CMD_HEREDOC // executor doesn't execute, just handle redirection and tmp file
+	// CMD_HEREDOC // executor doesn't execute, just handle redirection and tmp file
 }								t_cmd_type;
 
 // ---- Structures ----
+
+typedef struct t_expander
+{
+	char						*var_name;
+	int							var_start;
+	int							var_end;
+}								t_expander;
 
 typedef struct s_var
 {
@@ -60,35 +67,50 @@ typedef struct s_minishell
 // Represents a command
 typedef enum e_redir_type
 {
-	REDIR_INPUT, // < infile cat
+	REDIR_INPUT,  // < infile cat
 	REDIR_OUTPUT, // cat > outfile
 	REDIR_APPEND, // cat >> outfile
 	REDIR_HEREDOC // cat << delimiter
-} t_redir_type;
+}								t_redir_type;
 
-typedef struct  s_redirection
+typedef struct s_redirection
 {
 	t_redir_type				type;
 	int							fd;
 	char						*value;
-} t_redirection;
+	t_list						*expander;
+}								t_redirection;
+
+typedef struct s_assigment
+{
+	char						*value;
+	int							len;
+	t_list						*expand;
+}								t_assignment;
+
+typedef struct s_cmd_expander
+{	
+	int		index;
+	t_list	*expand; // list of t_expander
+}								t_cmd_expander;
 
 typedef struct s_command
 {
-	t_cmd_type					type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
-	int							fd_in; // -1 if no redirection
-	int							fd_out; // -1 if no redirection
+	t_cmd_type type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
+	int fd_in;       // -1 if no redirection
+	int fd_out;      // -1 if no redirection
 	char						*name;
-	char						**args; //includes name, NULL-terminated
+	char **args; // includes name, NULL-terminated
+	t_list						*expander;
 	t_minishell					*mnsh;
 	t_list						*redirections; // list of t_redirection
-	t_list						*assignments; //list of t_var for assignments
+	t_list						*assignments;  // list of t_var for assignments
 }								t_command;
 
 // Represents a pipeline
 typedef struct s_pipeline
 {
-	struct s_ast_node			**commands; //!! this is s_ast_node, not s_command, to allow subshells in pipeline
+	struct s_ast_node **commands; //!! this is s_ast_node, not s_command, to allow subshells in pipeline
 	int							count;
 }								t_pipeline;
 
@@ -119,10 +141,13 @@ typedef struct s_ast_node
 	};
 }								t_ast_node;
 
+// t_ast_node node
+// node->command = cmd;
+// noed->pipeline;
 // Represents a script (root)
 typedef struct s_script
 {
-	t_ast_node					*nodes; //to avoid confusion from pipeline->commands
+	t_ast_node *nodes; // to avoid confusion from pipeline->commands
 	int							count;
 }								t_script;
 
@@ -130,5 +155,11 @@ typedef struct s_script
 # define STDOUT 1
 # define STDIN 0
 
+# define FAIL 1
+# define SYNTAX_ERROR 2
+
+# define PREFIX "minishell"
+# define UNEXPECTED_TOKEN "syntax error near unexpected token"
+# define UNBALANCED_QUOTES "syntax error: unbalanced quotes"
 
 #endif

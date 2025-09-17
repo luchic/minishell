@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:30:15 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:38:13 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 18:55:43 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_ast_node	*create_ast_node(t_node_type type)
 	return (node);
 }
 
-t_logical_expression *create_logical_expression(t_logical_op op,
+t_logical_expression	*create_logical_expression(t_logical_op op,
 		t_ast_node *left, t_ast_node *right)
 {
 	t_logical_expression	*logical;
