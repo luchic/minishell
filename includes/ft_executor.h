@@ -32,7 +32,7 @@ char				**handle_assignments(t_minishell *mnsh, t_list *assignments);
 
 // ======================== cmd_built_in ========================
 int					run_builtin(t_command *cmd);
-int					match_built_in(char *cmd_name);
+int					match_built_in(t_command *cmd);
 
 // ft_cd & helpers
 int					ft_cd(t_command *cmd);

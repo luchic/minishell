@@ -12,13 +12,14 @@ void	close_pipes(int pipe_fds[2])
 pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
 	pid_t pid;
+	int status;
 	
 	pid = fork();
 	if (pid == -1)
 	{
 		return (-1);
 	}
-	if (pid == 0) // Child process
+	if (pid == 0)
 	{
 		if (fds[0] != STDIN)
 		{
@@ -36,11 +37,20 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 				ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n");
 				exit(EXIT_FAILURE);
 			}
+			close(fds[1]);
 		}
 		if (i < pipeline->count - 1)
 			close_pipes(pipe_fds);
-		execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
-		exit(EXIT_FAILURE);
+
+		// ft_printf_fd(STDOUT, "Executing command %d in child process %d\n", i, getpid()); ///to delete --- IGNORE ---
+		// ft_printf_fd(STDOUT, "fds[0]: %d, fds[1]: %d\n", fds[0], fds[1]); ///to delete --- IGNORE ---
+		// ft_printf_fd(STDOUT, "Command name: %s\n", pipeline->commands[i]->command->name); ///to delete --- IGNORE ---
+			
+		if (pipeline->commands[i]->type == SUBSHELL)
+			status = execute_subshell(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->subshell);
+		else
+			status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
+		exit(status);
 	}
 	else
 	{
@@ -48,7 +58,7 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 			close(fds[0]);
 		if (i < pipeline->count - 1)
 			close(pipe_fds[1]);
-		fds[0] = pipe_fds[0];
+		// fds[0] = pipe_fds[0];
 	}
 	return (pid);
 }
@@ -71,7 +81,7 @@ int	finish_execution(pid_t *pids, int count)
 		else if (WIFEXITED(status))
 			exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			exit_status = 128 + WTERMSIG(status); // 128 is a conventino in bash
+			exit_status = 128 + WTERMSIG(status);
 		i++;
 	}
 	return (exit_status);

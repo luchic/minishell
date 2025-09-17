@@ -15,7 +15,6 @@ int ft_echo(t_command *cmd)
 
     i = 1;
     newline = 1;
-    // cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
     while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
     {
         newline = 0;
@@ -30,7 +29,7 @@ int ft_echo(t_command *cmd)
     }
     if (newline)
 		ft_printf_fd(cmd->fd_out, "\n");
-    return (0);
+    return (EXIT_SUCCESS);
 }
 
 /* int main()

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/12 13:24:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:44:31 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,37 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+void	setup_shell_level(t_minishell *mnsh)
+{
+	char	*shlvl_str;
+	int		shlvl;
+	char	*new_shlvl_str;
+	char	*full_var;
+
+	shlvl_str = getenv("SHLVL");
+	if (shlvl_str && ft_atoi(shlvl_str) > 0)
+		shlvl = ft_atoi(shlvl_str) + 1;
+	else
+		shlvl = 1;
+	new_shlvl_str = ft_itoa(shlvl);
+	full_var = ft_strjoin("SHLVL=", new_shlvl_str);
+	if (full_var)
+	{
+		update_env_var(full_var, &(mnsh->envp));
+		free(full_var);
+	}
+	free(new_shlvl_str);
+}
+
 void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 {
 	int	i;
 	int	size;
+
+	(void)argc;
+	(void)argv;
+	(void)envp;
+	(void)mnsh;
 
 	ft_memset(mnsh, 0, sizeof(t_minishell));
 	size = count_args(envp);
@@ -35,6 +62,11 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 			return ;
 	}
 	mnsh->envp[i] = NULL;
+
+	// setup shell level variables
+	// SHLVL
+	setup_shell_level(mnsh);
+	
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
@@ -48,6 +80,12 @@ void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	char		*input;
 	t_list		*tokens;
 	t_ast_node	*ast;
+	int			exit_status;
+
+	(void)argc;
+	(void)argv;
+	(void)envp;
+	(void)mnsh;
 
 	while ((input = readline("minishell> ")))
 	{
@@ -73,7 +111,8 @@ void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 			free(input);
 			ft_lstclear(&tokens, free);
 		}
-		execute_script(mnsh, ast);
+		exit_status = execute_script(mnsh, ast);
+		mnsh->last_exit_status = exit_status;
 		add_history(input);
 		ft_lstclear(&tokens, free);
 		free_ast_tree(ast);
@@ -85,9 +124,14 @@ void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	mnsh;
-	char		*input;
+
+	(void)argc;
+	(void)argv;
+	(void)envp;
+	(void)mnsh;
 
 	init_minishell(&mnsh, argc, argv, envp);
 	ft_run_minishell(&mnsh, argc, argv, envp);
 	return (0);
+
 }

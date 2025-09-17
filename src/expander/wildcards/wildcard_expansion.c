@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:15:44 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 11:34:46 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ char	**expand_wildcard_internal(char *pattern, int *status)
 {
 	char	*curr_path;
 	char	**matched;
-	char	**tmp;
 
 	curr_path = get_current_path(pattern);
 	if (!curr_path)
@@ -56,7 +55,7 @@ int	expand_wildcard_if_not_matched(char ***new_args, char *arg)
 	return (0);
 }
 
-int	expand_wildcard(char ***new_args, char *arg, t_command *cmd)
+int	expand_wildcard(char ***new_args, char *arg)
 {
 	char	*matched_file;
 	char	**matched;
@@ -85,13 +84,13 @@ int	expand_wildcard(char ***new_args, char *arg, t_command *cmd)
 	return (free_str_array(matched), 0);
 }
 
-int	expand_wildcard_if_need(char ***new_arg, char *arg, t_command *cmd)
+int	expand_wildcard_if_need(char ***new_arg, char *arg)
 {
 	char	*copy_arg;
 	char	**tmp;
 
 	if (ft_strchr(arg, '*'))
-		return (expand_wildcard(new_arg, arg, cmd));
+		return (expand_wildcard(new_arg, arg));
 	copy_arg = ft_strdup(arg);
 	if (!copy_arg)
 		return (-1);
@@ -117,7 +116,7 @@ int	run_wildcards_expander(t_command *cmd)
 	new_args = NULL;
 	while (args && args[i])
 	{
-		if (expand_wildcard_if_need(&new_args, args[i], cmd) == -1)
+		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
 			ft_log_fd(LOG_ERROR, STDERR_FILENO,
 				"expand_wildcards: Failed to expand wildcard: %s\n", args[i]);

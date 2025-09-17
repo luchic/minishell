@@ -1,20 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_main.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 11:03:35 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 13:54:26 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "parser.h"
 
 static t_logical_expression	*create_logical_node(t_tokenstream *ts,
 		t_ast_node *left)
 {
+
 	t_logical_op	op;
 
 	op = get_logical_op(ts);

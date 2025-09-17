@@ -54,6 +54,8 @@ void	ft_export_print_env(char **envp, int fd)
 {
 	char	**sorted;
 	int		i;
+	char	*name;
+	char	*value;
 
 	sorted = array_dup(envp);
 	if (!sorted)
@@ -62,7 +64,16 @@ void	ft_export_print_env(char **envp, int fd)
 	i = 0;
 	while (sorted[i])
 	{
-		ft_printf_fd(fd, "declare -x '%s'\n", sorted[i]);
+		if (ft_strchr(sorted[i], '='))
+		{
+			name = ft_substr(sorted[i], 0, ft_strchr(sorted[i], '=') - sorted[i]);
+			value = ft_strdup(ft_strchr(sorted[i], '=') + 1);
+			ft_printf_fd(fd, "declare -x %s=\"%s\"\n", name, value);
+			free(name);
+			free(value);
+		}
+		else
+			ft_printf_fd(fd, "declare -x %s\n", sorted[i]);
 		i++;
 	}
 	free_str_array(sorted);
