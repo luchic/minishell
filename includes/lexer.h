@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/15 21:04:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:11:49 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef enum e_quote_status
 
 typedef struct s_token
 {
-	int				no_space_before;
+	int				is_space_after;
 	t_quote_status	quote_status;
 	t_token_type	type;
 	char			*value;
