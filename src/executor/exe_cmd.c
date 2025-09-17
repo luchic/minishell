@@ -3,7 +3,7 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-int execute_command(t_minishell *mnsh, t_command *cmd)
+int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 {
 	char	**original_env;
 	int		status;
@@ -15,8 +15,25 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	// Handle redirections
 	if (!handle_redirections(cmd))
 		return (EXIT_FAILURE);
+	
+	//handle fd_in and fd_out for pipeline
+	// if (cmd->fd_in != STDIN && cmd->fd_in != -1)
+	// {
+	// 	if (dup2(cmd->fd_in, STDIN) == -1)
+	// 	{
+	// 		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), EXIT_FAILURE);
+	// 	}
+	// 	close(cmd->fd_in);
+	// }
+	// if (cmd->fd_out != STDOUT && cmd->fd_out != -1)
+	// {
+	// 	if (dup2(cmd->fd_out, STDOUT) == -1)
+	// 	{
+	// 		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), EXIT_FAILURE);
+	// 	}
+	// 	close(cmd->fd_out);
+	// }
 
-	//execute based on command type
 	if (cmd->type == CMD_BUILTIN)
     {
         original_env = handle_assignments(mnsh, cmd->assignments);
@@ -29,8 +46,50 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		return (status);
     }
     else if (cmd->type == CMD_EXTERNAL)
-		return (run_external(cmd));
+		return (run_external_no_fork(cmd));
     else
-        ft_printf_fd(STDERR, ": command not found: %s\n", cmd->name);
+        ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
+    return (0);
+}
+
+int execute_command(t_minishell *mnsh, t_command *cmd)
+{
+	char	**original_env;
+	int		status;
+
+	if (cmd->assignments && !cmd->name)
+		return (handle_assignments(mnsh, cmd->assignments), 0);
+
+	if (!handle_redirections(cmd))
+		return (EXIT_FAILURE);
+
+	if (cmd->fd_in == -1)
+		cmd->fd_in = STDIN;
+	if (cmd->fd_out == -1)
+		cmd->fd_out = STDOUT;
+
+	// ft_printf_fd(STDOUT, "Command fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "Command name: %s\n", cmd->name); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "Command type: %d\n", cmd->type);
+
+	if (cmd->type == CMD_BUILTIN)
+    {
+		// ft_printf_fd(STDOUT, "Running built-in command: %s\n", cmd->name); ///to delete --- IGNORE ---
+		original_env = handle_assignments(mnsh, cmd->assignments);
+		status = run_builtin(cmd);
+		if (original_env)
+		{
+			free_str_array(mnsh->envp);
+			mnsh->envp = original_env;
+		}
+		return (status);
+    }
+    else if (cmd->type == CMD_EXTERNAL)
+		return (/* ft_printf_fd(STDOUT, "Running external command: %s\n", cmd->name),  */run_external(cmd));
+    // else
+	// {
+    //     ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
+	// 	exit(127);
+	// }
     return (0);
 }
