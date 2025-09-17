@@ -6,14 +6,38 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:25:18 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 22:07:12 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:13:20 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_common.h"
-#include "parser.h"
 #include "libft.h"
+#include "parser.h"
 #include <stdlib.h>
+
+int	is_single_quoted(t_quote_status status)
+{
+	if (status == SINGLE_QUOTED)
+		return (1);
+	return (0);
+}
+
+int	handle_wildcard(int pos, char **res, t_token *token,
+		int (*is_quoted)(t_quote_status))
+{
+	char	*new_str;
+
+	if (is_quoted(token->quote_status))
+	{
+		new_str = ft_insert(*res, "\\", pos);
+		if (!new_str)
+			return (-1);
+		free(*res);
+		*res = new_str;
+		return (1);
+	}
+	return (0);
+}
 
 t_list	*add_var_expander(t_var_handle info, t_token *token)
 {
@@ -34,8 +58,7 @@ t_list	*add_var_expander(t_var_handle info, t_token *token)
 	return (new_node);
 }
 
-int	handle_var(int size, char *var_pos, t_token *token,
-		t_list **expand)
+int	handle_var(int size, char *var_pos, t_token *token, t_list **expand)
 {
 	char			*var_end;
 	t_var_handle	info;
@@ -46,7 +69,7 @@ int	handle_var(int size, char *var_pos, t_token *token,
 		return (0);
 	if (*var_end == '?')
 	{
-		info = (t_var_handle){size, var_pos, var_end};
+		info = (t_var_handle){size, var_pos, var_end + 1};
 		new_node = add_var_expander(info, token);
 		if (!new_node)
 			return (-1);
