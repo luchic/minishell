@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 19:33:58 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:32:16 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	ft_fetch_value(char *value, t_tokenstream *ts,
 	{
 		token = ts_peek(ts);
 		if (!token || token->is_space_after)
-			break ;
+			return (assignment->value = res, ts_advance(ts), 0);
 		ts_advance(ts);
 		token = ts_peek(ts);
 		if (!token)
@@ -78,7 +78,7 @@ static char	*ft_copy_until_equal(t_tokenstream *ts)
 	return (res);
 }
 
-t_list	*create_assignments_node(t_tokenstream *ts)
+static t_list	*create_assignments_node(t_tokenstream *ts)
 {
 	t_list			*node;
 	t_token			*token;
@@ -100,15 +100,13 @@ t_list	*create_assignments_node(t_tokenstream *ts)
 	return (node);
 }
 
-t_list	*create_assignments(t_tokenstream *ts)
+int	create_assignments(t_tokenstream *ts, t_list **asgmt)
 {
-	t_list	*head;
 	t_list	*node;
 
 	if (!is_assignment(ts))
-		return (NULL);
+		return (0);
 	ft_log_fd(LOG_INFO, STDERR, "Create assignments\n");
-	head = NULL;
 	while (is_assignment(ts))
 	{
 		node = create_assignments_node(ts);
@@ -116,86 +114,86 @@ t_list	*create_assignments(t_tokenstream *ts)
 		{
 			ft_log_fd(LOG_ERROR, STDERR,
 				"Create assignments: create_assignments_node failed\n");
-			return (ft_lstclear(&head, free_assignment), NULL);
+			return (ft_lstclear(asgmt, free_assignment), -1);
 		}
-		ft_lstadd_back(&head, node);
+		ft_lstadd_back(asgmt, node);
 	}
-	return (head);
-}
-
-#include "ft_common.h"
-#include "ft_printf.h"
-#include "lexer.h"
-
-void	print_assignments(t_list *assignments)
-{
-	t_list			*current;
-	t_list			*exp_cur;
-	t_assignment	*assignment;
-	t_expander		*exp;
-	t_var_expand	*var;
-
-	current = assignments;
-	while (current)
-	{
-		assignment = (t_assignment *)current->content;
-		if (!assignment)
-		{
-			printf("NULL assignment\n");
-			current = current->next;
-			continue ;
-		}
-		printf("Assignment value: >%s<\n", assignment->value);
-		exp_cur = assignment->expand;
-		while (exp_cur)
-		{
-			exp = (t_expander *)exp_cur->content;
-			if (exp->type == VAR)
-			{
-				var = exp->var;
-				if (var)
-					printf("  Var expander: name: %s, start: %d, end: %d\n",
-						var->var_name, var->var_start, var->var_end);
-				else
-					printf("  Var expander: NULL var\n");
-			}
-			else
-				printf("  Unknown expander type\n");
-			exp_cur = exp_cur->next;
-		}
-		current = current->next;
-	}
-}
-
-int	main(int argc, char **argv)
-{
-	char *input;
-	if (argc != 2)
-		input = ft_strdup("ARG1= h$t?");
-	else
-		input = ft_strdup(argv[1]);
-
-	t_list *tokens = NULL;
-	int exit_code = run_lexer(&tokens, input);
-	if (exit_code)
-	{
-		printf("Lexer error: %d\n", exit_code);
-		return (1);
-	}
-
-	t_tokenstream ts;
-	ts.cur = tokens;
-
-	t_list *assignments = create_assignments(&ts);
-	ft_lstclear(&tokens, free_tokens);
-	if (!assignments)
-	{
-		printf("No assignments found or error occurred\n");
-		return (1);
-	}
-	print_assignments(assignments);
-	ft_lstclear(&assignments, free_assignment);
-	// free(value);
-
 	return (0);
 }
+
+// #include "ft_common.h"
+// #include "ft_printf.h"
+// #include "lexer.h"
+
+// void	print_assignments(t_list *assignments)
+// {
+// 	t_list			*current;
+// 	t_list			*exp_cur;
+// 	t_assignment	*assignment;
+// 	t_expander		*exp;
+// 	t_var_expand	*var;
+
+// 	current = assignments;
+// 	while (current)
+// 	{
+// 		assignment = (t_assignment *)current->content;
+// 		if (!assignment)
+// 		{
+// 			printf("NULL assignment\n");
+// 			current = current->next;
+// 			continue ;
+// 		}
+// 		printf("Assignment value: >%s<\n", assignment->value);
+// 		exp_cur = assignment->expand;
+// 		while (exp_cur)
+// 		{
+// 			exp = (t_expander *)exp_cur->content;
+// 			if (exp->type == VAR)
+// 			{
+// 				var = exp->var;
+// 				if (var)
+// 					printf("  Var expander: name: %s, start: %d, end: %d\n",
+// 						var->var_name, var->var_start, var->var_end);
+// 				else
+// 					printf("  Var expander: NULL var\n");
+// 			}
+// 			else
+// 				printf("  Unknown expander type\n");
+// 			exp_cur = exp_cur->next;
+// 		}
+// 		current = current->next;
+// 	}
+// }
+
+// int	main(int argc, char **argv)
+// {
+// 	char *input;
+// 	if (argc != 2)
+// 		input = ft_strdup("ARG1= h$t?");
+// 	else
+// 		input = ft_strdup(argv[1]);
+
+// 	t_list *tokens = NULL;
+// 	int exit_code = run_lexer(&tokens, input);
+// 	if (exit_code)
+// 	{
+// 		printf("Lexer error: %d\n", exit_code);
+// 		return (1);
+// 	}
+
+// 	t_tokenstream ts;
+// 	ts.cur = tokens;
+
+// 	t_list *assignments = create_assignments(&ts);
+// 	ft_lstclear(&tokens, free_tokens);
+// 	if (!assignments)
+// 	{
+// 		printf("No assignments found or error occurred\n");
+// 		return (1);
+// 	}
+// 	print_assignments(assignments);
+// 	ft_lstclear(&assignments, free_assignment);
+// 	// free(value);
+
+// 	return (0);
+// }
