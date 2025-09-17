@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:46 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/15 21:04:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:07:26 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,3 +35,35 @@ int	run_lexer(t_list **tokens, const char *input)
 	*tokens = head;
 	return (0);
 }
+
+// #include <stdio.h>
+// #include <stdlib.h>
+// int main(int argc, char **argv)
+// {
+// 	char *input;
+// 	if (argc < 2)
+// 	{
+// 		input = ft_strdup("echo 2&&echo 3||grep");
+// 	}
+// 	else
+// 	{
+// 		input = ft_strdup(argv[1]);
+// 	}
+// 	t_list *tokens = NULL;
+// 	int exit_code = run_lexer(&tokens, input);
+// 	free(input);
+// 	if (exit_code)
+// 	{
+// 		printf("Lexer error: %d\n", exit_code);
+// 		return 1;
+// 	}
+// 	t_list *current = tokens;
+// 	while (current)
+// 	{
+// 		t_token *token = (t_token *)current->content;
+// 		printf("Token: >%s<, Quote_status: %d\n", token->value,
+// 			token->quote_status);
+// 		current = current->next;
+// 	}
+// 	ft_lstclear(&tokens, free_tokens);
+// }

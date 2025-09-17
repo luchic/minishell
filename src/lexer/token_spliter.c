@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 20:22:20 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/15 21:04:24 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/16 14:54:26 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,10 @@ int	ft_split_tokens(t_list **head, const char *input)
 			return (ft_lstclear(head, free_tokens), FAIL);
 		if (token && !add_new_token(head, token, quote, input))
 			return (free(token), ft_lstclear(head, free_tokens), FAIL);
-		if (mode == UNBALANCED)
+		if (!token && mode == UNBALANCED)
 			return (ft_lstclear(head, free_tokens), SYNTAX_ERROR);
+		if (token && mode == UNBALANCED)
+			return (free(token), ft_lstclear(head, free_tokens), SYNTAX_ERROR);
 	}
 	return (0);
 }
