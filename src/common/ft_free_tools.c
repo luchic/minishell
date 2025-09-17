@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:47:12 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 15:47:17 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:04:22 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,15 @@ void	ft_free_redir(void *redir)
 	r = (t_redirection *)redir;
 	if (!r)
 		return ;
+	if (r->expander)
+		ft_lstclear(&r->expander, free_expander);
 	if (r->value)
 		free(r->value);
 	free(r);
 }
 
-
 void	free_cmd(t_command *cmd)
 {
-	int				i;
-	t_redirection	*redir;
-	t_redirection	*tmp;
-
 	if (!cmd)
 		return ;
 	if (cmd->name)
@@ -59,7 +56,9 @@ void	free_cmd(t_command *cmd)
 	if (cmd->redirections)
 		ft_lstclear(&cmd->redirections, (void *)ft_free_redir);
 	if (cmd->assignments)
-		ft_lstclear(&cmd->assignments, free);
+		ft_lstclear(&cmd->assignments, free_assignment);
+	if (cmd->expander)
+		ft_lstclear(&cmd->expander, free_cmd_expander);
 	free(cmd);
 }
 
