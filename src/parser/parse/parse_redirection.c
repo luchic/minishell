@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:39:04 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 13:37:53 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/17 18:42:25 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,6 @@
 #include "lexer.h"
 #include "parser.h"
 #include <stdlib.h>
-
-static int	handle_wildcard(char *pos, char **res, t_token *token)
-{
-	char	*new_str;
-
-	if (token->quote_status == UNQUOTED)
-		return (0);
-	new_str = ft_insert(*res, "\\", pos - *res);
-	if (!new_str)
-		return (-1);
-	*res = new_str;
-	return (1);
-}
 
 static int	update_redirection_value(int size, char **res, t_redirection *redir,
 		t_token *token)
@@ -37,17 +24,20 @@ static int	update_redirection_value(int size, char **res, t_redirection *redir,
 	if (ft_append_str(res, token->value) == -1)
 		return (-1);
 	pos = ft_strchr_not_escaped(token->value, '$');
-	if (pos)
+	while (pos)
 	{
 		exit_status = handle_var(size, pos, token, &redir->expander);
 		if (exit_status == -1)
 			return (-1);
+		pos = ft_strchr_not_escaped(pos + 1, '$');
 	}
-	pos = ft_strchr_not_escaped(*res + size, '*');
-	if (pos)
+	pos = ft_strchr_not_escaped(token->value, '*');
+	while (pos)
 	{
-		if (handle_wildcard(pos, res, token) == -1)
+		if (handle_wildcard(pos - token->value + size, res, token,
+				is_single_quoted) == -1)
 			return (-1);
+		pos = ft_strchr_not_escaped(pos + 1, '*');
 	}
 	return (1);
 }
@@ -64,7 +54,7 @@ static int	set_redirection_value(t_redirection *redir, t_tokenstream *ts)
 	res = NULL;
 	size = 0;
 	if (update_redirection_value(size, &res, redir, token) == -1)
-		return (-1);
+		return (free(res), -1);
 	while (ts_match(ts, WORD))
 	{
 		token = ts_peek(ts);
@@ -76,7 +66,7 @@ static int	set_redirection_value(t_redirection *redir, t_tokenstream *ts)
 			break ;
 		size = ft_strlen(res);
 		if (update_redirection_value(size, &res, redir, token) == -1)
-			return (-1);
+			return (free(res), -1);
 	}
 	return (redir->value = res, 1);
 }
