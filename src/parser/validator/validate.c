@@ -74,7 +74,7 @@ int	validate_token(t_tokenstream *ts)
 
 int	validate(t_tokenstream *ts)
 {
-	if (validate_token(ts) == SYNTAX_ERROR)
-		return (SYNTAX_ERROR);
+	// if (validate_token(ts) == SYNTAX_ERROR)
+	// 	return (SYNTAX_ERROR);
 	return (0);
 }
