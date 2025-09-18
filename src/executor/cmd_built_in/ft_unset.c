@@ -10,7 +10,7 @@ int ft_unset(t_command *cmd)
 	char	**envp;
 
 	if (count_args(cmd->args) < 2)
-		return (EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	envp = cmd->mnsh->envp;
 	i = 1;
 	status = EXIT_SUCCESS;

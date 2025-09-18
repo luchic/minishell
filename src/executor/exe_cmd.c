@@ -8,7 +8,7 @@
 {
 	ft_printf_fd(STDOUT, "Command fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
 	ft_printf_fd(STDOUT, "Command name: %s\n", cmd->name); ///to delete --- IGNORE ---
-	ft_printf_fd(STDOUT, "Command type: %d\n", cmd->type);
+	ft_printf_fd(STDOUT, "Command type: %d\n", cmd->type); //0 for built-in, 1 for external ///to delete --- IGNORE ---
 	int i;
 	for (i = 0; cmd->args[i]; i++)  // 确保这个循环正确
 	{
@@ -39,9 +39,9 @@
 		ft_printf_fd(STDOUT, "  Assignment[%d]: %s=%s\n", j, ((t_var *)var->content)->name, ((t_var *)var->content)->value); ///to delete --- IGNORE ---
 		j++;
 	}
-}
+} */
 
- */
+
 
 
 static void update_underscore(t_minishell *mnsh, t_command *cmd)
@@ -82,11 +82,17 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	int		status;
 	int		should_restore_env;
 
+	status = 0;
 	if (cmd->assignments && !cmd->name)
 		return (handle_assignments(mnsh, cmd->assignments), 0);
 
-	if (!handle_redirections(cmd))
-		return (EXIT_FAILURE);
+	if (handle_redirections(cmd) == EXIT_FAILURE)
+	{
+		//print_attri_into(cmd); ///to delete --- IGNORE ---
+		ft_printf_fd(STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
+		//return (EXIT_FAILURE);
+		status = EXIT_FAILURE;
+	}
 
 	if (cmd->fd_in == -1)
 		cmd->fd_in = STDIN;
@@ -113,7 +119,6 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	else
 		handle_assignments(mnsh, cmd->assignments);
 
-	status = 0;
 	if (cmd->type == CMD_BUILTIN)
 		status = run_builtin(cmd);
     else if (cmd->type == CMD_EXTERNAL)
@@ -132,15 +137,12 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 {
 	int		status;
 
-	// assignemnts without command
+	status = 0;
 	if (cmd->assignments && !cmd->name)
 		return (handle_assignments(mnsh, cmd->assignments), 0);
 
-	// Handle redirections
-	if (!handle_redirections(cmd))
-		return (EXIT_FAILURE);
-
-	// ft_printf_fd(STDOUT, "After handling redirections - fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	if (handle_redirections(cmd) == EXIT_FAILURE)
+		status = EXIT_FAILURE;
 
 	if (cmd->fd_in == -1)
 		cmd->fd_in = STDIN;
@@ -154,9 +156,6 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 
 	update_underscore(mnsh, cmd);
 
-
-
-	status = 0;
 	if (cmd->type == CMD_BUILTIN)
 		status = run_builtin(cmd);
     else if (cmd->type == CMD_EXTERNAL)

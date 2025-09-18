@@ -29,3 +29,4 @@ char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 	}
 	return (original_env);
 }
+

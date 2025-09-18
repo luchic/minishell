@@ -21,26 +21,8 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 	}
 	if (pid == 0)
 	{
-		if (fds[0] != STDIN)
-		{
-			if (dup2(fds[0], STDIN) == -1)
-			{
-				ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n");
-				exit(EXIT_FAILURE);
-			}
-			close(fds[0]);
-		}
-		if (fds[1] != STDOUT)
-		{
-			if (dup2(fds[1], STDOUT) == -1)
-			{
-				ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n");
-				exit(EXIT_FAILURE);
-			}
-			close(fds[1]);
-		}
-		if (i < pipeline->count - 1)
-			close_pipes(pipe_fds);
+
+		handle_io_redirection(pipeline->commands[i]->command);
 
 		// ft_printf_fd(STDOUT, "Executing command %d in child process %d\n", i, getpid()); ///to delete --- IGNORE ---
 		// ft_printf_fd(STDOUT, "fds[0]: %d, fds[1]: %d\n", fds[0], fds[1]); ///to delete --- IGNORE ---

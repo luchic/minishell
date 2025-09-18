@@ -42,14 +42,19 @@ int	run_external_no_fork(t_command *cmd)
 		free(path);
 		exit (126);
 	}
+	ft_printf_fd(STDOUT, "Executing external command: %s\n", path); ///to delete --- IGNORE ---
+
 	signal_check();
-	//handle_assignments(cmd->mnsh, cmd->assignments);
+	
+	handle_io_redirection(cmd);
+	ft_printf_fd(STDOUT, "After handling redirections, fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+
 	execve(path, cmd->args, cmd->mnsh->envp);
 	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",
 		cmd->name);
 	if (is_path_malloced && path)
 		free(path);
-	// ft_printf_fd(STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
+	ft_printf_fd(STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
 	exit (126);
 }
 
@@ -61,6 +66,7 @@ int	run_external(t_command *cmd)
 	int		current;
 	int		exit_code;
 
+	
 	pid = fork();
 	if (pid < 0)
 		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"), EXIT_FAILURE);
