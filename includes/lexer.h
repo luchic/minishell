@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 15:11:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:39:06 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,5 @@ void				free_tokens(void *param);
 int					is_double_quote(char c, int *escaped);
 void				*add_new_token(t_list **head, char *value,
 						t_quote_status quote, const char *input);
-// ======================== Validator ========================
-int					validate_parantheses(const char *input);
 
 #endif

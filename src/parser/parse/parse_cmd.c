@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:30:13 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 20:02:58 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:38:14 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static int	update_arg_value(int size, char **res, t_list **expander,
 		t_token *token)
 {
 	char	*pos;
-	int		exit_status;
 
 	if (ft_append_str(res, token->value) == -1)
 		return (-1);
@@ -93,7 +92,6 @@ static int	set_command_args(t_command *cmd, t_tokenstream *ts)
 {
 	int		argc;
 	t_list	*expander;
-	t_token	*arg;
 
 	argc = 0;
 	expander = NULL;
