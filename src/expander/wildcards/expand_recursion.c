@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:06:49 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:27:45 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:29:23 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,6 @@ char	**expand_wildcard_recursive(char *path, char *pattern, int *status)
 {
 	char	**expanded;
 	char	**new_expanded;
-	char	*last_slash;
-	char	*new_pattern;
 
 	expanded = NULL;
 	new_expanded = NULL;
