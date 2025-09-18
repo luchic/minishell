@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 19:32:16 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 19:52:30 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	ft_fetch_value(char *value, t_tokenstream *ts,
 			return (assignment->value = res, ts_advance(ts), 0);
 		ts_advance(ts);
 		token = ts_peek(ts);
-		if (!token)
+		if (!token || !ts_match(ts, WORD))
 			break ;
 		size = ft_strlen(res);
 		if (ft_append_str(&res, token->value) == -1)
