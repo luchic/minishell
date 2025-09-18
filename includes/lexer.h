@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 15:11:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 00:13:38 by tracy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int					run_lexer(t_list **tokens, const char *input);
 int					ft_split_tokens(t_list **head, const char *input);
 t_token_type		get_token_type(const char *value);
 int					token_assignment(t_list **token, const char *input);
-t_list				*merge_word_token(t_list *tokens, const char *input);
+//t_list				*merge_word_token(t_list *tokens, const char *input);
 
 // ======================== Utils ========================
 int					is_double_char_token(const char *str);

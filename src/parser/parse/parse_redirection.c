@@ -81,9 +81,9 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 
 int	cmd_set_redirection(t_command *cmd, t_tokenstream *ts)
 {
-	
+
 	t_token	*redir_token = NULL;
-	t_token	*word_token;
+	// t_token	*word_token;
 	void	*redir = NULL;
 
 	if (!is_redirection_token(ts))

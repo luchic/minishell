@@ -7,7 +7,7 @@ static int	update_arg_value(int size, char **res, t_list **expander,
 		t_token *token)
 {
 	char	*pos;
-	int		exit_status;
+	// int		exit_status;
 
 	if (ft_append_str(res, token->value) == -1)
 		return (-1);
@@ -82,7 +82,7 @@ static int	set_command_args(t_command *cmd, t_tokenstream *ts)
 {
 	int		argc;
 	t_list	*expander;
-	t_token	*arg;
+	// t_token	*arg;
 
 	argc = 0;
 	expander = NULL;

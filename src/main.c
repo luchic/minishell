@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/17 19:44:31 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/17 23:58:33 by tracy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "libft.h"
 #include "minishell.h"
 #include "parser.h"
+#include "lexer.h"
+#include "ft_common.h"
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -66,7 +68,7 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	// setup shell level variables
 	// SHLVL
 	setup_shell_level(mnsh);
-	
+
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
@@ -75,27 +77,26 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 // TODO: handle minishell> kkjhg execve: No such file or directory
 // TODO: change error messages to match bash ones
 
-void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
+void	ft_run_minishell(t_minishell *mnsh)
 {
 	char		*input;
 	t_list		*tokens;
 	t_ast_node	*ast;
 	int			exit_status;
+	int			tmp;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
+
 	(void)mnsh;
 
 	while ((input = readline("minishell> ")))
 	{
-		tokens = run_lexer(input);
-		if (!tokens)
+		tmp = run_lexer(&tokens, input);
+		if (!tmp)
 		{
 			ft_printf_fd(STDERR, "Lexer error\n");
 			free(input);
 			continue ;
-		};
+		}
 		if (mnsh->script == NULL)
 		{
 			ft_printf_fd(STDERR, "Memory allocation error\n");
@@ -118,7 +119,7 @@ void	ft_run_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 		free_ast_tree(ast);
 		free(input);
 	}
-	rl_clear_history();
+	clear_history();
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -131,7 +132,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)mnsh;
 
 	init_minishell(&mnsh, argc, argv, envp);
-	ft_run_minishell(&mnsh, argc, argv, envp);
+	ft_run_minishell(&mnsh);
 	return (0);
 
 }
