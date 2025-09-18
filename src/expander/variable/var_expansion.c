@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:30:23 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:55:59 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 	t_list			*current;
 	t_assignment	*asgmt;
 	char			*new_value;
-
+	
+	ft_log_fd(LOG_INFO, STDOUT, "Expand assignments\n");
 	if (!asgmts || !mnsh)
 		return (0);
 	current = asgmts;
@@ -43,6 +44,7 @@ int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 		if (asgmt && asgmt->value && asgmt->expand)
 		{
 			new_value = extract_arg(asgmt->value, asgmt->expand, mnsh);
+			ft_log_fd(LOG_INFO, STDOUT, "Assignment New value: %s\n", new_value);
 			if (!new_value)
 				return (-1);
 			free(asgmt->value);
@@ -100,7 +102,7 @@ int	run_args_expander(t_command *cmd)
 
 int	run_variable_expander(t_command *cmd)
 {
-	if (!cmd || !cmd->args)
+	if (!cmd)
 		return (0);
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
 	if (!cmd->mnsh)
@@ -109,7 +111,7 @@ int	run_variable_expander(t_command *cmd)
 			"expand_variable: minishell: Internal error: mnsh is NULL\n");
 		return (0);
 	}
-	if (cmd->expander && run_args_expander(cmd) == -1)
+	if (cmd->args &&cmd->expander && run_args_expander(cmd) == -1)
 		return (-1);
 	if (expand_assignments(cmd->assignments, cmd->mnsh) == -1)
 		return (-1);
