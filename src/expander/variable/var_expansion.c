@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 19:39:38 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:30:23 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,41 +24,36 @@ static char	*expand_variable_if_need(int index, char *arg, t_command *cmd)
 		return (arg);
 	new_arg = extract_arg(arg, expander->expand, cmd->mnsh);
 	if (!new_arg)
-		return (free(arg), NULL);
-	free(arg);
+		return (NULL);
 	return (new_arg);
 }
 
-int	expand_assignments(t_list *assignments, t_minishell *mnsh)
+int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 {
 	t_list			*current;
-	t_assignment	*assignment;
+	t_assignment	*asgmt;
 	char			*new_value;
 
-	if (!assignments || !mnsh)
-		return (-1);
-	current = assignments;
+	if (!asgmts || !mnsh)
+		return (0);
+	current = asgmts;
 	while (current)
 	{
-		assignment = (t_assignment *)current->content;
-		if (assignment && assignment->value)
+		asgmt = (t_assignment *)current->content;
+		if (asgmt && asgmt->value && asgmt->expand)
 		{
-			if (assignment->expand)
-				new_value = extract_arg(assignment->value, assignment->expand,
-						mnsh);
-			else
-				new_value = ft_strdup(assignment->value);
+			new_value = extract_arg(asgmt->value, asgmt->expand, mnsh);
 			if (!new_value)
 				return (-1);
-			free(assignment->value);
-			assignment->value = new_value;
+			free(asgmt->value);
+			asgmt->value = new_value;
 		}
 		current = current->next;
 	}
 	return (0);
 }
 
-int	expand_variable(t_list *redirections, t_command *cmd)
+int	expand_redirection(t_list *redirections, t_command *cmd)
 {
 	t_list			*current;
 	t_redirection	*redir;
@@ -70,13 +65,9 @@ int	expand_variable(t_list *redirections, t_command *cmd)
 	while (current)
 	{
 		redir = (t_redirection *)current->content;
-		if (redir && redir->value)
+		if (redir && redir->value && redir->expander)
 		{
-			if (redir->expander)
-				new_value = extract_arg(redir->value, redir->expander,
-						cmd->mnsh);
-			else
-				new_value = ft_strdup(redir->value);
+			new_value = extract_arg(redir->value, redir->expander, cmd->mnsh);
 			if (!new_value)
 				return (-1);
 			free(redir->value);
@@ -88,11 +79,27 @@ int	expand_variable(t_list *redirections, t_command *cmd)
 }
 
 // TODO: add returning int for error handling
-int	run_variable_expander(t_command *cmd)
+int	run_args_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
+	char	*new_arg;
 
+	i = 0;
+	args = cmd->args;
+	while (args && args[++i])
+	{
+		new_arg = expand_variable_if_need(i, args[i], cmd);
+		if (!new_arg)
+			return (-1);
+		free(args[i]);
+		args[i] = new_arg;
+	}
+	return (0);
+}
+
+int	run_variable_expander(t_command *cmd)
+{
 	if (!cmd || !cmd->args)
 		return (0);
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
@@ -102,13 +109,11 @@ int	run_variable_expander(t_command *cmd)
 			"expand_variable: minishell: Internal error: mnsh is NULL\n");
 		return (0);
 	}
-	args = cmd->args;
-	i = 0;
-	while (args && args[++i])
-		args[i] = expand_variable_if_need(i, args[i], cmd);
+	if (cmd->expander && run_args_expander(cmd) == -1)
+		return (-1);
 	if (expand_assignments(cmd->assignments, cmd->mnsh) == -1)
 		return (-1);
-	if (expand_variable(cmd->redirections, cmd) == -1)
+	if (expand_redirection(cmd->redirections, cmd) == -1)
 		return (-1);
 	ft_log_fd(LOG_INFO, STDOUT, "Finished variable expansion\n");
 	return (1);
