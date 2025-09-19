@@ -158,6 +158,11 @@ typedef struct s_script
 # define FAIL 1
 # define SYNTAX_ERROR 2
 
+# define CMD_NOT_FOUND 127
+# define EXECUTION_ERROR 126
+# define EXIT_FAILURE 1
+# define EXIT_SUCCESS 0
+
 # define PREFIX "minishell"
 # define UNEXPECTED_TOKEN "syntax error near unexpected token"
 # define UNBALANCED_QUOTES "syntax error: unbalanced quotes"

@@ -13,11 +13,11 @@ int	ft_pwd(t_command *cmd)
 	if (!info)
 	{
 		perror("pwd");
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	// cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out
 	ft_printf_fd(cmd->fd_out, "%s\n", cwd);
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 /* int	ft_putchar_fd(char c, int fd)

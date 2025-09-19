@@ -103,7 +103,7 @@ int ft_cd(t_command *cmd)
 	if (count_args(cmd->args) > 2)
 	{
 		ft_printf_fd(STDERR, "cd: too many arguments\n");
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	if (!cmd->args[1] || ft_strcmp(cmd->args[1], "~") == 0)
 		status = ft_cd_home();
@@ -113,9 +113,9 @@ int ft_cd(t_command *cmd)
 		status = ft_cd_to_path(cmd->args[1]);
 	if (status != 0)
 		return (status);
-	change_env_var("OLDPWD", pwd, cmd); //change OLDPWD first
-	getcwd(pwd, sizeof(pwd)); //get the newpwd
-	change_env_var("PWD", pwd, cmd); //change PWD
+	change_env_var("OLDPWD", pwd, cmd);
+	getcwd(pwd, sizeof(pwd));
+	change_env_var("PWD", pwd, cmd);
 	return (status);
 }
 

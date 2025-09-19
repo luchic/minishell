@@ -13,16 +13,16 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	int i;
 	int result;
 
+	(void)mnsh;
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (perror("malloc"), EXIT_FAILURE);
 
+	fds[0] = STDIN; // pipeline->commands[0]->command->fd_in;
+	
 	i = 0;
-	fds[0] = pipeline->commands[i]->command->fd_in;
 	while (i < pipeline->count)
 	{
-		if (pipeline->commands[i]->type == SUBSHELL)
-			return (free(pids), execute_subshell(mnsh, pipeline->commands[i]->subshell));
 
 		if (i < pipeline->count - 1)
 		{
@@ -31,17 +31,21 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 			fds[1] = pipe_fds[1];
 		}
 		else
-			fds[1] = pipeline->commands[i]->command->fd_out;
+		{
+			fds[1] = STDOUT; //pipeline->commands[i]->command->fd_out;
+		}
 
 		pids[i] = fork_and_exe(pipeline, i, fds, pipe_fds);
 		if (pids[i] == -1)
 			return (free(pids), EXIT_FAILURE);
-		
+
+		if (fds[0] != STDIN)
+			close(fds[0]);
+		if (fds[1] != STDOUT)
+			close(pipe_fds[1]);
+
 		if (i < pipeline->count - 1)
 		{
-			if (fds[0] != STDIN)
-				close(fds[0]);
-			close(pipe_fds[1]);
 			fds[0] = pipe_fds[0];
 		}
 		i++;

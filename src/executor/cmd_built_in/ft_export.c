@@ -6,19 +6,16 @@
 //first letter must be alpha or _
 int	is_valid_identifier(char *str)
 {
-	if (!str[0] || !(ft_isalpha(str[0]) || (str[0] == '_')))
+	if (!str || (!ft_isalpha(*str) && *str != '_'))
 		return (0);
+	// ft_printf_fd(STDOUT, "Validating identifier: %s\n", str); ///to delete --- IGNORE ---
 	while (*str && *str != '=')
 	{
 		if (!(ft_isalnum(*str) || *str == '_'))
 			return (0);
 		str++;
 	}
-	// if (*str == '=')
-	// {
-	// 	if (*(str + 1) == '\0')
-	// 		return (0);
-	// }
+	// ft_printf_fd(STDOUT, "Identifier valid: %s\n", str); ///to delete --- IGNORE ---
 	return (1);
 }
 
@@ -30,28 +27,34 @@ int	is_valid_identifier(char *str)
 
 void	replace_env_var(char **env_var, char *new_var)
 {
-	char	*new;
+	// char	*new;
 	char	*tmp;
 
-	new = ft_substr(new_var, 0, ft_strchr(new_var, '=') - new_var + 1);
-	if (!new)
-		return ;
-	tmp = ft_strjoin(new, "\"");
-	if (!tmp)
-		return (free(new));
-	free(new);
-	new = ft_strjoin(tmp, ft_strchr(new_var, '=') + 1);
-	if (!new)
-		return (free(new));
-	free(tmp);
-	tmp = ft_strjoin(new, "\"");
-	if (!tmp)
-		return (free(new));
-	free(new);
-	tmp[ft_strlen(tmp)] = '\0';
-	new = *env_var;
-	free(new);
-	*env_var = tmp;
+    tmp = ft_strdup(new_var);
+    if (!tmp)
+        return ;
+    free(*env_var);
+    *env_var = tmp;
+
+	// new = ft_substr(new_var, 0, ft_strchr(new_var, '=') - new_var + 1);
+	// if (!new)
+	// 	return ;
+	// tmp = ft_strjoin(new, "\"");
+	// if (!tmp)
+	// 	return (free(new));
+	// free(new);
+	// new = ft_strjoin(tmp, ft_strchr(new_var, '=') + 1);
+	// if (!new)
+	// 	return (free(tmp));
+	// free(tmp);
+	// tmp = ft_strjoin(new, "\"");
+	// if (!tmp)
+	// 	return (free(new));
+	// free(new);
+	// tmp[ft_strlen(tmp)] = '\0';
+	// new = *env_var;
+	// free(new);
+	// *env_var = tmp;
 }
 
 void	append_env_var(char ***envp, char *new_var)
@@ -65,6 +68,7 @@ void	append_env_var(char ***envp, char *new_var)
 	tmp = ft_array_append(*envp, copy);
 	if (!tmp)
 		return (free(copy));
+	// ft_printf_fd(STDOUT, "Appending new env var: %s\n", copy); ///to delete --- IGNORE ---
 	*envp = tmp;
 }
 
@@ -80,17 +84,19 @@ void	update_env_var(char *arg, char ***envp)
 		var = ft_strdup(arg);
 	if (!var)
 		return ;
+	// ft_printf_fd(STDOUT, "\n\nUpdating env var: %s\n", var); ///to delete --- IGNORE ---
 	i = 0;
 	while((*envp)[i])
 	{
-		// find var exists in envp and has values
 		if (ft_strncmp((*envp)[i], var, ft_strlen(var)) == 0 && (*envp)[i][ft_strlen(var)] == '=')
 		{
+			// ft_printf_fd(STDOUT, "  Found match, replacing env[%d]: %s with %s\n", i, (*envp)[i], arg); ///to delete --- IGNORE ---
 			replace_env_var(&((*envp)[i]), arg);
 			return (free(var));
 		}
 		i++;
 	}
+	// ft_printf_fd(STDOUT, "  No match found, appending new var: %s\n", arg); ///to delete --- IGNORE ---
 	append_env_var(envp, arg);
 	free(var);
 }
@@ -103,24 +109,33 @@ void	update_env_var(char *arg, char ***envp)
 
 int	ft_export(t_command *cmd)
 {
-	char	**envp;
+	char	***envp;
 	int		i;
+	int		status;
 
-	if (!cmd->args[1])
-		return (ft_export_print_env(cmd->mnsh->envp, STDOUT), 0); // could be replaced by cmd->fd_out
-	envp = cmd->mnsh->envp;
-	i = 1;
-	while (cmd->args[i])
+	if (cmd->args && !cmd->args[1])
+		return (ft_export_print_env(cmd->mnsh->envp, STDOUT), 0);
+	
+	envp = &(cmd->mnsh->envp);
+	// ft_printf_fd(STDOUT, "Running export with args:\n"); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "  Arg[0]: %s\n", cmd->args[0]); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "  Arg[1]: %s\n", cmd->args[1]); ///to delete --- IGNORE ---
+	// ft_printf_fd(STDOUT, "  Arg[2]: %s\n", cmd->args[2]); ///to delete --- IGNORE ---
+	status = 0;
+	i = EXIT_SUCCESS;
+	while (cmd->args && cmd->args[i])
 	{
-		if (!is_valid_identifier(cmd->args[i]))
+		// ft_printf_fd(STDOUT, "  Arg[%d]: %s\n", i, cmd->args[i]); ///to delete --- IGNORE ---
+		if (is_valid_identifier(cmd->args[i]) == 0)
 		{
 			ft_printf_fd(STDERR, "export: `%s': not a valid identifier\n", cmd->args[i]);
+			status = EXIT_FAILURE;
 		}
 		else
 		{
-			update_env_var(cmd->args[i], &envp);
+			update_env_var(cmd->args[i], envp);
 		}
 		i++;
 	}
-	return (0);
+	return (status);
 }

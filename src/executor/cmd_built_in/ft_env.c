@@ -9,8 +9,8 @@ int	ft_env(t_command *cmd)
 
 	if (cmd->args[1])
 	{
-		ft_printf_fd(STDERR, "env: too many arguments\n");
-		return (EXIT_FAILURE);
+		ft_printf_fd(STDERR, "env: '%s' No such file or directory\n", cmd->args[1]);
+		return (127);
 	}
 	i = 0;
 	while (cmd->mnsh->envp && cmd->mnsh->envp[i])
