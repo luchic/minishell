@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 00:13:38 by tracy            ###   ########.fr       */
+/*   Updated: 2025/09/19 11:25:53 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,5 @@ void				free_tokens(void *param);
 int					is_double_quote(char c, int *escaped);
 void				*add_new_token(t_list **head, char *value,
 						t_quote_status quote, const char *input);
-// ======================== Validator ========================
-int					validate_parantheses(const char *input);
 
 #endif

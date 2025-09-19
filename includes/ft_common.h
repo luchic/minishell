@@ -32,15 +32,16 @@ int		ft_append_str(char **dest, const char *src);
  * @return char* The new string with the inserted value, or NULL on failure.
  */
 char	*ft_insert(char *str, char *insert, int pos);
+char	*ft_replace(char *str, char *insert, int pos, int end);
 char	*ft_strchr_not_escaped(const char *s, int c);
 void	set_exit_code(t_minishell *mnsh, int code);
 
-// ======================== signal handling ========================
+// ================================ Signal Handling ============================
 void	signal_check(void);
 void	init_signal_handler(void);
 void	handle_signal(int signum);
 
-// ======================== Free Tools ========================
+// ================================ Free Tools =================================
 void	free_cmd(t_command *cmd);
 void	free_pipeline(t_pipeline *pipeline);
 void	free_ast_tree(t_ast_node *node);
@@ -54,8 +55,11 @@ void	free_expander(void *param);
 void	free_assignment(void *param);
 void	free_cmd_expander(void *param);
 
-// ======================== Error Messages ========================
+// ================================ Error Messages =============================
 void	msg_unexpected_token(t_token *token);
 void	msg_unexpected_token_type(t_token_type type);
+
+// ================================ Env ========================================
+char	*get_env(t_minishell *mnsh, const char *name);
 
 #endif

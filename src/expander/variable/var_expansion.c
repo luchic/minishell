@@ -6,114 +6,103 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:25:38 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:55:59 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "expander_internal.h"
 #include "ft_printf.h"
 #include "parser.h"
 
-// return pointer to new string, or original one if no expansion needed
-static char	*handle_status_code(char *arg, char *var_position,
-		t_minishell *mnsh)
+static char	*expand_variable_if_need(int index, char *arg, t_command *cmd)
 {
-	char	*new_arg;
-	char	*status_str;
-	int		i;
+	t_cmd_expander	*expander;
+	char			*new_arg;
 
-	status_str = ft_itoa(mnsh->last_exit_status);
-	if (!status_str)
-		return (NULL);
-	new_arg = ft_calloc(ft_strlen(arg) + ft_strlen(status_str) - 1,
-			sizeof(char));
-	if (!new_arg)
-		return (free(status_str), NULL);
-	i = 0;
-	while (&arg[i] != var_position)
-	{
-		new_arg[i] = arg[i];
-		i++;
-	}
-	ft_strlcat(new_arg, status_str, ft_strlen(arg) + ft_strlen(status_str) + 1);
-	while (arg[i + 2])
-	{
-		new_arg[i + ft_strlen(status_str)] = arg[i + 2];
-		i++;
-	}
-	free(status_str);
-	return (new_arg[i + ft_strlen(status_str)] = '\0', new_arg);
-}
-
-static char	*handle_path_var(char *arg, char *var_position, char *env)
-{
-	char	*new_arg;
-	char	*var_value;
-	int		i;
-
-	var_value = env + ft_strlen(var_position + 1) + 1;
-	new_arg = ft_calloc(ft_strlen(arg) + ft_strlen(var_value) + 1,
-			sizeof(char));
+	expander = get_arg_expander(index, cmd->expander);
+	if (!expander)
+		return (arg);
+	new_arg = extract_arg(arg, expander->expand, cmd->mnsh);
 	if (!new_arg)
 		return (NULL);
-	i = 0;
-	while (&arg[i] != var_position)
-	{
-		new_arg[i] = arg[i];
-		i++;
-	}
-	ft_strlcat(new_arg, var_value, ft_strlen(arg) + ft_strlen(var_value) + 1);
 	return (new_arg);
 }
 
-static char	*var_expansion(char *arg, char *var_position, t_minishell *mnsh)
+int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 {
-	int		i;
-	char	**envp;
-
-	if (!arg || !mnsh || !mnsh->envp)
-		return (NULL);
-	if (var_position[0] == '$' && var_position[1] == '?')
+	t_list			*current;
+	t_assignment	*asgmt;
+	char			*new_value;
+	
+	ft_log_fd(LOG_INFO, STDOUT, "Expand assignments\n");
+	if (!asgmts || !mnsh)
+		return (0);
+	current = asgmts;
+	while (current)
 	{
-		return (handle_status_code(arg, var_position, mnsh));
+		asgmt = (t_assignment *)current->content;
+		if (asgmt && asgmt->value && asgmt->expand)
+		{
+			new_value = extract_arg(asgmt->value, asgmt->expand, mnsh);
+			ft_log_fd(LOG_INFO, STDOUT, "Assignment New value: %s\n", new_value);
+			if (!new_value)
+				return (-1);
+			free(asgmt->value);
+			asgmt->value = new_value;
+		}
+		current = current->next;
 	}
-	envp = mnsh->envp;
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], var_position + 1, ft_strlen(var_position
-					+ 1)) == 0 && envp[i][ft_strlen(var_position + 1)] == '=')
-			return (handle_path_var(arg, var_position, envp[i]));
-		i++;
-	}
-	return (ft_strdup(""));
+	return (0);
 }
 
-static char	*expand_variable_if_need(char *arg, t_minishell *mnsh)
+int	expand_redirection(t_list *redirections, t_command *cmd)
 {
-	int		i;
-	char	*new_arg;
+	t_list			*current;
+	t_redirection	*redir;
+	char			*new_value;
 
-	i = 0;
-	while (arg && arg[i])
+	if (!redirections || !cmd)
+		return (0);
+	current = redirections;
+	while (current)
 	{
-		if (arg[i] == '$')
+		redir = (t_redirection *)current->content;
+		if (redir && redir->value && redir->expander)
 		{
-			new_arg = var_expansion(arg, arg + i, mnsh);
-			free(arg);
-			return (new_arg);
+			new_value = extract_arg(redir->value, redir->expander, cmd->mnsh);
+			if (!new_value)
+				return (-1);
+			free(redir->value);
+			redir->value = new_value;
 		}
-		i++;
+		current = current->next;
 	}
-	return (arg);
+	return (0);
 }
 
 // TODO: add returning int for error handling
-int	run_variable_expander(t_command *cmd)
+int	run_args_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
+	char	*new_arg;
 
-	if (!cmd || !cmd->args)
+	i = 0;
+	args = cmd->args;
+	while (args && args[++i])
+	{
+		new_arg = expand_variable_if_need(i, args[i], cmd);
+		if (!new_arg)
+			return (-1);
+		free(args[i]);
+		args[i] = new_arg;
+	}
+	return (0);
+}
+
+int	run_variable_expander(t_command *cmd)
+{
+	if (!cmd)
 		return (0);
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
 	if (!cmd->mnsh)
@@ -122,12 +111,12 @@ int	run_variable_expander(t_command *cmd)
 			"expand_variable: minishell: Internal error: mnsh is NULL\n");
 		return (0);
 	}
-	args = (cmd->args + 1);
-	i = 0;
-	while (args && args[i])
-	{
-		args[i] = expand_variable_if_need(args[i], cmd->mnsh);
-		i++;
-	}
+	if (cmd->args &&cmd->expander && run_args_expander(cmd) == -1)
+		return (-1);
+	if (expand_assignments(cmd->assignments, cmd->mnsh) == -1)
+		return (-1);
+	if (expand_redirection(cmd->redirections, cmd) == -1)
+		return (-1);
+	ft_log_fd(LOG_INFO, STDOUT, "Finished variable expansion\n");
 	return (1);
 }

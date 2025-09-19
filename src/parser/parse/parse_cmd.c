@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+=======
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/08 10:30:13 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/18 22:38:14 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+>>>>>>> main
 
 #include "ft_defines.h"
 #include "lexer.h"
@@ -7,7 +21,10 @@ static int	update_arg_value(int size, char **res, t_list **expander,
 		t_token *token)
 {
 	char	*pos;
+<<<<<<< HEAD
 	// int		exit_status;
+=======
+>>>>>>> main
 
 	if (ft_append_str(res, token->value) == -1)
 		return (-1);
@@ -48,7 +65,7 @@ static char	*get_merged_value(t_tokenstream *ts, t_list **node)
 			return (ts_advance(ts), merged_value);
 		ts_advance(ts);
 		token = ts_peek(ts);
-		if (!token)
+		if (!token || !ts_match(ts, WORD))
 			break ;
 		size = ft_strlen(merged_value);
 		if (update_arg_value(size, &merged_value, node, token) == -1)
@@ -82,7 +99,10 @@ static int	set_command_args(t_command *cmd, t_tokenstream *ts)
 {
 	int		argc;
 	t_list	*expander;
+<<<<<<< HEAD
 	// t_token	*arg;
+=======
+>>>>>>> main
 
 	argc = 0;
 	expander = NULL;
@@ -102,8 +122,6 @@ static int	set_command_args(t_command *cmd, t_tokenstream *ts)
 	if (!realloc_args(cmd, argc + 1))
 		return (0);
 	cmd->args[argc] = NULL;
-	if (!set_redirection(cmd, ts))
-		return (0);
 	return (1);
 }
 
@@ -117,8 +135,11 @@ static int	parse_command_fields(t_command *command, t_tokenstream *ts,
 		return (0);
 	if (!set_redirection(command, ts))
 		return (0);
+	if (!ts_peek(ts))
+		return (1);
 	if (!ts_match(ts, WORD))
-		return (msg_unexpected_token(ts_peek(ts)), 0);
+		return (msg_unexpected_token(ts_peek(ts)),
+			mnsh->last_exit_status = SYNTAX_ERROR, 0);
 	tok_name = ts_peek(ts);
 	command->name = ft_strdup(tok_name->value);
 	if (!command->name)

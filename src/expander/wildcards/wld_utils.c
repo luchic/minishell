@@ -6,11 +6,12 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:26 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:34:27 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 10:41:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include "ft_common.h"
 #include "libft.h"
 #include <dirent.h>
 #include <sys/stat.h>
@@ -20,7 +21,7 @@ char	*get_last_slash(const char *pattern)
 	char	*slash;
 	char	*star;
 
-	star = ft_strchr(pattern, '*');
+	star = ft_strchr_not_escaped(pattern, '*');
 	if (!star)
 		return (NULL);
 	*star = '\0';
@@ -72,7 +73,7 @@ char	*get_current_path(char *format)
 	char	*current_path;
 	char	*slash;
 
-	star = ft_strchr(format, '*');
+	star = ft_strchr_not_escaped(format, '*');
 	if (!star)
 		return (NULL);
 	slash = ft_strrchr(format, '/');

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:36:57 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/08 13:29:46 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:22:48 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@
 int	realloc_args(t_command *cmd, int new_size)
 {
 	char	**new_args;
+	size_t	old_bytes;
+	size_t	new_bytes;
 
-	new_args = ft_realloc(cmd->args, sizeof(char *) * (new_size - 1),
-			sizeof(char *) * new_size);
+	old_bytes = sizeof(char *) * (new_size);
+	new_bytes = sizeof(char *) * (new_size + 1);
+	new_args = ft_realloc(cmd->args, old_bytes, new_bytes);
 	if (!new_args)
 		return (0);
 	cmd->args = new_args;

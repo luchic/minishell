@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:48:52 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 18:10:19 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:40:35 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,53 @@ char	*ft_insert(char *str, char *insert, int pos)
 	return (new_str);
 }
 
+char	*ft_replace(char *str, char *insert, int pos, int end)
+{
+	char	*new_str;
+	int		len_str;
+	int		len_insert;
+
+	end += 1;
+	if (!str || !insert || pos < 0 || end < pos)
+		return (NULL);
+	len_str = ft_strlen(str);
+	if (len_str < end)
+		end = len_str;
+	if (len_str < pos)
+		pos = len_str;
+	len_insert = ft_strlen(insert);
+	new_str = ft_calloc(len_str - (end - pos) + len_insert + 1, sizeof(char));
+	if (!new_str)
+		return (NULL);
+	ft_memcpy(new_str, str, pos);
+	ft_memcpy(new_str + pos, insert, len_insert);
+	ft_memcpy(new_str + pos + len_insert, str + end, len_str - end);
+	return (new_str);
+}
+
 char	*ft_strchr_not_escaped(const char *s, int c)
 {
 	char	*pos;
 	int		escaped;
+	int		esc_slash;
 
+	if (!s)
+		return (NULL);
 	pos = (char *)s;
+	esc_slash = 0;
 	escaped = 0;
 	while (*pos)
 	{
-		if (*pos == '\\' && !escaped)
-			escaped = 1;
-		else if (*pos == (char)c && !escaped)
+		if ((char)c == '\\' && *pos != '\\' && *(pos + 1) != '\\')
 			return (pos);
-		else
-			escaped = 0;
+		else if ((char)c == '\\' && *pos != '\\' && *(pos + 1) == '\\')
+			pos += 2;
+		if (*pos == (char)c && !escaped)
+			return (pos);
+		escaped = (*pos == '\\' && !escaped && (char)c != '\\');
 		pos++;
 	}
+	if ((char)c == '\0')
+		return (pos);
 	return (NULL);
 }

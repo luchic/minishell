@@ -6,10 +6,11 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:30 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 14:19:39 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/19 11:25:23 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_printf.h"
 #include "libft.h"
@@ -30,11 +31,26 @@ char	*get_slash_after(const char *pattern)
 	return (slash + 1);
 }
 
-int	ft_fnmatch(char *pattern, const char *filename)
+int	ft_fnmatch(char *pattern, const char *filename, const char *origin)
 {
+	char	*tmp;
+
 	if (*pattern == '\0')
 		return (*filename == '\0');
-	if (*pattern == '*')
+	tmp = ft_strchr_not_escaped(pattern, '\\');
+	if (*pattern == '\\' && pattern == tmp && *(pattern + 1) != '\0')
+	{
+		if (*(pattern + 1) == '*' && *filename == '*')
+			return (ft_fnmatch(pattern + 2, filename + 1, tmp + 2));
+		else if (*(pattern + 1) == '*' && *filename != '*')
+			return (0);
+		else if (*(pattern + 1) == *filename)
+			return (ft_fnmatch(pattern + 2, filename + 1, tmp + 2));
+		else
+			return (0);
+	}
+	tmp = ft_strchr_not_escaped(origin, '*');
+	if (*pattern == '*' && pattern == tmp)
 	{
 		while (*pattern == '*')
 			pattern++;
@@ -42,25 +58,24 @@ int	ft_fnmatch(char *pattern, const char *filename)
 			return (1);
 		while (*filename)
 		{
-			if (ft_fnmatch(pattern, filename))
+			if (ft_fnmatch(pattern, filename, tmp))
 				return (1);
 			filename++;
 		}
 	}
 	if (*pattern == *filename)
-		return (ft_fnmatch(pattern + 1, filename + 1));
+		return (ft_fnmatch(pattern + 1, filename + 1, origin));
 	return (0);
 }
 
+// TODO: WTF is hier
 int	is_wildcard(char **arg)
 {
 	if (!arg)
-	{
-		return (-1);
-	}
+		return (0);
 	while (*arg)
 	{
-		if (*arg && ft_strchr(*arg, '*'))
+		if (ft_strchr_not_escaped(*arg, '*'))
 			return (1);
 		arg++;
 	}

@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 11:34:46 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/19 11:25:36 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	expand_wildcard_if_need(char ***new_arg, char *arg)
 	char	*copy_arg;
 	char	**tmp;
 
-	if (ft_strchr(arg, '*'))
+	if (ft_strchr_not_escaped(arg, '*'))
 		return (expand_wildcard(new_arg, arg));
 	copy_arg = ft_strdup(arg);
 	if (!copy_arg)
@@ -107,6 +107,9 @@ int	run_wildcards_expander(t_command *cmd)
 	char	**new_args;
 	int		i;
 
+	ft_log_fd(LOG_DEBUG, STDERR,
+		"run_wildcards_expander: Expanding wildcards for command: %s\n",
+		cmd->name ? cmd->name : "NULL");
 	if (!cmd || !cmd->args)
 		return (-1);
 	if (is_wildcard(cmd->args) == 0)
@@ -114,7 +117,7 @@ int	run_wildcards_expander(t_command *cmd)
 	i = 0;
 	args = cmd->args;
 	new_args = NULL;
-	while (args && args[i])
+	while (args && args[++i])
 	{
 		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
@@ -129,3 +132,29 @@ int	run_wildcards_expander(t_command *cmd)
 	free_str_array(cmd->args);
 	return (cmd->args = new_args, 0);
 }
+
+// #include <stdio.h>
+// #include <stdlib.h>
+
+// int main(int argc, char **argv)
+// {
+// 	char **new_args = NULL;
+// 	char *arg;
+// 	if (argc != 2)
+// 	{
+// 		arg = ft_strdup("*");
+// 	}
+// 	else
+// 	{
+// 		arg = ft_strdup(argv[1]);
+// 	}
+// 	// new_args = calloc(3, sizeof(char *));
+// 	// new_args[0] = strdup("file1.txt");
+// 	// new_args[1] = strdup("*");
+// 	expand_wildcard_if_need(&new_args, arg);
+
+// 	for(int i = 0; new_args && new_args[i]; i++)
+// 	{
+// 		printf("new_args[%d]: %s\n", i, new_args[i]);
+// 	}
+// }

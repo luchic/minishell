@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 12:55:44 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 18:44:52 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:39:12 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,6 @@ int						handle_wildcard(int pos, char **res, t_token *token,
 							int (*is_quoted)(t_quote_status));
 int						is_single_quoted(t_quote_status status);
 int						is_built_in(char *cmd_name);
-
-// ======================== Validator ========================
-int						validate(t_tokenstream *ts);
 
 // ======================== Assignments ========================
 int						handle_expander_if_need(int size, t_token *token,
