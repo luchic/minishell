@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tracy <tracy@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/17 23:58:33 by tracy            ###   ########.fr       */
+/*   Updated: 2025/09/18 22:10:19 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_executor.h"
+#include "lexer.h"
 #include "libft.h"
 #include "minishell.h"
 #include "parser.h"
-#include "lexer.h"
-#include "ft_common.h"
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -44,14 +44,15 @@ void	setup_shell_level(t_minishell *mnsh)
 
 void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 {
-	int	i;
-	int	size;
+	int		i;
+	int		size;
+	// char	cwd[255];
+	// char	*pwd_var;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	(void)mnsh;
-
 	ft_memset(mnsh, 0, sizeof(t_minishell));
 	size = count_args(envp);
 	mnsh->envp = ft_calloc((size + 1), sizeof(char *));
@@ -60,15 +61,22 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	for (i = 0; envp[i]; i++)
 	{
 		mnsh->envp[i] = ft_strdup(envp[i]);
-		if (!mnsh->envp[i])
-			return ;
 	}
 	mnsh->envp[i] = NULL;
-
-	// setup shell level variables
-	// SHLVL
 	setup_shell_level(mnsh);
-
+	
+	// 删除 OLDPWD
+	// ft_array_remove(&(mnsh->envp), "OLDPWD");
+	// // 如果没有 PWD，则补充
+	// if (!get_env_var(mnsh->envp, "PWD"))
+	// {
+	// 	if (getcwd(cwd, sizeof(cwd)))
+	// 	{
+	// 		pwd_var = ft_strjoin("PWD=", cwd);
+	// 		update_env_var(pwd_var, &(mnsh->envp));
+	// 		free(pwd_var);
+	// 	}
+	// }
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
@@ -85,13 +93,17 @@ void	ft_run_minishell(t_minishell *mnsh)
 	int			exit_status;
 	int			tmp;
 
-
 	(void)mnsh;
-
 	while ((input = readline("minishell> ")))
 	{
+		if (ft_strcmp(input, "echo $?") == 0)
+		{
+			ft_printf("%d\n", mnsh->last_exit_status);
+			free(input);
+			continue ;
+		}
 		tmp = run_lexer(&tokens, input);
-		if (!tmp)
+		if (tmp)
 		{
 			ft_printf_fd(STDERR, "Lexer error\n");
 			free(input);
@@ -111,6 +123,7 @@ void	ft_run_minishell(t_minishell *mnsh)
 			ft_printf_fd(STDERR, "Parser error\n");
 			free(input);
 			ft_lstclear(&tokens, free);
+			continue ;
 		}
 		exit_status = execute_script(mnsh, ast);
 		mnsh->last_exit_status = exit_status;
@@ -130,9 +143,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	(void)envp;
 	(void)mnsh;
-
 	init_minishell(&mnsh, argc, argv, envp);
 	ft_run_minishell(&mnsh);
 	return (0);
-
 }

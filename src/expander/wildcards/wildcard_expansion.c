@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/19 11:25:36 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/19 13:18:53 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,12 @@ int	run_wildcards_expander(t_command *cmd)
 		return (-1);
 	if (is_wildcard(cmd->args) == 0)
 		return (0);
-	i = 0;
 	args = cmd->args;
 	new_args = NULL;
-	while (args && args[++i])
+	i = 0;
+	while (args && args[i])
 	{
+		ft_printf_fd(STDOUT, "Expanding wildcard for arg: %s\n", args[i]); ///to delete --- IGNORE ---
 		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
 			ft_log_fd(LOG_ERROR, STDERR_FILENO,
