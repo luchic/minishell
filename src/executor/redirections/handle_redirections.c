@@ -14,7 +14,7 @@ int	handle_io_redirection(t_command *cmd)
 	{
 		if (dup2(cmd->fd_in, STDIN) == -1)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_in\n");
+			ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_in\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_in);
@@ -23,12 +23,12 @@ int	handle_io_redirection(t_command *cmd)
 	{
 		if (dup2(cmd->fd_out, STDOUT) == -1)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_out\n");
+			ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_out\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_out);
 	}
-	ft_log_fd(LOG_INFO, STDOUT, "IO redirection applied: fd_in=%d, fd_out=%d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_INFO, STDERR, "IO redirection applied: fd_in=%d, fd_out=%d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
 	return (EXIT_SUCCESS);
 }
 
@@ -48,7 +48,7 @@ int	handle_redirections(t_command *cmd)
 	while (current)
 	{
 		redir = (t_redirection *)current->content;
-		ft_log_fd(LOG_INFO, STDOUT, "Handling redirection: type=%d, value=%s\n", redir->type, redir->value); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_INFO, STDERR, "Handling redirection: type=%d, value=%s\n", redir->type, redir->value); ///to delete --- IGNORE ---
 		if (redir->type == REDIR_INPUT)
 		{
 			status = handle_input_redirection(redir, cmd);

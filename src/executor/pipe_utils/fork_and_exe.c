@@ -24,6 +24,7 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 
 		handle_io_redirection(pipeline->commands[i]->command);
 
+		
 		// ft_printf_fd(STDOUT, "Executing command %d in child process %d\n", i, getpid()); ///to delete --- IGNORE ---
 		// ft_printf_fd(STDOUT, "fds[0]: %d, fds[1]: %d\n", fds[0], fds[1]); ///to delete --- IGNORE ---
 		// ft_printf_fd(STDOUT, "Command name: %s\n", pipeline->commands[i]->command->name); ///to delete --- IGNORE ---

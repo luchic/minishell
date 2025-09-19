@@ -47,7 +47,7 @@ int	run_external_no_fork(t_command *cmd)
 	signal_check();
 	
 	handle_io_redirection(cmd);
-	ft_printf_fd(STDOUT, "After handling redirections, fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_INFO, STDERR, " cmd->fd_in: %d, cmd->fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
 
 	execve(path, cmd->args, cmd->mnsh->envp);
 	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",

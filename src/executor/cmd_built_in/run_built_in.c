@@ -38,9 +38,9 @@ int run_builtin(t_command *cmd)
 	status = match_built_in(cmd);
 
 	if (dup2(orig_fds[0], STDIN) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	if (dup2(orig_fds[1], STDOUT) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	close(orig_fds[0]);
 	close(orig_fds[1]);
     return (status);
