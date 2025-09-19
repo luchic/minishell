@@ -182,7 +182,7 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 	if (cmd->fd_out == -1)
 		cmd->fd_out = STDOUT;
 
-	// print_attri_into(cmd); ///to delete --- IGNORE ---
+	print_attri_into(cmd); ///to delete --- IGNORE ---
 	update_underscore(mnsh, cmd);
 
 	ft_log_fd(LOG_INFO, STDERR, "Executing command in pipeline: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---

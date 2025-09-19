@@ -8,16 +8,45 @@
  need to check before submission
  */
 
+// 0 for no -n, 1 for -n
+
+int n_option(char *arg)
+{
+    int i;
+    
+    if (!arg || arg[0] != '-')
+        return 0;
+    i = 1;
+    while (arg[i])
+    {
+        if (arg[i] != 'n')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
+int is_newline_option(char *arg)
+{
+    int is_n;
+
+    is_n = n_option(arg);
+    if (is_n == 1)
+        return (0);
+    else if (is_n == 0)
+        return (1);
+}
+
 int ft_echo(t_command *cmd)
 {
     int i;
     int newline;
+    char *first_arg;
 
     i = 1;
-    newline = 1;
-    while (cmd->args[i] && ft_strcmp(cmd->args[i], "-n") == 0)
+    newline = is_newline_option(cmd->args[i]);
+    while (n_option(cmd->args[i]) == 1)
     {
-        newline = 0;
         i++;
     }
     while (cmd->args[i])
