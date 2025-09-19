@@ -6,137 +6,15 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 20:22:20 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 14:54:26 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 23:24:49 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_defines.h"
+#include "ft_printf.h"
 #include "lexer.h"
 #include "libft.h"
-#include "ft_printf.h"
-#include "ft_defines.h"
 #include <stdlib.h>
-
-/** Special tokens to handle;
-( )
-
-| ||
-
-& &&
-
-< <<
-
-> >>
-
-;
-*/
-
-static char	*get_special_char_token(const char **input, t_parse_mode *mode)
-{
-	const char	*cur_input;
-	char		*token;
-
-	if (!*input || !**input)
-		return (NULL);
-	cur_input = *input;
-	if (is_double_char_token(cur_input))
-	{
-		token = ft_substr(*input, 0, 2);
-		*input += 2;
-	}
-	else if (is_special_char(*cur_input))
-	{
-		token = ft_substr(*input, 0, 1);
-		*input += 1;
-	}
-	else
-		return (NULL);
-	if (!token)
-		return (*mode = ERROR, NULL);
-	return (token);
-}
-
-static char	*get_next_token(const char **input, t_parse_mode *mode,
-		t_quote_status *status)
-{
-	const char	*cur_input;
-	char		*token;
-
-	if (!*input || !**input)
-		return (NULL);
-	while (**input == ' ')
-		(*input)++;
-	if (!**input)
-		return (NULL);
-	cur_input = *input;
-	*status = UNQUOTED;
-	if (*cur_input == '\'')
-		return (*mode = SINGLE, NULL);
-	else if (*cur_input == '\"')
-		return (*mode = DOUBLE, NULL);
-	if (is_special_char(*cur_input))
-		return (get_special_char_token(input, mode));
-	while (*cur_input && !is_special_char(*cur_input) && *cur_input != ' ')
-		cur_input++;
-	token = ft_substr(*input, 0, cur_input - *input);
-	if (!token)
-		return (*mode = ERROR, NULL);
-	*input = cur_input;
-	return (token);
-}
-
-static char	*get_single_quoted_token(const char **input, t_parse_mode *mode,
-		t_quote_status *status)
-{
-	const char	*cur_input;
-	const char	*start;
-	char		*token;
-
-	if (!*input || !**input)
-		return (NULL);
-	start = *input + 1;
-	cur_input = start;
-	while (*cur_input && *cur_input != '\'')
-		cur_input++;
-	if (*cur_input != '\'')
-		return (*mode = UNBALANCED, NULL);
-	token = ft_substr(start, 0, cur_input - start);
-	if (!token)
-		return (*mode = ERROR, NULL);
-	*input = cur_input + 1;
-	*status = SINGLE_QUOTED;
-	*mode = NORMAL;
-	return (token);
-}
-
-static char	*get_double_quoted_token(const char **input, t_parse_mode *mode,
-		t_quote_status *status)
-{
-	const char	*cur_input;
-	const char	*start;
-	char		*token;
-	int			escaped;
-
-	if (!*input || !**input)
-		return (NULL);
-	start = *input + 1;
-	cur_input = start;
-	escaped = 0;
-	while (*cur_input)
-	{
-		if (is_double_quote(*cur_input, &escaped))
-			break ;
-		cur_input++;
-	}
-	if (*cur_input != '\"')
-		return (*mode = UNBALANCED, NULL);
-	token = ft_substr(start, 0, cur_input - start);
-	if (!token)
-		return (*mode = ERROR, NULL);
-	*input = cur_input + 1;
-	*status = DOUBLE_QUOTED;
-	*mode = NORMAL;
-	return (token);
-}
 
 int	ft_split_tokens(t_list **head, const char *input)
 {
@@ -148,20 +26,21 @@ int	ft_split_tokens(t_list **head, const char *input)
 	mode = NORMAL;
 	while (*input)
 	{
-		if (mode == NORMAL)
-			token = get_next_token(&input, &mode, &quote);
-		else if (mode == SINGLE)
-			token = get_single_quoted_token(&input, &mode, &quote);
-		else if (mode == DOUBLE)
-			token = get_double_quoted_token(&input, &mode, &quote);
+		if (mode == NORMAL || mode == SINGLE || mode == DOUBLE)
+			token = get_token(&input, &mode, &quote);
 		else if (mode == ERROR)
 			return (ft_lstclear(head, free_tokens), FAIL);
-		if (token && !add_new_token(head, token, quote, input))
-			return (free(token), ft_lstclear(head, free_tokens), FAIL);
 		if (!token && mode == UNBALANCED)
+		{
+			if (token)
+				free(token);
 			return (ft_lstclear(head, free_tokens), SYNTAX_ERROR);
-		if (token && mode == UNBALANCED)
-			return (free(token), ft_lstclear(head, free_tokens), SYNTAX_ERROR);
+		}
+		if (token)
+		{
+			if (!add_new_token(head, token, quote, input))
+				return (free(token), ft_lstclear(head, free_tokens), FAIL);
+		}
 	}
 	return (0);
 }
@@ -179,7 +58,7 @@ int	ft_split_tokens(t_list **head, const char *input)
 // 	if (!tokens)
 // 	{
 // 		printf("Lexer error\n");
-// 		return 1;
+// 		return (1);
 // 	}
 // 	while (current)
 // 	{
@@ -190,6 +69,6 @@ int	ft_split_tokens(t_list **head, const char *input)
 // 	}
 
 // 	ft_lstclear(&tokens, free_tokens);
-// 	return 0;
+// 	return (0);
 
 // }

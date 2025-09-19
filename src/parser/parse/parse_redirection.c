@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:39:04 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 18:42:25 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:05:44 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ static int	set_redirection_value(t_redirection *redir, t_tokenstream *ts)
 	{
 		token = ts_peek(ts);
 		if (!token || token->is_space_after)
-			break ;
+			return (ts_advance(ts), redir->value = res, 1);
 		ts_advance(ts);
 		token = ts_peek(ts);
-		if (!token)
+		if (!token || !ts_match(ts, WORD))
 			break ;
 		size = ft_strlen(res);
 		if (update_redirection_value(size, &res, redir, token) == -1)

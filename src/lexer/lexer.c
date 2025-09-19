@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 17:46:46 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 15:07:26 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:28:49 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ int	run_lexer(t_list **tokens, const char *input)
 
 	head = NULL;
 	ft_log_fd(LOG_INFO, STDERR, "Run lexer\n");
-	if (validate_parantheses(input) == SYNTAX_ERROR)
-	{
-		return (SYNTAX_ERROR);
-	}
+
 	exit_code = token_assignment(&head, input);
 	if (exit_code == FAIL)
 		return (ft_log_fd(LOG_ERROR, STDERR,

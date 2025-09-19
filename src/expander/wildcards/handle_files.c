@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:11:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 21:16:56 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:58:41 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,8 @@ static char	**get_current_files(char *path)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		if (ft_strncmp(entry->d_name, ".", 1) == 0)
-			continue ;
-		if (ft_append_file(entry->d_name, &files) == -1)
+		if (ft_strncmp(entry->d_name, ".", 1) != 0
+			&& ft_append_file(entry->d_name, &files) == -1)
 		{
 			closedir(dir);
 			free_str_array(files);
@@ -80,7 +79,7 @@ char	**get_matching_files(char *path, char *pattern)
 	matched = NULL;
 	while (files[i])
 	{
-		if (ft_fnmatch(pattern, files[i]))
+		if (ft_fnmatch(pattern, files[i], pattern))
 		{
 			if (ft_append_file(files[i], &matched) == -1)
 			{
@@ -110,3 +109,32 @@ char	*get_file_prefix(char *path, char *pattern)
 	}
 	return (prefix);
 }
+
+// #include <stdio.h>
+// #include <stdlib.h>
+
+// int main(int argc, char **argv)
+// {
+// 	char **new_args = NULL;
+// 	char *arg;
+// 	if (argc != 2)
+// 	{
+// 		arg = ft_strdup("\\*hello");
+// 	}
+// 	else
+// 	{
+// 		arg = ft_strdup(argv[1]);
+// 	}
+// 	new_args =  get_matching_files(".", arg);
+// 	free(arg);
+// 	if (!new_args)
+// 	{
+// 		printf("No matching files\n");
+// 		return 0;
+// 	}
+// 	for(int i = 0; new_args && new_args[i]; i++)
+// 	{
+// 		printf("new_args[%d]: %s\n", i, new_args[i]);
+// 	}
+// 	free_str_array(new_args);
+// }
