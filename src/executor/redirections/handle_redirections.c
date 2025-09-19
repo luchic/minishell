@@ -48,7 +48,7 @@ int	handle_redirections(t_command *cmd)
 	while (current)
 	{
 		redir = (t_redirection *)current->content;
-		ft_printf_fd(STDOUT, "Handling redirection: type=%d, value=%s\n", redir->type, redir->value); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_INFO, STDOUT, "Handling redirection: type=%d, value=%s\n", redir->type, redir->value); ///to delete --- IGNORE ---
 		if (redir->type == REDIR_INPUT)
 		{
 			status = handle_input_redirection(redir, cmd);

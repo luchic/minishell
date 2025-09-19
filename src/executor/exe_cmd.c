@@ -4,42 +4,42 @@
 # include "ft_executor.h"
 # include "expander.h"
 
-/* static void print_attri_into(t_command *cmd)
+static void print_attri_into(t_command *cmd)
 {
-	ft_printf_fd(STDOUT, "Command fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
-	ft_printf_fd(STDOUT, "Command name: %s\n", cmd->name); ///to delete --- IGNORE ---
-	ft_printf_fd(STDOUT, "Command type: %d\n", cmd->type); //0 for built-in, 1 for external ///to delete --- IGNORE ---
+	ft_log_fd(LOG_DEBUG, STDOUT, "Command fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_DEBUG, STDOUT, "Command name: %s\n", cmd->name); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_DEBUG, STDOUT, "Command type: %d\n", cmd->type); //0 for built-in, 1 for external ///to delete --- IGNORE ---
 	int i;
 	for (i = 0; cmd->args[i]; i++)  // 确保这个循环正确
 	{
-	    ft_printf_fd(STDOUT, "  Arg[%d]: %s\n", i, cmd->args[i]); ///to delete --- IGNORE ---
+	    ft_log_fd(LOG_DEBUG, STDOUT, "  Arg[%d]: %s\n", i, cmd->args[i]); ///to delete --- IGNORE ---
 	}
-	 ft_printf_fd(STDOUT, "  Arg[%d]: %s\n", i, cmd->args[i]);
+	 ft_log_fd(LOG_DEBUG, STDOUT, "  Arg[%d]: %s\n", i, cmd->args[i]);
 	i = 0;
 	if (cmd->redirections)
 	{
 		for (t_list *dir = cmd->redirections; dir; dir = dir->next)  // 确保这个循环正确
 		{
-			ft_printf_fd(STDOUT, "  Redirection[%d]: type=%d, value=%s\n", i, ((t_redirection *)dir->content)->type, ((t_redirection *)dir->content)->value); ///to delete --- IGNORE ---
+			ft_log_fd(LOG_DEBUG, STDOUT, "  Redirection[%d]: type=%d, value=%s\n", i, ((t_redirection *)dir->content)->type, ((t_redirection *)dir->content)->value); ///to delete --- IGNORE ---
 			i++;
 		}
 	}
 	else
 	{
-		ft_printf_fd(STDOUT, "  No redirections\n"); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_INFO, STDOUT, "  No redirections\n"); ///to delete --- IGNORE ---
 	}
 	if (!cmd->assignments)
 	{
-		ft_printf_fd(STDOUT, "  No assignments\n"); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_INFO, STDOUT, "  No assignments\n"); ///to delete --- IGNORE ---
 		return ;
 	}
 	int j = 0;
 	for (t_list *var = cmd->assignments; var; var = var->next)  // 确保这个循环正确
 	{
-		ft_printf_fd(STDOUT, "  Assignment[%d]: %s=%s\n", j, ((t_var *)var->content)->name, ((t_var *)var->content)->value); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_DEBUG, STDOUT, "  Assignment[%d]: %s=%s\n", j, ((t_var *)var->content)->name, ((t_var *)var->content)->value); ///to delete --- IGNORE ---
 		j++;
 	}
-} */
+} 
 
 
 
@@ -83,14 +83,20 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	int		should_restore_env;
 
 	status = 0;
-	if (cmd->assignments && !cmd->name)
-		return (handle_assignments(mnsh, cmd->assignments), 0);
+	if (!cmd->name && !cmd->assignments)
+		return (EXIT_SUCCESS);
+
+	if (!cmd->name && cmd->assignments)
+	{
+		original_env = handle_assignments(mnsh, cmd->assignments);
+		free_str_array(original_env);
+		return (EXIT_SUCCESS);
+	}
 
 	if (handle_redirections(cmd) == EXIT_FAILURE)
 	{
-		//print_attri_into(cmd); ///to delete --- IGNORE ---
-		ft_printf_fd(STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
-		//return (EXIT_FAILURE);
+		print_attri_into(cmd); ///to delete --- IGNORE ---
+		ft_log_fd(LOG_ERROR, STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
 		status = EXIT_FAILURE;
 	}
 
@@ -102,7 +108,8 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
 
-	//print_attri_into(cmd); ///to delete --- IGNORE ---
+
+	print_attri_into(cmd); ///to delete --- IGNORE ---
 
 	update_underscore(mnsh, cmd);
 
@@ -114,10 +121,17 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		else if (cmd->type == CMD_EXTERNAL)
 			should_restore_env = 1;
 	}
-	if (should_restore_env)
-		original_env = handle_assignments(mnsh, cmd->assignments);
-	else
-		handle_assignments(mnsh, cmd->assignments);
+	// if (should_restore_env)
+	// 	original_env = handle_assignments(mnsh, cmd->assignments);
+	// else
+	// 	handle_assignments(mnsh, cmd->assignments);
+
+	original_env = handle_assignments(mnsh, cmd->assignments);
+	if (!should_restore_env && original_env)
+	{
+		free_str_array(original_env);
+		original_env = NULL;
+	}
 
 	if (cmd->type == CMD_BUILTIN)
 		status = run_builtin(cmd);
@@ -136,10 +150,15 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 {
 	int		status;
+	char	**original_env;
 
 	status = 0;
 	if (cmd->assignments && !cmd->name)
-		return (handle_assignments(mnsh, cmd->assignments), 0);
+	{
+		original_env = handle_assignments(mnsh, cmd->assignments);
+		free_str_array(original_env);
+		return (EXIT_SUCCESS);
+	}
 
 	if (handle_redirections(cmd) == EXIT_FAILURE)
 		status = EXIT_FAILURE;
@@ -152,7 +171,9 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
 
-	handle_assignments(mnsh, cmd->assignments);
+	original_env = handle_assignments(mnsh, cmd->assignments);
+	free_str_array(original_env);
+	original_env = NULL;
 
 	update_underscore(mnsh, cmd);
 

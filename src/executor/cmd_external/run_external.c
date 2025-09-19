@@ -30,7 +30,7 @@ int	run_external_no_fork(t_command *cmd)
 		if (!path)
 		{
 			ft_printf_fd(STDERR, "%s: command not found\n",cmd->name);
-			// ft_printf_fd(STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
+			ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
 			exit (127);
 		}
 		is_path_malloced = 1;
@@ -42,7 +42,7 @@ int	run_external_no_fork(t_command *cmd)
 		free(path);
 		exit (126);
 	}
-	ft_printf_fd(STDOUT, "Executing external command: %s\n", path); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_INFO, STDOUT, "Resolved command path: %s\n", path); ///to delete --- IGNORE ---
 
 	signal_check();
 	
@@ -54,7 +54,8 @@ int	run_external_no_fork(t_command *cmd)
 		cmd->name);
 	if (is_path_malloced && path)
 		free(path);
-	ft_printf_fd(STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
+	
+	ft_log_fd(LOG_ERROR, STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
 	exit (126);
 }
 
