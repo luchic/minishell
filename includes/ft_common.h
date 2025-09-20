@@ -33,6 +33,7 @@ int		ft_append_str(char **dest, const char *src);
  */
 char	*ft_insert(char *str, char *insert, int pos);
 char	*ft_replace(char *str, char *insert, int pos, int end);
+char	*ft_strchr_escaped(const char *s, int c);
 char	*ft_strchr_not_escaped(const char *s, int c);
 void	set_exit_code(t_minishell *mnsh, int code);
 

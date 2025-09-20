@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 12:55:44 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:39:12 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 10:28:22 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include "ft_common.h"
 # include "ft_defines.h"
 # include "lexer.h"
+
+# define SENTINEL '\x07'
 
 typedef struct s_tokenstream
 {
@@ -28,6 +30,15 @@ typedef struct s_var_handle
 	char				*begin;
 	char				*var_end;
 }						t_var_handle;
+
+typedef struct s_exp_info
+{
+	int					size;
+	int					wld_count;
+	int					var_count;
+	char				*res;
+	t_list				**expand;
+}						t_exp_info;
 
 // ======================== Token stream ========================
 t_token					*ts_peek(t_tokenstream *ts);
@@ -67,8 +78,8 @@ int						create_assignments(t_tokenstream *ts, t_list **asgmt);
 t_logical_op			get_logical_op(t_tokenstream *ts);
 int						is_assignment(t_tokenstream *ts);
 t_assignment			*allocate_assignment(void);
-int						handle_wildcard(int pos, char **res, t_token *token,
-							int (*is_quoted)(t_quote_status));
+// int						handle_wildcard(int count, t_token *token,
+// 							t_list **expand, int (*is_quoted)(t_quote_status));
 int						is_single_quoted(t_quote_status status);
 int						is_built_in(char *cmd_name);
 
@@ -77,8 +88,13 @@ int						handle_expander_if_need(int size, t_token *token,
 							t_assignment *assignment);
 
 // ======================== Expander ========================
-t_list					*add_var_expander(t_var_handle info, t_token *token);
 int						handle_var(int size, char *var_pos, t_token *token,
 							t_list **expand);
+int						update_wildcard_expander(t_exp_info *info,
+							t_token *token, int (*is_qted)(t_quote_status));
+int						update_value(t_exp_info *info, t_token *token,
+							int is_new);
+int						set_merged_value(char **value, t_list **expander,
+							t_tokenstream *ts);
 
 #endif
