@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:06:49 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/15 12:29:23 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 12:02:30 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,7 @@ static int	expander(char *pattern, char **expanded, char ***new, int *status)
 	npat = ft_strdup(last_slash);
 	if (!npat)
 		return (-1);
-	if (expand_wildcard_recursive_core(npat, expanded, new,
-			status) == -1)
+	if (expand_wildcard_recursive_core(npat, expanded, new, status) == -1)
 	{
 		return (free(npat), -1);
 	}
@@ -113,6 +112,8 @@ char	**expand_wildcard_recursive(char *path, char *pattern, int *status)
 	char	**expanded;
 	char	**new_expanded;
 
+	ft_log_fd(LOG_INFO, STDERR, "Expand wildcard: %s| With path: %s\n", pattern,
+		path);
 	expanded = NULL;
 	new_expanded = NULL;
 	if (status)
