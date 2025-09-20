@@ -33,15 +33,13 @@ int is_newline_option(char *arg)
     is_n = n_option(arg);
     if (is_n == 1)
         return (0);
-    else if (is_n == 0)
-        return (1);
+    return (1);
 }
 
 int ft_echo(t_command *cmd)
 {
     int i;
     int newline;
-    char *first_arg;
 
     i = 1;
     newline = is_newline_option(cmd->args[i]);

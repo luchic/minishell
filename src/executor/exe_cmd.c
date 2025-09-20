@@ -147,6 +147,7 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		free_str_array(mnsh->envp);
 		mnsh->envp = original_env;
 	}
+	ft_log_fd(LOG_INFO, STDERR, "the command %s exit with status: %d\n", cmd->name ? cmd->name : "(null)", status); ///to delete --- IGNORE ---
 	return (status);
 }
 

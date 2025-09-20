@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:55:59 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 19:19:26 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	run_args_expander(t_command *cmd)
 		new_arg = expand_variable_if_need(i, args[i], cmd);
 		if (!new_arg)
 			return (-1);
-		free(args[i]);
+		//free(args[i]);
 		args[i] = new_arg;
 	}
 	return (0);
@@ -107,16 +107,15 @@ int	run_variable_expander(t_command *cmd)
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
 	if (!cmd->mnsh)
 	{
-		ft_log_fd(LOG_DEBUG, STDOUT,
-			"expand_variable: minishell: Internal error: mnsh is NULL\n");
+		ft_log_fd(LOG_ERROR, STDERR, "expand_variable: minishell: Internal error: mnsh is NULL\n");
 		return (0);
 	}
-	if (cmd->args &&cmd->expander && run_args_expander(cmd) == -1)
+	if (cmd->args && cmd->expander && run_args_expander(cmd) == -1)
 		return (-1);
 	if (expand_assignments(cmd->assignments, cmd->mnsh) == -1)
 		return (-1);
 	if (expand_redirection(cmd->redirections, cmd) == -1)
 		return (-1);
-	ft_log_fd(LOG_INFO, STDOUT, "Finished variable expansion\n");
+	ft_log_fd(LOG_INFO, STDOUT, "Finished redirection expansion with cmd: %s\n", cmd->name);
 	return (1);
 }
