@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:13:28 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 11:49:33 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:38:09 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 char			*get_last_slash(const char *pattern);
 char			*extract_pattern(char *pattern);
 char			*get_prefix(char *pattern);
-int				is_directory(const char *path);
 char			*get_current_path(char *format);
 char			*get_slash_after(const char *pattern);
 int				ft_fnmatch(char *pattern, const char *filename);

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:26 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 11:39:05 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:36:33 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,17 +62,6 @@ char	*get_prefix(char *pattern)
 	if (!slash || slash == pattern)
 		return (ft_strdup(""));
 	return (ft_substr(pattern, 0, slash - pattern));
-}
-
-int	is_directory(const char *path)
-{
-	struct stat	path_stat;
-
-	if (stat(path, &path_stat) != 0)
-		return (0);
-	if (S_ISDIR(path_stat.st_mode))
-		return (1);
-	return (0);
 }
 
 char	*get_current_path(char *format)
