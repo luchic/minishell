@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:36:57 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:22:48 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 10:36:03 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	realloc_args(t_command *cmd, int new_size)
 	if (!new_args)
 		return (0);
 	cmd->args = new_args;
+	cmd->args[new_size] = NULL;
 	return (1);
 }
 
