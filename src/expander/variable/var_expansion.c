@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:55:59 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 12:03:07 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 	t_list			*current;
 	t_assignment	*asgmt;
 	char			*new_value;
-	
+
 	ft_log_fd(LOG_INFO, STDOUT, "Expand assignments\n");
 	if (!asgmts || !mnsh)
 		return (0);
@@ -80,14 +80,13 @@ int	expand_redirection(t_list *redirections, t_command *cmd)
 	return (0);
 }
 
-// TODO: add returning int for error handling
 int	run_args_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
 	char	*new_arg;
 
-	i = 0;
+	i = -1;
 	args = cmd->args;
 	while (args && args[++i])
 	{
