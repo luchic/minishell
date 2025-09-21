@@ -4,62 +4,6 @@
 #include "parser.h"
 #include <stdlib.h>
 
-static int	update_redirection_value(int size, char **res, t_redirection *redir,
-		t_token *token)
-{
-	char	*pos;
-	int		exit_status;
-
-	if (ft_append_str(res, token->value) == -1)
-		return (-1);
-	pos = ft_strchr_not_escaped(token->value, '$');
-	while (pos)
-	{
-		exit_status = handle_var(size, pos, token, &redir->expander);
-		if (exit_status == -1)
-			return (-1);
-		pos = ft_strchr_not_escaped(pos + 1, '$');
-	}
-	pos = ft_strchr_not_escaped(token->value, '*');
-	while (pos)
-	{
-		if (handle_wildcard(pos - token->value + size, res, token,
-				is_single_quoted) == -1)
-			return (-1);
-		pos = ft_strchr_not_escaped(pos + 1, '*');
-	}
-	return (1);
-}
-
-static int	set_redirection_value(t_redirection *redir, t_tokenstream *ts)
-{
-	t_token	*token;
-	char	*res;
-	int		size;
-
-	token = ts_peek(ts);
-	if (!token)
-		return (0);
-	res = NULL;
-	size = 0;
-	if (update_redirection_value(size, &res, redir, token) == -1)
-		return (free(res), -1);
-	while (ts_match(ts, WORD))
-	{
-		token = ts_peek(ts);
-		if (!token || token->is_space_after)
-			return (ts_advance(ts), redir->value = res, 1);
-		ts_advance(ts);
-		token = ts_peek(ts);
-		if (!token || !ts_match(ts, WORD))
-			break ;
-		size = ft_strlen(res);
-		if (update_redirection_value(size, &res, redir, token) == -1)
-			return (free(res), -1);
-	}
-	return (redir->value = res, 1);
-}
-
 static void	*create_redirection(t_list **lst, t_redir_type type,
 		t_tokenstream *ts)
 {
@@ -70,11 +14,11 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 	if (!redir)
 		return (NULL);
 	redir->type = type;
-	if (!set_redirection_value(redir, ts))
-		return (free(redir), NULL);
+	if (set_merged_value(&redir->value, &redir->expander, ts) == -1)
+		return (ft_free_redir(redir), NULL);
 	new_node = ft_lstnew(redir);
 	if (!new_node)
-		return (free(redir->value), free(redir), NULL);
+		return (ft_free_redir(redir), NULL);
 	ft_lstadd_front(lst, new_node);
 	return (redir);
 }

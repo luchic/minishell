@@ -9,7 +9,7 @@ void	free_str_array(char **arr)
 {
 	int	i;
 
-	if (!arr)
+	if (!arr || !*arr)
 		return ;
 	i = 0;
 	while (arr[i])

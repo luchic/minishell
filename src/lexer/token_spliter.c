@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 20:22:20 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 23:24:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:30:51 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ int	ft_split_tokens(t_list **head, const char *input)
 	{
 		if (mode == NORMAL || mode == SINGLE || mode == DOUBLE)
 			token = get_token(&input, &mode, &quote);
-		else if (mode == ERROR)
+		if (mode == ERROR)
 			return (ft_lstclear(head, free_tokens), FAIL);
-		if (!token && mode == UNBALANCED)
+		else if (mode == UNBALANCED)
 		{
 			if (token)
 				free(token);

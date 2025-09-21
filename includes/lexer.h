@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/19 13:24:15 by mezhang          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
@@ -82,7 +71,32 @@ int					is_double_char_token(const char *str);
 int					is_special_char(char c);
 void				free_tokens(void *param);
 int					is_double_quote(char c, int *escaped);
+
+/**
+ * @brief Adds a new token to the list.
+ * @note Ownership contract:
+ * - On success: takes ownership of `value`
+ *   (list node owns it; free via free_tokens).
+ * - On failure: does NOT free `value`; caller must free it.
+ * @param head Pointer to the head of the token list.
+ * @param value The token value.
+ * @param quote The quote status of the token.
+ * @param input The original input string.
+ * @return A pointer to the new token node, or NULL on failure.
+ */
 void				*add_new_token(t_list **head, char *value,
 						t_quote_status quote, const char *input);
+
+// ======================== Get_tokens ========================
+char				*get_special_char_token(const char **input,
+						t_parse_mode *mode);
+char				*get_next_token(const char **input, t_parse_mode *mode,
+						t_quote_status *status);
+char				*get_single_quoted_token(const char **input,
+						t_parse_mode *mode, t_quote_status *status);
+char				*get_double_quoted_token(const char **input,
+						t_parse_mode *mode, t_quote_status *status);
+char				*get_token(const char **input, t_parse_mode *mode,
+						t_quote_status *status);
 
 #endif

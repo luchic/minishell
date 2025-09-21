@@ -1,7 +1,7 @@
 
 
-#include "ft_defines.h"
 #include "ft_common.h"
+#include "ft_defines.h"
 #include "libft.h"
 
 t_cmd_expander	*get_arg_expander(int index, t_list *exp)
@@ -67,6 +67,11 @@ char	*extract_arg(char *arg, t_list *exp, t_minishell *mnsh)
 	while (exp)
 	{
 		expander = (t_expander *)exp->content;
+		if (!expander)
+		{
+			exp = exp->next;
+			continue ;
+		}
 		if (!expander || !expander->var_name)
 			return (free(new_arg), NULL);
 		if (append_new_var(&shift, &new_arg, expander, mnsh) == -1)

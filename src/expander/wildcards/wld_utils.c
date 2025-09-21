@@ -6,44 +6,52 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:26 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 10:41:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:36:33 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "ft_common.h"
+#include "ft_printf.h"
 #include "libft.h"
 #include <dirent.h>
 #include <sys/stat.h>
 
 char	*get_last_slash(const char *pattern)
 {
-	char	*slash;
-	char	*star;
+	const char	*star;
+	const char	*slash_before;
+	const char	*p;
 
 	star = ft_strchr_not_escaped(pattern, '*');
 	if (!star)
 		return (NULL);
-	*star = '\0';
-	slash = ft_strrchr(pattern, '/');
-	*star = '*';
-	if (!slash)
-		return ((char *)pattern);
-	return (slash + 1);
+	slash_before = NULL;
+	p = pattern;
+	while (p < star)
+	{
+		if (*p == '/')
+			slash_before = p;
+		p++;
+	}
+	if (slash_before)
+		return ((char *)(slash_before + 1));
+	return ((char *)pattern);
 }
 
 char	*extract_pattern(char *pattern)
 {
 	char	*start;
-	char	*slash;
+	char	*end;
 
 	start = get_last_slash(pattern);
 	if (!start)
+	{
 		return (ft_strdup(pattern));
-	slash = ft_strrchr(start, '/');
-	if (!slash)
-		slash = ft_strchr(start, '\0');
-	return (ft_substr(start, 0, slash - start));
+	}
+	end = ft_strchr(start, '/');
+	if (!end)
+		end = pattern + ft_strlen(pattern);
+	return (ft_substr(start, 0, end - start));
 }
 
 char	*get_prefix(char *pattern)
@@ -54,17 +62,6 @@ char	*get_prefix(char *pattern)
 	if (!slash || slash == pattern)
 		return (ft_strdup(""));
 	return (ft_substr(pattern, 0, slash - pattern));
-}
-
-int	is_directory(const char *path)
-{
-	struct stat	path_stat;
-
-	if (stat(path, &path_stat) != 0)
-		return (0);
-	if (S_ISDIR(path_stat.st_mode))
-		return (1);
-	return (0);
 }
 
 char	*get_current_path(char *format)

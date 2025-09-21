@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:11:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 21:58:41 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 15:36:27 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,8 @@ static char	**get_current_files(char *path)
 	return (files);
 }
 
-/// @brief
-/// NOTE: don't support hidden files now
 
-char	**get_matching_files(char *path, char *pattern)
+char	**get_matching_files(char *path, char *pattern, int *status)
 {
 	char	**matched;
 	char	**files;
@@ -74,12 +72,12 @@ char	**get_matching_files(char *path, char *pattern)
 
 	files = get_current_files(path);
 	if (!files)
-		return (NULL);
+		return (set_status(status, -1), NULL);
 	i = 0;
 	matched = NULL;
 	while (files[i])
 	{
-		if (ft_fnmatch(pattern, files[i], pattern))
+		if (ft_fnmatch(pattern, files[i]))
 		{
 			if (ft_append_file(files[i], &matched) == -1)
 			{
