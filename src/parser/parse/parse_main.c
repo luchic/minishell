@@ -4,7 +4,6 @@
 static t_logical_expression	*create_logical_node(t_tokenstream *ts,
 		t_ast_node *left)
 {
-
 	t_logical_op	op;
 
 	op = get_logical_op(ts);
@@ -18,17 +17,21 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 {
 	t_logical_expression	*logical;
 	t_ast_node				*right;
+	t_token_type			type;
 
-	while (ts_match(ts, AND) || ts_match(ts, OR))
+	while (ts_expect(ts, AND) || ts_expect(ts, OR))
 	{
 		logical = create_logical_node(ts, left);
 		if (!logical)
 			return (free_ast_tree(left), NULL);
 		ts_advance(ts);
-		if (ts_match(ts, PAREN_OPEN))
-			right = parse_subshell(ts, mnsh);
-		else
-			right = parse_pipeline(ts, mnsh);
+		if (ts_peek(ts) == NULL)
+		{
+			msg_unexpected_token(ts_peek(ts));
+			set_exit_code(mnsh, SYNTAX_ERROR);
+			return (free_logical(logical), NULL);
+		}
+		right = parse_pipeline(ts, mnsh);
 		if (!right)
 			return (free_logical(logical), NULL);
 		logical->right = right;
