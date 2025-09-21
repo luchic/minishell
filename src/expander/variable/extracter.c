@@ -20,6 +20,20 @@ t_cmd_expander	*get_arg_expander(int index, t_list *exp)
 	return (NULL);
 }
 
+static char	*get_var_value(t_minishell *mnsh, const char *name)
+{
+	char	*env;
+
+	if (ft_strcmp(name, "0") == 0)
+		return (ft_strdup(PREFIX));
+	if (ft_strcmp(name, "?") == 0)
+		return (ft_itoa(mnsh->last_exit_status));
+	env = get_env(mnsh, name);
+	if (!env)
+		return (ft_strdup(""));
+	return (env);
+}
+
 static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 		t_minishell *mnsh)
 {
@@ -29,22 +43,9 @@ static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 	env = NULL;
 	ft_log_fd(LOG_INFO, STDOUT, "Expanding variable at pos %d to %d\n",
 		exp->var_start, exp->var_end);
-	//ft_printf_fd(STDOUT, "Expanding variable: %s\n", exp->var_name);
-	if (ft_strcmp(exp->var_name, "?") == 0)
-	{
-		env = ft_itoa(mnsh->last_exit_status);
-		*st += ft_strlen(env) - 2;
-		if (!env)
-			return (-1);
-		tmp = ft_replace(*new_arg, env, *st + exp->var_start, *st
-				+ exp->var_end);
-		if (!tmp)
-			return (free(env), -1);
-		return (free(*new_arg), *new_arg = tmp, free(env), 0);
-	}
-	env = get_env(mnsh, exp->var_name);
+	env = get_var_value(mnsh, exp->var_name);
 	if (!env)
-		env = ft_strdup("");
+		return (-1);
 	tmp = ft_replace(*new_arg, env, *st + exp->var_start, *st + exp->var_end);
 	if (!tmp)
 		return (free(env), -1);
