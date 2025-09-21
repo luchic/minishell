@@ -113,10 +113,19 @@ int	run_external(t_command *cmd)
 		if (current == -1)
 			return (perror("waitpid"), EXIT_FAILURE);
 		if (WIFEXITED(status))
+		{
+			ft_log_fd(LOG_DEBUG, STDOUT, "Child exited with status %d\n", WEXITSTATUS(status)); ///to delete --- IGNORE ---
 			return (WEXITSTATUS(status));
+		}
 		else if (WIFSIGNALED(status))
+		{
+			ft_log_fd(LOG_DEBUG, STDOUT, "Child terminated by signal %d\n", WTERMSIG(status)); ///to delete --- IGNORE ---
 			return (WTERMSIG(status));
+		}
 		else
+		{
+			ft_log_fd(LOG_ERROR, STDERR, "child exited abnormally with status %d\n", status); ///to delete --- IGNORE ---
 			return (1);
+		}
 	}
 }
