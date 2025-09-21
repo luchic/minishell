@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:10:30 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 11:58:17 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 12:54:57 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,22 @@ int	ft_fnmatch(char *pattern, const char *filename)
 	return (0);
 }
 
+int is_wildcard_redirection(t_list *redirection)
+{
+	t_redirection	*rdir;
+
+	if (!redirection || !redirection->content)
+		return (0);
+	while (redirection)
+	{
+		rdir = (t_redirection *)redirection->content;
+		if (rdir && rdir->value && is_arg_wildcard(rdir->value))
+			return (1);
+		redirection = redirection->next;
+	}
+	return (0);
+}
+
 int	is_wildcard(t_command *cmd)
 {
 	int	i;
@@ -73,8 +89,8 @@ int	is_wildcard(t_command *cmd)
 				return (1);
 		}
 	}
-	// if (is_wildcard_in_redirections(cmd->redirections))
-	// 	return (1);
+	if (is_wildcard_redirection(cmd->redirections))
+		return (1);
 	// if (is_wildcard_in_assignemts(cmd->assignments))
 	// 	return (1);
 	return (0);
@@ -96,21 +112,3 @@ int	is_arg_wildcard(char *arg)
 	return (0);
 }
 
-void	restore_value(char **args)
-{
-	int	i;
-	int	j;
-
-	if (!args)
-		return ;
-	i = -1;
-	while (args[++i])
-	{
-		j = -1;
-		while (args[i][++j])
-		{
-			if (args[i][j] == SENTINEL)
-				args[i][j] = '*';
-		}
-	}
-}

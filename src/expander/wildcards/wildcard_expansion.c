@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 11:57:55 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 12:56:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,12 @@ int	run_wildcards_expander(t_command *cmd)
 				free_str_array(new_args);
 			return (-1);
 		}
+	}
+	if (expand_wildcard_redirection(cmd->redirections, cmd) == -1)
+	{
+		ft_log_fd(LOG_ERROR, STDERR_FILENO,
+			"expand_wildcards: Failed to expand wildcard in redirection\n");
+		return (free_str_array(new_args), -1);
 	}
 	return (free_str_array(cmd->args), cmd->args = new_args, 0);
 }
