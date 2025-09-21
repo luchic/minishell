@@ -15,8 +15,7 @@ char	**expand_wildcard_internal(char *pattern, int *status)
 	curr_path = get_current_path(pattern);
 	if (!curr_path)
 	{
-		if (status)
-			*status = -1;
+		set_status(status, -1);
 		return (NULL);
 	}
 	matched = expand_wildcard_recursive(curr_path, pattern, status);
@@ -30,6 +29,7 @@ int	expand_wildcard_if_not_matched(char ***new_args, char *arg)
 	char	**tmp;
 
 	matched_file = ft_strdup(arg);
+	restore_str(matched_file);
 	if (!matched_file)
 		return (-1);
 	tmp = ft_array_append(*new_args, matched_file);
@@ -50,7 +50,8 @@ int	expand_wildcard(char ***new_args, char *arg)
 	status = 0;
 	matched = expand_wildcard_internal(arg, &status);
 	if (!matched && status == -1)
-		return (-1);
+		return (restore_str(arg), ft_log_fd(LOG_ERROR, STDERR,
+				"expand_wildcards: status is -1: %s\n", arg), -1);
 	else if (!matched)
 		return (expand_wildcard_if_not_matched(new_args, arg));
 	i = -1;
@@ -67,8 +68,7 @@ int	expand_wildcard(char ***new_args, char *arg)
 	return (free_str_array(matched), 0);
 }
 
-int	expand_wildcard_if_need(char ***new_arg,
-		char *arg)
+int	expand_wildcard_if_need(char ***new_arg, char *arg)
 {
 	char	*copy_arg;
 	char	**tmp;
@@ -76,6 +76,7 @@ int	expand_wildcard_if_need(char ***new_arg,
 	if (is_arg_wildcard(arg))
 		return (expand_wildcard(new_arg, arg));
 	copy_arg = ft_strdup(arg);
+	restore_str(copy_arg);
 	if (!copy_arg)
 		return (-1);
 	tmp = ft_array_append(*new_arg, copy_arg);
@@ -96,14 +97,15 @@ int	run_wildcards_expander(t_command *cmd)
 	if (!cmd || !cmd->args)
 		return (-1);
 	if (!is_wildcard(cmd))
-		return (0);
+		return (restore_values(cmd), 0);
 	args = cmd->args;
 	new_args = NULL;
 	i = -1;
 	while (args && args[++i])
 	{
 		ft_log_fd(LOG_DEBUG, STDERR,
-			"run_wildcards_expander: Processing arg[%d]: %s\n", i, args[i]); ///to delete --- IGNORE ---
+			"run_wildcards_expander: Processing arg[%d]: %s\n", i, args[i]);
+			/// to delete --- IGNORE ---
 		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
 			ft_log_fd(LOG_ERROR, STDERR_FILENO,

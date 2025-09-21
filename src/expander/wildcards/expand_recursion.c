@@ -27,7 +27,7 @@ int	ft_append_matched(char *prefix, char **matched, char ***expanded)
 	return (0);
 }
 
-static char	**get_expanded_files(char *path, char *pattern)
+static char	**get_expanded_files(char *path, char *pattern, int *status)
 {
 	char	**expanded;
 	char	**matched;
@@ -38,19 +38,17 @@ static char	**get_expanded_files(char *path, char *pattern)
 	matched = NULL;
 	extracted_pattern = extract_pattern(pattern);
 	if (!extracted_pattern)
-		return (NULL);
-	matched = get_matching_files(path, extracted_pattern);
+		return (set_status(status, -1), NULL);
+	matched = get_matching_files(path, extracted_pattern, status);
 	free(extracted_pattern);
 	if (!matched)
 		return (NULL);
 	prefix = get_file_prefix(path, pattern);
 	if (!prefix)
-	{
-		free_str_array(matched);
-		return (NULL);
-	}
+		return (free_str_array(matched), set_status(status, -1), NULL);
 	if (ft_append_matched(prefix, matched, &expanded) == -1)
-		return (free(prefix), free_str_array(matched), NULL);
+		return (set_status(status, -1), free(prefix), free_str_array(matched),
+			NULL);
 	free(prefix);
 	free_str_array(matched);
 	return (expanded);
@@ -107,13 +105,9 @@ char	**expand_wildcard_recursive(char *path, char *pattern, int *status)
 	new_expanded = NULL;
 	if (status)
 		*status = 0;
-	expanded = get_expanded_files(path, pattern);
+	expanded = get_expanded_files(path, pattern, status);
 	if (!expanded)
-	{
-		if (status)
-			*status = -1;
 		return (NULL);
-	}
 	if (expander(pattern, expanded, &new_expanded, status) == -1)
 	{
 		if (status)
