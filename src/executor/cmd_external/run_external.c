@@ -2,6 +2,7 @@
 #include "ft_defines.h"
 #include "ft_executor.h"
 #include "ft_printf.h"
+#include "ft_common.h"
 #include "libft.h"
 #include "minishell.h"
 #include <sys/stat.h> 
@@ -14,15 +15,6 @@ void	cmd_false_exit(t_minishell *mnsh)
 		exit(127);
 	else
 		exit(126);
-}
-
-static int	is_directory(const char *path)
-{
-	struct stat path_stat;
-
-	if (stat(path, &path_stat) != 0)
-		return (0);
-	return (S_ISDIR(path_stat.st_mode)); // is it forbidden to access a directory?
 }
 
 int	run_external_no_fork(t_command *cmd)
