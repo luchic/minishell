@@ -7,3 +7,4 @@ tests/
 *.a
 *.txt
 minishell
+/minishell_test
