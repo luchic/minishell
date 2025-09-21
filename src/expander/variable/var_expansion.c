@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   var_expansion.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 19:19:26 by mezhang          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_printf.h"
@@ -21,7 +10,7 @@ static char	*expand_variable_if_need(int index, char *arg, t_command *cmd)
 
 	expander = get_arg_expander(index, cmd->expander);
 	if (!expander)
-		return (arg);
+		return (ft_strdup(arg));
 	new_arg = extract_arg(arg, expander->expand, cmd->mnsh);
 	if (!new_arg)
 		return (NULL);
@@ -33,7 +22,7 @@ int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 	t_list			*current;
 	t_assignment	*asgmt;
 	char			*new_value;
-	
+
 	ft_log_fd(LOG_INFO, STDOUT, "Expand assignments\n");
 	if (!asgmts || !mnsh)
 		return (0);
@@ -80,21 +69,20 @@ int	expand_redirection(t_list *redirections, t_command *cmd)
 	return (0);
 }
 
-// TODO: add returning int for error handling
 int	run_args_expander(t_command *cmd)
 {
 	int		i;
 	char	**args;
 	char	*new_arg;
 
-	i = 0;
+	i = -1;
 	args = cmd->args;
 	while (args && args[++i])
 	{
 		new_arg = expand_variable_if_need(i, args[i], cmd);
 		if (!new_arg)
 			return (-1);
-		//free(args[i]);
+		free(args[i]);
 		args[i] = new_arg;
 	}
 	return (0);

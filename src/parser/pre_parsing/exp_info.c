@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:25:18 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 19:13:20 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 14:49:44 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,21 @@ int	is_single_quoted(t_quote_status status)
 	return (0);
 }
 
-int	handle_wildcard(int pos, char **res, t_token *token,
-		int (*is_quoted)(t_quote_status))
-{
-	char	*new_str;
+// int	handle_wildcard(int count, t_token *token, t_list **expand,
+// 		int (*is_quoted)(t_quote_status))
+// {
+// 	t_list	*new_node;
 
-	if (is_quoted(token->quote_status))
-	{
-		new_str = ft_insert(*res, "\\", pos);
-		if (!new_str)
-			return (-1);
-		free(*res);
-		*res = new_str;
-		return (1);
-	}
-	return (0);
-}
+// 	if (is_quoted(token->quote_status))
+// 		return (0);
+// 	new_node = add_wld_expander(count);
+// 	if (!new_node)
+// 		return (-1);
+// 	ft_lstadd_back(expand, new_node);
+// 	return (1);
+// }
 
-t_list	*add_var_expander(t_var_handle info, t_token *token)
+static t_list	*add_var_expander(t_var_handle info, t_token *token)
 {
 	t_list		*new_node;
 	t_expander	*var_exp;
@@ -65,7 +62,7 @@ int	handle_var(int size, char *var_pos, t_token *token, t_list **expand)
 	t_list			*new_node;
 
 	var_end = var_pos + 1;
-	if (!var_end || *var_end == '\0')
+	if (!var_end || *var_end == '\0' || token->quote_status == SINGLE_QUOTED)
 		return (0);
 	if (*var_end == '?')
 	{

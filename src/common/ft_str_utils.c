@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:48:52 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 22:40:35 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/20 11:51:52 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,31 +73,4 @@ char	*ft_replace(char *str, char *insert, int pos, int end)
 	ft_memcpy(new_str + pos, insert, len_insert);
 	ft_memcpy(new_str + pos + len_insert, str + end, len_str - end);
 	return (new_str);
-}
-
-char	*ft_strchr_not_escaped(const char *s, int c)
-{
-	char	*pos;
-	int		escaped;
-	int		esc_slash;
-
-	if (!s)
-		return (NULL);
-	pos = (char *)s;
-	esc_slash = 0;
-	escaped = 0;
-	while (*pos)
-	{
-		if ((char)c == '\\' && *pos != '\\' && *(pos + 1) != '\\')
-			return (pos);
-		else if ((char)c == '\\' && *pos != '\\' && *(pos + 1) == '\\')
-			pos += 2;
-		if (*pos == (char)c && !escaped)
-			return (pos);
-		escaped = (*pos == '\\' && !escaped && (char)c != '\\');
-		pos++;
-	}
-	if ((char)c == '\0')
-		return (pos);
-	return (NULL);
 }

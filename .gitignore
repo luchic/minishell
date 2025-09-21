@@ -7,3 +7,5 @@ tests/
 *.a
 *.txt
 minishell
+minishell_tester/
+**/Makefile

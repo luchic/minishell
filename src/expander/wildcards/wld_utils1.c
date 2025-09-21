@@ -1,15 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   wld_utils1.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/13 21:10:30 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/19 11:25:23 by mezhang          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
+#include "expander_internal.h"
 #include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_printf.h"
@@ -22,35 +12,20 @@ char	*get_slash_after(const char *pattern)
 	char	*slash;
 	char	*star;
 
-	star = ft_strchr(pattern, '*');
+	star = ft_strchr_not_escaped(pattern, '*');
 	if (!star)
 		return (NULL);
-	slash = ft_strrchr(star, '/');
+	slash = ft_strchr(star, '/');
 	if (!slash)
 		return ((char *)pattern);
 	return (slash + 1);
 }
 
-int	ft_fnmatch(char *pattern, const char *filename, const char *origin)
+int	ft_fnmatch(char *pattern, const char *filename)
 {
-	char	*tmp;
-
 	if (*pattern == '\0')
 		return (*filename == '\0');
-	tmp = ft_strchr_not_escaped(pattern, '\\');
-	if (*pattern == '\\' && pattern == tmp && *(pattern + 1) != '\0')
-	{
-		if (*(pattern + 1) == '*' && *filename == '*')
-			return (ft_fnmatch(pattern + 2, filename + 1, tmp + 2));
-		else if (*(pattern + 1) == '*' && *filename != '*')
-			return (0);
-		else if (*(pattern + 1) == *filename)
-			return (ft_fnmatch(pattern + 2, filename + 1, tmp + 2));
-		else
-			return (0);
-	}
-	tmp = ft_strchr_not_escaped(origin, '*');
-	if (*pattern == '*' && pattern == tmp)
+	if (*pattern == '*')
 	{
 		while (*pattern == '*')
 			pattern++;
@@ -58,26 +33,71 @@ int	ft_fnmatch(char *pattern, const char *filename, const char *origin)
 			return (1);
 		while (*filename)
 		{
-			if (ft_fnmatch(pattern, filename, tmp))
+			if (ft_fnmatch(pattern, filename))
 				return (1);
 			filename++;
 		}
 	}
+	if (*pattern == SENTINEL && *filename == '*')
+		return (ft_fnmatch(pattern + 1, filename + 1));
 	if (*pattern == *filename)
-		return (ft_fnmatch(pattern + 1, filename + 1, origin));
+		return (ft_fnmatch(pattern + 1, filename + 1));
 	return (0);
 }
 
-// TODO: WTF is hier
-int	is_wildcard(char **arg)
+int is_wildcard_redirection(t_list *redirection)
 {
-	if (!arg)
+	t_redirection	*rdir;
+
+	if (!redirection || !redirection->content)
 		return (0);
-	while (*arg)
+	while (redirection)
 	{
-		if (ft_strchr_not_escaped(*arg, '*'))
+		rdir = (t_redirection *)redirection->content;
+		if (rdir && rdir->value && is_arg_wildcard(rdir->value))
 			return (1);
-		arg++;
+		redirection = redirection->next;
 	}
 	return (0);
 }
+
+int	is_wildcard(t_command *cmd)
+{
+	int	i;
+	int	j;
+
+	if (!cmd)
+		return (0);
+	i = -1;
+	while (cmd->args[++i])
+	{
+		j = -1;
+		while (cmd->args[i][++j])
+		{
+			if (cmd->args[i][j] == '*')
+				return (1);
+		}
+	}
+	if (is_wildcard_redirection(cmd->redirections))
+		return (1);
+	// if (is_wildcard_in_assignemts(cmd->assignments))
+	// 	return (1);
+	return (0);
+}
+
+int	is_arg_wildcard(char *arg)
+{
+	int	i;
+
+	if (!arg)
+		return (0);
+	i = 0;
+	while (arg[i])
+	{
+		if (arg[i] == '*')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
