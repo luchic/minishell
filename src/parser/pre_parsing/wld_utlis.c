@@ -40,7 +40,7 @@ int	update_value(t_exp_info *info, t_token *token, int is_new)
 			return (-1);
 		pos = ft_strchr_not_escaped(pos + 1, '$');
 	}
-	parse_wildcards(info, token, is_double_quote);
+	parse_wildcards(info, token, is_single_or_double);
 	return (1);
 }
 
