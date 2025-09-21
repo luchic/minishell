@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:25:18 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 14:49:44 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:02:50 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,6 @@
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
-
-int	is_single_quoted(t_quote_status status)
-{
-	if (status == SINGLE_QUOTED)
-		return (1);
-	return (0);
-}
 
 // int	handle_wildcard(int count, t_token *token, t_list **expand,
 // 		int (*is_quoted)(t_quote_status))

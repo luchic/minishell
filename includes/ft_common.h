@@ -36,6 +36,9 @@ char	*ft_replace(char *str, char *insert, int pos, int end);
 char	*ft_strchr_escaped(const char *s, int c);
 char	*ft_strchr_not_escaped(const char *s, int c);
 void	set_exit_code(t_minishell *mnsh, int code);
+int		is_single(t_quote_status status);
+int		is_double(t_quote_status status);
+int		is_single_or_double(t_quote_status status);
 
 // ================================ Signal Handling ============================
 void	signal_check(void);

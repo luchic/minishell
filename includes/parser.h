@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 12:55:44 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 10:28:22 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:08:01 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ int						is_assignment(t_tokenstream *ts);
 t_assignment			*allocate_assignment(void);
 // int						handle_wildcard(int count, t_token *token,
 // 							t_list **expand, int (*is_quoted)(t_quote_status));
-int						is_single_quoted(t_quote_status status);
 int						is_built_in(char *cmd_name);
 
 // ======================== Assignments ========================
