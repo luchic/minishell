@@ -4,6 +4,7 @@
 #include "ft_printf.h"
 #include "libft.h"
 #include "minishell.h"
+#include <sys/stat.h> 
 
 void	cmd_false_exit(t_minishell *mnsh)
 {
@@ -15,6 +16,15 @@ void	cmd_false_exit(t_minishell *mnsh)
 		exit(126);
 }
 
+static int	is_directory(const char *path)
+{
+	struct stat path_stat;
+
+	if (stat(path, &path_stat) != 0)
+		return (0);
+	return (S_ISDIR(path_stat.st_mode)); // is it forbidden to access a directory?
+}
+
 int	run_external_no_fork(t_command *cmd)
 {
 	char	*path;
@@ -23,37 +33,58 @@ int	run_external_no_fork(t_command *cmd)
 	is_path_malloced = 0;
 	path = NULL;
 	if (ft_strchr((cmd->args)[0], '/'))
+	{
 		path = (cmd->args)[0];
+		if (access(path, F_OK) != 0)
+		{
+			ft_printf_fd(STDERR, "%s: No such file or directory\n",
+				cmd->name);
+			ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
+			exit (127);
+		}
+	}
 	else
 	{
 		path = get_cmd_path(cmd->name, cmd->mnsh->envp);
-		// ft_printf_fd(STDERR, "Resolved path: %s\n", path); ///to delete --- IGNORE ---
 		if (!path)
 		{
-			// ft_printf_fd(STDERR, "%s: command not found\n",cmd->name);
-			free(path);
-			// ft_printf_fd(STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
+			ft_printf_fd(STDERR, "%s: command not found\n",cmd->name);
+			ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
 			exit (127);
 		}
 		is_path_malloced = 1;
 	}
-	// if (access(path, X_OK) != 0) // no need to check. if failed, will go to ft_log fd
+	ft_log_fd(LOG_INFO, STDOUT, "Resolved command path: %s\n", path); ///to delete --- IGNORE ---
+
+	signal_check();
+	
+	handle_io_redirection(cmd);
+	ft_log_fd(LOG_INFO, STDERR, " cmd->fd_in: %d, cmd->fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
+
+	execve(path, cmd->args, cmd->mnsh->envp);
+
+	if (is_directory(path))
+	{
+		ft_printf_fd(STDERR, "%s: Is a directory\n",
+			cmd->name);
+		ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 126\n"); ///to delete --- IGNORE ---
+		exit (126);
+	}
+	if (access(path, X_OK) != 0)
 	{
 		ft_printf_fd(STDERR, "%s: Permission denied\n",
 			cmd->name);
 		free(path);
 		exit (126);
 	}
-	signal_check();
-	handle_assignments(cmd->mnsh, cmd->assignments);
-	// ft_printf_fd(STDERR, "Executing external command: %s\n", path); ///to delete --- IGNORE ---
-	execve(path, cmd->args, cmd->mnsh->envp);
+
 	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",
 		cmd->name);
 	if (is_path_malloced && path)
 		free(path);
-	// ft_printf_fd(STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
-	exit (/* cmd_false_exit(cmd->mnsh),  */126);
+	
+	ft_log_fd(LOG_ERROR, STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
+	exit (126);
 }
 
 
@@ -62,8 +93,9 @@ int	run_external(t_command *cmd)
 	pid_t	pid;
 	int		status;
 	int		current;
-	int		exit_code;
+	// int		exit_code;
 
+	
 	pid = fork();
 	if (pid < 0)
 		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"), EXIT_FAILURE);
@@ -83,9 +115,8 @@ int	run_external(t_command *cmd)
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
 		else if (WIFSIGNALED(status))
-			exit_code = WTERMSIG(status);
+			return (WTERMSIG(status));
 		else
-			exit_code = 1;
+			return (1);
 	}
-	return (exit_code);
 }

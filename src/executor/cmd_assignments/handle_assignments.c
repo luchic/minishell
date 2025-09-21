@@ -4,8 +4,6 @@
 # include "ft_executor.h"
 # include "ft_common.h"
 
-// var=123 abc=
-
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 {
 	t_list	*current;
@@ -31,3 +29,4 @@ char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 	}
 	return (original_env);
 }
+

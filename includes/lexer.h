@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/12 21:38:45 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 23:24:08 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
@@ -70,10 +59,12 @@ typedef struct s_token
 int					run_lexer(t_list **tokens, const char *input);
 
 // ======================== Tokenizer ========================
+char				*get_token(const char **input, t_parse_mode *mode,
+						t_quote_status *status);
 int					ft_split_tokens(t_list **head, const char *input);
 t_token_type		get_token_type(const char *value);
 int					token_assignment(t_list **token, const char *input);
-t_list				*merge_word_token(t_list *tokens, const char *input);
+// t_list				*merge_word_token(t_list *tokens, const char *input);
 
 // ======================== Utils ========================
 int					is_double_char_token(const char *str);

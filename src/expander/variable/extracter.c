@@ -27,7 +27,9 @@ static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 	char	*env;
 
 	env = NULL;
-	ft_printf_fd(STDOUT, "Expanding variable: %s\n", exp->var_name);
+	ft_log_fd(LOG_INFO, STDOUT, "Expanding variable at pos %d to %d\n",
+		exp->var_start, exp->var_end);
+	//ft_printf_fd(STDOUT, "Expanding variable: %s\n", exp->var_name);
 	if (ft_strcmp(exp->var_name, "?") == 0)
 	{
 		env = ft_itoa(mnsh->last_exit_status);

@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   var_expansion.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/13 21:13:40 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/20 12:03:07 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_printf.h"
@@ -21,7 +10,7 @@ static char	*expand_variable_if_need(int index, char *arg, t_command *cmd)
 
 	expander = get_arg_expander(index, cmd->expander);
 	if (!expander)
-		return (arg);
+		return (ft_strdup(arg));
 	new_arg = extract_arg(arg, expander->expand, cmd->mnsh);
 	if (!new_arg)
 		return (NULL);
@@ -106,16 +95,15 @@ int	run_variable_expander(t_command *cmd)
 	ft_log_fd(LOG_INFO, STDOUT, "Run expand_variable: cmd: %s\n", cmd->name);
 	if (!cmd->mnsh)
 	{
-		ft_log_fd(LOG_DEBUG, STDOUT,
-			"expand_variable: minishell: Internal error: mnsh is NULL\n");
+		ft_log_fd(LOG_ERROR, STDERR, "expand_variable: minishell: Internal error: mnsh is NULL\n");
 		return (0);
 	}
-	if (cmd->args &&cmd->expander && run_args_expander(cmd) == -1)
+	if (cmd->args && cmd->expander && run_args_expander(cmd) == -1)
 		return (-1);
 	if (expand_assignments(cmd->assignments, cmd->mnsh) == -1)
 		return (-1);
 	if (expand_redirection(cmd->redirections, cmd) == -1)
 		return (-1);
-	ft_log_fd(LOG_INFO, STDOUT, "Finished variable expansion\n");
+	ft_log_fd(LOG_INFO, STDOUT, "Finished redirection expansion with cmd: %s\n", cmd->name);
 	return (1);
 }

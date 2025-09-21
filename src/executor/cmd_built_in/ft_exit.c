@@ -3,55 +3,44 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-/*
- * exit [n]
- * Exit the shell with a status of N. If N is omitted, the exit status
- * is that of the last command executed.
- * If N is not a numeric argument, the exit status is 255.
- * If there are more than one arguments, the exit status is 1.
- */
-
-static int	check_exit(char **args)
+static int is_numeric_str(const char *str)
 {
-	int	exit_code;
-	int	i;
-
-	if (count_args(args) > 2)
+	if (*str == '-' || *str == '+')
+		str++;
+	if (!*str)
+		return 0;
+	while (*str)
 	{
-		ft_printf_fd(STDERR, "exit: too many arguments\n");
-		return (1);
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
 	}
-	i = 0;
-	while (args[1][i])
-	{
-		if (!ft_isdigit(args[1][i]) && !(i == 0 && (args[1][i] == '-' || args[1][i] == '+')))
-		{
-			ft_printf_fd(STDERR, "exit: numeric argument required\n");
-			exit(255);
-		}
-		i++;
-	}
-	exit_code = ft_atoi(args[1]);
-	if (exit_code < 0 || exit_code > 255)
-		return (0);
 	return (1);
 }
-
 
 int	ft_exit(t_command *cmd)
 {
 	int	status;
-	char	**arg;
+	int	argc;
 
 	ft_printf_fd(cmd->fd_out, "exit\n");
-	arg = cmd->args;
+	argc = count_args(cmd->args);
 
-	if (count_args(arg) == 1)
+	if (argc == 1)
 		exit(cmd->mnsh->last_exit_status);
-	if (!check_exit(arg))
-		exit(255);
-	status = ft_atoi(arg[1]);
-	exit(status);
+	if (!is_numeric_str(cmd->args[1]))
+	{
+		ft_printf_fd(STDERR, " numeric argument required\n", cmd->args[1]); // bash: "exit: %s: numeric argument required\n"
+		exit(2);
+	}
+	if (argc > 2)
+	{
+		ft_printf_fd(STDERR, "exit: too many arguments\n");
+		return (EXIT_FAILURE);
+	}
+	status = ft_atoi(cmd->args[1]);
+	// ft_printf_fd(cmd->fd_out, "Exiting with code %u\n", (unsigned char)status); ///to delete --- IGNORE ---
+	exit((unsigned char)status);
 
-	return (0);
+	return (EXIT_SUCCESS);
 }

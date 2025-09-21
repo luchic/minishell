@@ -3,49 +3,11 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-int	match_built_in(char *cmd_name)
+int	match_built_in(t_command *cmd)
 {
-	if (ft_strcmp(cmd_name, "echo") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "cd") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "pwd") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "export") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "unset") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "env") == 0)
-		return (1);
-	if (ft_strcmp(cmd_name, "exit") == 0)
-		return (1);
-	return (0);
-}
+	int status;
 
-int run_builtin(t_command *cmd)
-{
-	int	orig_fds[2];
-	int	status;
-
-	orig_fds[0] = dup(STDIN);
-	orig_fds[1] = dup(STDOUT);
-
-	if (cmd->fd_in != STDIN)
-	{
-		if (dup2(cmd->fd_in, STDIN) == -1)
-		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_in\n");
-			return (EXIT_FAILURE);
-		}
-		close(cmd->fd_in);
-	}
-	if (cmd->fd_out != STDOUT)
-	{
-		if (dup2(cmd->fd_out, STDOUT) == -1)
-			return (ft_log_fd(LOG_ERROR, STDERR, "%s", "minishell: dup2 error on fd_out\n"), dup2(orig_fds[0], STDIN), close_pipes(orig_fds), EXIT_FAILURE);
-		close(cmd->fd_out);
-	}
-	//execute built-in
+	status = 0;
 	if (ft_strcmp(cmd->name, "echo") == 0)
 		status = ft_echo(cmd);
 	else if (ft_strcmp(cmd->name, "cd") == 0)
@@ -60,13 +22,25 @@ int run_builtin(t_command *cmd)
 		status = ft_env(cmd);
 	else if (ft_strcmp(cmd->name, "exit") == 0)
 		status = ft_exit(cmd);
-	else
-		status = 0;
+
+	return (status);
+}
+
+int run_builtin(t_command *cmd)
+{
+	int	orig_fds[2];
+	int	status;
+
+	orig_fds[0] = dup(STDIN);
+	orig_fds[1] = dup(STDOUT);
+	handle_io_redirection(cmd);
+
+	status = match_built_in(cmd);
 
 	if (dup2(orig_fds[0], STDIN) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	if (dup2(orig_fds[1], STDOUT) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
+		return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
 	close(orig_fds[0]);
 	close(orig_fds[1]);
     return (status);

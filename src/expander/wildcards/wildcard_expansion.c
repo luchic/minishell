@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   wildcard_expansion.c                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/13 21:14:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 12:56:36 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_defines.h"
@@ -64,8 +53,8 @@ int	expand_wildcard(char ***new_args, char *arg)
 		return (-1);
 	else if (!matched)
 		return (expand_wildcard_if_not_matched(new_args, arg));
-	i = 0;
-	while (matched[i])
+	i = -1;
+	while (matched[++i])
 	{
 		matched_file = ft_strdup(matched[i]);
 		if (!matched_file)
@@ -74,7 +63,6 @@ int	expand_wildcard(char ***new_args, char *arg)
 		if (!tmp)
 			return (free_str_array(matched), free(matched_file), -1);
 		*new_args = tmp;
-		i++;
 	}
 	return (free_str_array(matched), 0);
 }
@@ -109,11 +97,13 @@ int	run_wildcards_expander(t_command *cmd)
 		return (-1);
 	if (!is_wildcard(cmd))
 		return (0);
-	i = -1;
 	args = cmd->args;
 	new_args = NULL;
+	i = -1;
 	while (args && args[++i])
 	{
+		ft_log_fd(LOG_DEBUG, STDERR,
+			"run_wildcards_expander: Processing arg[%d]: %s\n", i, args[i]); ///to delete --- IGNORE ---
 		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
 			ft_log_fd(LOG_ERROR, STDERR_FILENO,
@@ -141,10 +131,7 @@ int	run_wildcards_expander(t_command *cmd)
 // 	char *arg;
 // 	if (argc != 2)
 // 	{
-// 		arg = ft_strdup("*");
-// 	}
-// 	else
-// 	{
+// 		arg = ft_strdup("*");0
 // 		arg = ft_strdup(argv[1]);
 // 	}
 // 	// new_args = calloc(3, sizeof(char *));
