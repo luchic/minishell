@@ -20,6 +20,30 @@ t_cmd_expander	*get_arg_expander(int index, t_list *exp)
 	return (NULL);
 }
 
+static int	handle_special_var(char **new_arg, int *st, t_expander *exp,
+		t_minishell *mnsh)
+{
+	char	*tmp;
+	char	*env;
+
+	env = NULL;
+	if (ft_strcmp(exp->var_name, "?") == 0)
+	{
+		env = ft_itoa(mnsh->last_exit_status);
+		if (!env)
+			return (-1);
+		tmp = ft_replace(*new_arg, env, *st + exp->var_start, *st
+				+ exp->var_end);
+		ft_memmove(*new_arg + *st + exp->var_end, *new_arg + *st + exp->var_end
+			+ 1, ft_strlen(*new_arg + *st + exp->var_end + 1) + 1);
+		*st += ft_strlen(env) - 2;
+		if (!tmp)
+			return (free(env), -1);
+		return (*new_arg = tmp, free(env), 0);
+	}
+	return (1);
+}
+
 static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 		t_minishell *mnsh)
 {
@@ -29,23 +53,20 @@ static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 	env = NULL;
 	ft_log_fd(LOG_INFO, STDOUT, "Expanding variable at pos %d to %d\n",
 		exp->var_start, exp->var_end);
-	//ft_printf_fd(STDOUT, "Expanding variable: %s\n", exp->var_name);
 	if (ft_strcmp(exp->var_name, "?") == 0)
 	{
-		env = ft_itoa(mnsh->last_exit_status);
-		*st += ft_strlen(env) - 2;
-		if (!env)
+		if (handle_special_var(new_arg, st, exp, mnsh) == -1)
 			return (-1);
-		tmp = ft_replace(*new_arg, env, *st + exp->var_start, *st
-				+ exp->var_end);
-		if (!tmp)
-			return (free(env), -1);
-		return (free(*new_arg), *new_arg = tmp, free(env), 0);
+		return (0);
 	}
 	env = get_env(mnsh, exp->var_name);
 	if (!env)
 		env = ft_strdup("");
 	tmp = ft_replace(*new_arg, env, *st + exp->var_start, *st + exp->var_end);
+	if (env && *env == '\0')
+		ft_memmove(*new_arg + *st + exp->var_start, *new_arg + *st
+			+ exp->var_end + 1, ft_strlen(*new_arg + *st + exp->var_end + 1)
+			+ 1);
 	if (!tmp)
 		return (free(env), -1);
 	*st += ft_strlen(env) - (exp->var_end - exp->var_start + 1);
