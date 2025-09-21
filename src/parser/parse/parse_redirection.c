@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_redirection.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 10:39:04 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 20:05:44 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "ft_common.h"
 #include "lexer.h"
@@ -92,8 +81,10 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 
 int	cmd_set_redirection(t_command *cmd, t_tokenstream *ts)
 {
-	t_token	*redir_token;
-	void	*redir;
+
+	t_token	*redir_token = NULL;
+	// t_token	*word_token;
+	void	*redir = NULL;
 
 	if (!is_redirection_token(ts))
 		return (msg_unexpected_token(ts_peek(ts)), SYNTAX_ERROR);
