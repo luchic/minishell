@@ -14,7 +14,7 @@ int	handle_io_redirection(t_command *cmd)
 	{
 		if (dup2(cmd->fd_in, STDIN) == -1)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_in\n");
+			ft_log_fd(LOG_ERROR, STDERR, "%s",PREFIX, "dup2 error on fd_in\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_in);
@@ -23,7 +23,7 @@ int	handle_io_redirection(t_command *cmd)
 	{
 		if (dup2(cmd->fd_out, STDOUT) == -1)
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "%s", "%s", PREFIX, "dup2 error on fd_out\n");
+			ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_out\n");
 			return (EXIT_FAILURE);
 		}
 		close(cmd->fd_out);
