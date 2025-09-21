@@ -9,7 +9,7 @@ static void	parse_wildcards(t_exp_info *info, t_token *token,
 	while (pos)
 	{
 		info->res[pos - info->res - 1] = SENTINEL;
-		ft_memmove(pos, pos + 1, ft_strlen(pos + 1));
+		ft_memmove(pos, pos + 1, ft_strlen(pos + 1) + 1);
 		pos = ft_strchr_escaped(pos, '*');
 	}
 	if (is_qted(token->quote_status))
@@ -40,7 +40,7 @@ int	update_value(t_exp_info *info, t_token *token, int is_new)
 			return (-1);
 		pos = ft_strchr_not_escaped(pos + 1, '$');
 	}
-	parse_wildcards(info, token, is_single_quoted);
+	parse_wildcards(info, token, is_double_quote);
 	return (1);
 }
 
