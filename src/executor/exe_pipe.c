@@ -16,7 +16,10 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	(void)mnsh;
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
-		return (perror("malloc"), EXIT_FAILURE);
+	{
+		ft_log_fd(LOG_ERROR, STDERR, "malloc failed for pids\n");
+		return (EXIT_FAILURE);
+	}
 
 	fds[0] = STDIN; // pipeline->commands[0]->command->fd_in;
 	
@@ -27,7 +30,10 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		if (i < pipeline->count - 1)
 		{
 			if (pipe(pipe_fds) == -1)
-				return (free(pids), perror("pipe"), EXIT_FAILURE);
+			{
+				ft_log_fd(LOG_ERROR, STDERR, "pipe failed\n");
+				return (free(pids), EXIT_FAILURE);
+			}
 			fds[1] = pipe_fds[1];
 		}
 		else

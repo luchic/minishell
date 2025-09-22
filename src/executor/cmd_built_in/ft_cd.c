@@ -18,7 +18,7 @@ int ft_cd_home(void)
 	}
 	if (chdir(home) != 0)
 	{
-		perror("cd");
+		ft_printf_fd(STDERR, "cd: %s: No such file or directory\n", home);
 		return (1);
 	}
 	return (0);
@@ -33,7 +33,7 @@ int ft_cd_oldpwd(char *oldpwd, char *pwd)
 	}
 	if (chdir(oldpwd) != 0)
 	{
-		perror("cd");
+		ft_printf_fd(STDERR, "cd: %s: No such file or directory\n", oldpwd);
 		return (1);
 	}
 	pwd = getenv("PWD");

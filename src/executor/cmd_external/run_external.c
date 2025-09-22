@@ -109,7 +109,10 @@ int	run_external(t_command *cmd)
 			close(cmd->fd_out);
 		current = waitpid(pid, &status, 0);
 		if (current == -1)
-			return (perror("waitpid"), EXIT_FAILURE);
+		{
+			ft_log_fd(LOG_ERROR, STDERR, "minishell: waitpid failed\n"); ///to delete --- IGNORE ---
+			return (EXIT_FAILURE);
+		}
 		if (WIFEXITED(status))
 		{
 			ft_log_fd(LOG_INFO, STDERR, "Child exited with status %d\n", WEXITSTATUS(status)); ///to delete --- IGNORE ---

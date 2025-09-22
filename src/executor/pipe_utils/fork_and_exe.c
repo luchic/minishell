@@ -61,7 +61,7 @@ int	finish_execution(pid_t *pids, int count)
 	{
 		if (waitpid(pids[i], &status, 0) == -1)
 		{
-			perror("waitpid");
+			ft_log_fd(LOG_ERROR, STDERR, "minishell: waitpid failed\n");
 			exit_status = EXIT_FAILURE;
 		}
 		else if (WIFEXITED(status))
