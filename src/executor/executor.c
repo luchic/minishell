@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/22 08:47:05 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/22 19:30:45 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int    execute_script(t_minishell *mnsh, t_ast_node *script)
     if (!script)
         return (EXIT_FAILURE);
     ft_log_fd(LOG_INFO, STDERR, "Starting script execution...\n"); ///to delete --- IGNORE ---
-    init_signal_handler();
+    // init_signal_handler();
     
     if (script->type != COMMAND && script->type != PIPELINE
         && script->type != LOGICAL && script->type != SUBSHELL)
