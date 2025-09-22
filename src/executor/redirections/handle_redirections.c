@@ -43,7 +43,9 @@ int	handle_redirections(t_command *cmd)
 	if (!cmd->redirections)
 		return (EXIT_SUCCESS);
 	
-	status = 0;
+	if (!cmd->redirections)
+		return (EXIT_SUCCESS);
+	status = EXIT_SUCCESS;
 	current = cmd->redirections;
 	while (current)
 	{
@@ -51,16 +53,24 @@ int	handle_redirections(t_command *cmd)
 		ft_log_fd(LOG_INFO, STDERR, "Handling redirection: type=%d, value=%s\n", redir->type, redir->value); ///to delete --- IGNORE ---
 		if (redir->type == REDIR_INPUT)
 		{
-			status = handle_input_redirection(redir, cmd);
+			status = handle_input_redirection(cmd, redir->value);
 		}
-		else if (redir->type == REDIR_OUTPUT || redir->type == REDIR_APPEND)
+		else if (redir->type == REDIR_OUTPUT)
 		{
-			status = handle_output_redirection(redir, cmd);
+			status = handle_output_redirection(cmd, redir->value, 0);
+		}
+		else if (redir->type == REDIR_APPEND)
+		{
+			status = handle_output_redirection(cmd, redir->value, 1);
 		}
 		else if (redir->type == REDIR_HEREDOC)
 		{
 			status = handle_heredoc(redir, cmd);
 		}
+		if (status == EXIT_FAILURE)
+			return (status);
+
+
 		current = current->next;
 	}
 	return (status);

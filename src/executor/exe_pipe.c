@@ -8,7 +8,7 @@
 int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 {
 	int fds[2];
-	int pipe_fds[2];
+	int pipe_fds[2]; // for pipe
 	pid_t *pids;
 	int i;
 	int result;
@@ -34,7 +34,10 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		{
 			fds[1] = STDOUT; //pipeline->commands[i]->command->fd_out;
 		}
-
+		
+		pipeline->commands[i]->command->fd_in = fds[0];
+        pipeline->commands[i]->command->fd_out = fds[1];
+		
 		pids[i] = fork_and_exe(pipeline, i, fds, pipe_fds);
 		if (pids[i] == -1)
 			return (free(pids), EXIT_FAILURE);

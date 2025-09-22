@@ -76,10 +76,10 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts, t_minishell *mnsh)
 	t_command	*command;
 	t_ast_node	*ast_node;
 
-	ft_log_fd(LOG_INFO, STDOUT, "Parse simple command\n");
+	ft_log_fd(LOG_INFO, STDERR, "Parse simple command\n");
 	if (!ts_peek(ts))
 		return (ft_log_fd(LOG_ERROR, STDERR,
-				"Parse simple command: no token to parse\n"), NULL);
+				"Parse simple command: no token to parse\n"), NULL); //need to pass null to executor
 	command = create_command(CMD_EXTERNAL);
 	if (!command)
 		return (ft_log_fd(LOG_ERROR, STDERR,

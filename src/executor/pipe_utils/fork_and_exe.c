@@ -21,18 +21,22 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 	}
 	if (pid == 0)
 	{
-
-		handle_io_redirection(pipeline->commands[i]->command);
-
-		
-		// ft_printf_fd(STDOUT, "Executing command %d in child process %d\n", i, getpid()); ///to delete --- IGNORE ---
-		// ft_printf_fd(STDOUT, "fds[0]: %d, fds[1]: %d\n", fds[0], fds[1]); ///to delete --- IGNORE ---
-		// ft_printf_fd(STDOUT, "Command name: %s\n", pipeline->commands[i]->command->name); ///to delete --- IGNORE ---
+		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
+            exit(EXIT_FAILURE);
 			
-		if (pipeline->commands[i]->type == SUBSHELL)
-			status = execute_subshell(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->subshell);
-		else
-			status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
+    	if (dup2(fds[0], STDIN_FILENO) == -1)
+            exit(EXIT_FAILURE);
+        if (dup2(fds[1], STDOUT_FILENO) == -1)
+            exit(EXIT_FAILURE);
+
+		if (fds[0] != STDIN)
+			close(fds[0]);
+		if (fds[1] != STDOUT)
+			close(fds[1]);
+        if (i < pipeline->count - 1)
+            close_pipes(pipe_fds);
+
+		status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
 		exit(status);
 	}
 	else
@@ -41,7 +45,6 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 			close(fds[0]);
 		if (i < pipeline->count - 1)
 			close(pipe_fds[1]);
-		// fds[0] = pipe_fds[0];
 	}
 	return (pid);
 }

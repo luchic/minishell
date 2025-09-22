@@ -74,7 +74,7 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 
 	temp_filename = create_heredoc_tempfile();
 	if (!temp_filename)
-		return (0);
+		return (EXIT_FAILURE);
 
 	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd == -1)
@@ -90,21 +90,27 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 
 	// Open temp file for reading
 	temp_fd = open(temp_filename, O_RDONLY);
+	unlink(temp_filename);
+	free(temp_filename);
 	if (temp_fd == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: cannot open temp file for reading\n");
-		unlink(temp_filename);
-		free(temp_filename);
-		return (0);
+		// unlink(temp_filename);
+		// free(temp_filename);
+		return (EXIT_FAILURE);
 	}
 
-	if (cmd->fd_in != STDIN && cmd->fd_in != -1)
-		close(cmd->fd_in);
-	cmd->fd_in = temp_fd;
+	if (dup2(temp_fd, STDIN) == -1) 
+	{
+		ft_printf_fd(STDERR, "heredoc: dup2 failed\n");
+		close(temp_fd);
+		return (EXIT_FAILURE);
+	}
+	// if (cmd->fd_in != STDIN && cmd->fd_in != -1)
+	// 	close(cmd->fd_in);
+	// cmd->fd_in = temp_fd;
+	close(temp_fd);
+	cmd->fd_in = STDIN; // important: never keep the temp fd
 
-	// Clean up temp file (it will be deleted when fd is closed)
-	unlink(temp_filename);
-	free(temp_filename);
-
-	return (1);
+	return (EXIT_SUCCESS);
 }

@@ -46,11 +46,11 @@ int	run_external_no_fork(t_command *cmd)
 		}
 		is_path_malloced = 1;
 	}
-	ft_log_fd(LOG_INFO, STDOUT, "Resolved command path: %s\n", path); ///to delete --- IGNORE ---
+	ft_log_fd(LOG_INFO, STDERR, "Resolved command path: %s\n", path); ///to delete --- IGNORE ---
 
 	signal_check();
 	
-	handle_io_redirection(cmd);
+	//handle_io_redirection(cmd);
 	ft_log_fd(LOG_INFO, STDERR, " cmd->fd_in: %d, cmd->fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
 
 	execve(path, cmd->args, cmd->mnsh->envp);
@@ -85,14 +85,20 @@ int	run_external(t_command *cmd)
 	pid_t	pid;
 	int		status;
 	int		current;
-	// int		exit_code;
 
 	
 	pid = fork();
 	if (pid < 0)
 		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"), EXIT_FAILURE);
 	else if (pid == 0)
+	{
+		if (handle_redirections(cmd) == EXIT_FAILURE)
+		{
+			ft_log_fd(LOG_ERROR, STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
+			status = EXIT_FAILURE;
+		}
 		return (run_external_no_fork(cmd));
+	}
 	else
 	{
 		if (cmd->mnsh->is_background)
@@ -106,17 +112,17 @@ int	run_external(t_command *cmd)
 			return (perror("waitpid"), EXIT_FAILURE);
 		if (WIFEXITED(status))
 		{
-			ft_log_fd(LOG_DEBUG, STDOUT, "Child exited with status %d\n", WEXITSTATUS(status)); ///to delete --- IGNORE ---
+			ft_log_fd(LOG_INFO, STDERR, "Child exited with status %d\n", WEXITSTATUS(status)); ///to delete --- IGNORE ---
 			return (WEXITSTATUS(status));
 		}
 		else if (WIFSIGNALED(status))
 		{
-			ft_log_fd(LOG_DEBUG, STDOUT, "Child terminated by signal %d\n", WTERMSIG(status)); ///to delete --- IGNORE ---
+			ft_log_fd(LOG_INFO, STDERR, "Child terminated by signal %d\n", WTERMSIG(status)); ///to delete --- IGNORE ---
 			return (WTERMSIG(status));
 		}
 		else
 		{
-			ft_log_fd(LOG_ERROR, STDERR, "child exited abnormally with status %d\n", status); ///to delete --- IGNORE ---
+			ft_log_fd(LOG_INFO, STDERR, "child exited abnormally with status %d\n", status); ///to delete --- IGNORE ---
 			return (1);
 		}
 	}
