@@ -1,14 +1,14 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
-# include "ft_common.h"
+#include "ft_common.h"
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "minishell.h"
 
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 {
-	t_list	*current;
-	char	**original_env;
-	char	*arg;
+	t_list			*current;
+	t_assignment	*asgmt;
+	char			**original_env;
 
 	current = assignments;
 	original_env = ft_strdup_array(mnsh->envp);
@@ -16,17 +16,18 @@ char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
 		return (NULL);
 	while (current)
 	{
-		if (!is_valid_identifier(current->content) || !ft_strchr(current->content, '='))
+		asgmt = (t_assignment *)current->content;
+		if (!is_valid_identifier(asgmt->value) || !ft_strchr(asgmt->value, '='))
 		{
-			ft_printf_fd(STDERR, "minishell: assignment: `%s': not a valid identifier\n", current->content);
+			ft_printf_fd(STDERR,
+				"minishell: assignment: `%s': not a valid identifier\n",
+				asgmt->value);
 			current = current->next;
 			continue ;
 		}
-		arg = current->content;
-		if (ft_strchr(arg, '='))
-			update_env_var(arg, &(mnsh->envp));
+		if (ft_strchr(asgmt->value, '='))
+			update_env_var(asgmt->value, &(mnsh->envp));
 		current = current->next;
 	}
 	return (original_env);
 }
-

@@ -33,7 +33,6 @@ int	expand_assignments(t_list *asgmts, t_minishell *mnsh)
 		if (asgmt && asgmt->value && asgmt->expand)
 		{
 			new_value = extract_arg(asgmt->value, asgmt->expand, mnsh);
-			ft_log_fd(LOG_INFO, STDOUT, "Assignment New value: %s\n", new_value);
 			if (!new_value)
 				return (-1);
 			free(asgmt->value);

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/12 13:57:11 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/21 18:27:12 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,13 @@ void	free_variable(t_var *var)
 {
 	t_var	*tmp;
 
-	if (var)
+	while (var)
 	{
-		while (var)
-		{
-			tmp = var;
-			var = var->next;
-			free(tmp->name);
-			free(tmp->value);
-			free(tmp);
-		}
+		tmp = var;
+		var = var->next;
+		free(tmp->name);
+		free(tmp->value);
+		free(tmp);
 	}
 }
 
