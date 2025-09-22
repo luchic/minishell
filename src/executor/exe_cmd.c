@@ -131,6 +131,8 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		status = run_builtin(cmd);
     else if (cmd->type == CMD_EXTERNAL)
 		status = run_external(cmd);
+	
+	ft_log_fd(LOG_INFO, STDERR, "after run cmd->type: %d, status: %d\n", cmd->type, status); ///to delete --- IGNORE ---
 
 	mnsh->last_exit_status = status;
 	if (should_restore_env && original_env)

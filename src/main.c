@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/21 15:55:11 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/22 20:55:25 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,5 +145,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)mnsh;
 	init_minishell(&mnsh, argc, argv, envp);
 	ft_run_minishell(&mnsh);
+	free_stack_minishell(&mnsh);
 	return (0);
 }

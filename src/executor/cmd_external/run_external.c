@@ -95,7 +95,7 @@ int	run_external(t_command *cmd)
 		if (handle_redirections(cmd) == EXIT_FAILURE)
 		{
 			ft_log_fd(LOG_ERROR, STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
-			status = EXIT_FAILURE;
+			return (EXIT_FAILURE);
 		}
 		return (run_external_no_fork(cmd));
 	}
