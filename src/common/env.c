@@ -18,6 +18,26 @@ static char	*get_internal_env(t_minishell *mnsh, const char *name)
 	return (NULL);
 }
 
+int	is_valid_name(char *variable, char *name)
+{
+	int	nlen;
+	int	vlen;
+
+	if (!variable || !name)
+		return (0);
+	nlen = ft_strlen(name);
+	vlen = ft_strlen(variable);
+	if (nlen > vlen)
+		return (0);
+	if (ft_strncmp(variable, name, ft_strlen(name)) != 0)
+		return (0);
+	if (variable[nlen] == '\0')
+		return (1);
+	if (variable[nlen] != '=')
+		return (0);
+	return (1);
+}
+
 char	*get_env(t_minishell *mnsh, const char *name)
 {
 	char	**env;
@@ -27,8 +47,7 @@ char	*get_env(t_minishell *mnsh, const char *name)
 	env = mnsh->envp;
 	while (*env)
 	{
-		if (ft_strncmp(*env, name, ft_strlen(name)) == 0
-			&& (*env)[ft_strlen(name)] == '=')
+		if (is_valid_name(*env, (char *)name))
 			return (ft_strdup(*env + ft_strlen(name) + 1));
 		env++;
 	}
