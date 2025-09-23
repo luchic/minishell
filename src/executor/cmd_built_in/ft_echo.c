@@ -49,13 +49,14 @@ int ft_echo(t_command *cmd)
     }
     while (cmd->args[i])
     {
-        ft_printf_fd(cmd->fd_out, "%s", cmd->args[i]);
+        ft_log_fd(LOG_INFO, STDERR, "echo arg[%d]: %s\n", i, cmd->args[i]); ///to delete --- IGNORE ---
+        ft_printf_fd(STDOUT, "%s", cmd->args[i]);
         if (cmd->args[i + 1])
-			ft_printf_fd(cmd->fd_out, " ");
+			ft_printf_fd(STDOUT, " ");
         i++;
     }
     if (newline)
-		ft_printf_fd(cmd->fd_out, "\n");
+		ft_printf_fd(STDOUT, "\n");
     return (EXIT_SUCCESS);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/18 22:10:19 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/23 14:02:02 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,19 +64,6 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	}
 	mnsh->envp[i] = NULL;
 	setup_shell_level(mnsh);
-	
-	// 删除 OLDPWD
-	// ft_array_remove(&(mnsh->envp), "OLDPWD");
-	// // 如果没有 PWD，则补充
-	// if (!get_env_var(mnsh->envp, "PWD"))
-	// {
-	// 	if (getcwd(cwd, sizeof(cwd)))
-	// 	{
-	// 		pwd_var = ft_strjoin("PWD=", cwd);
-	// 		update_env_var(pwd_var, &(mnsh->envp));
-	// 		free(pwd_var);
-	// 	}
-	// }
 	mnsh->script = ft_calloc(1, sizeof(t_script));
 	if (!mnsh->script)
 		return ;
@@ -96,12 +83,7 @@ void	ft_run_minishell(t_minishell *mnsh)
 	(void)mnsh;
 	while ((input = readline("minishell> ")))
 	{
-		if (ft_strcmp(input, "echo $?") == 0)
-		{
-			ft_printf("%d\n", mnsh->last_exit_status);
-			free(input);
-			continue ;
-		}
+		add_history(input);
 		tmp = run_lexer(&tokens, input);
 		if (tmp)
 		{
@@ -113,7 +95,7 @@ void	ft_run_minishell(t_minishell *mnsh)
 		{
 			ft_printf_fd(STDERR, "Memory allocation error\n");
 			free(input);
-			ft_lstclear(&tokens, free);
+			ft_lstclear(&tokens, free_tokens);
 			continue ;
 		}
 		ast = run_parser(tokens, mnsh);
@@ -122,17 +104,16 @@ void	ft_run_minishell(t_minishell *mnsh)
 		{
 			ft_printf_fd(STDERR, "Parser error\n");
 			free(input);
-			ft_lstclear(&tokens, free);
+			ft_lstclear(&tokens, free_tokens);
 			continue ;
 		}
+		ft_lstclear(&tokens, free_tokens);
+		free(input);
 		exit_status = execute_script(mnsh, ast);
 		mnsh->last_exit_status = exit_status;
-		add_history(input);
-		ft_lstclear(&tokens, free);
 		free_ast_tree(ast);
-		free(input);
 	}
-	clear_history();
+	rl_clear_history();
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -145,5 +126,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)mnsh;
 	init_minishell(&mnsh, argc, argv, envp);
 	ft_run_minishell(&mnsh);
+	// free_stack_minishell(&mnsh);
 	return (0);
 }

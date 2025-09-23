@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:37:19 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 20:10:54 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 13:36:05 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "ft_common.h"
 #include "libft.h"
 #include <stdlib.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 
 void	free_expander(void *param)
 {
@@ -51,4 +53,12 @@ void	free_assignment(void *param)
 	if (assignment->expand)
 		ft_lstclear(&assignment->expand, free_expander);
 	free(assignment);
+}
+
+void	free_and_exit(t_minishell *mnsh, int exit_code)
+{
+	if (mnsh)
+		free_stack_minishell(mnsh);
+	rl_clear_history();
+	exit(exit_code);
 }

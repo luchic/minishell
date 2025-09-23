@@ -30,6 +30,7 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 			set_exit_code(mnsh, SYNTAX_ERROR);
 			return (free_logical(logical), NULL);
 		}
+		ft_log_fd(LOG_INFO, STDERR, "Parsing right side of logical\n");
 		right = parse_pipeline(ts, mnsh);
 		if (!right)
 			return (free_logical(logical), NULL);
@@ -46,6 +47,7 @@ t_ast_node	*parse_script(t_tokenstream *ts, t_minishell *mnsh)
 {
 	t_ast_node	*ast_simple_node;
 
+	ft_log_fd(LOG_INFO, STDERR, "Parsing script\n");
 	ast_simple_node = parse_pipeline(ts, mnsh);
 	if (!ast_simple_node)
 		return (NULL);

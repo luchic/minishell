@@ -12,7 +12,7 @@ int	ft_pwd(t_command *cmd)
 	info = getcwd(cwd, sizeof(cwd));
 	if (!info)
 	{
-		perror("pwd");
+		ft_printf_fd(STDERR, "pwd: error retrieving current directory: ");
 		return (EXIT_FAILURE);
 	}
 	// cmd->fd_out = STDOUT_FILENO;  // should use the stored fd_out

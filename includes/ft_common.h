@@ -58,6 +58,7 @@ void	ft_free_redir(void *content);
 void	free_expander(void *param);
 void	free_assignment(void *param);
 void	free_cmd_expander(void *param);
+void	free_and_exit(t_minishell *mnsh, int exit_code);
 
 // ================================ Error Messages =============================
 void	msg_unexpected_token(t_token *token);
@@ -65,6 +66,7 @@ void	msg_unexpected_token_type(t_token_type type);
 
 // ================================ Env ========================================
 char	*get_env(t_minishell *mnsh, const char *name);
+int		is_valid_name(char *variable, char *name);
 
 // ================================ Dirs utils ================================
 int		is_directory(const char *path);

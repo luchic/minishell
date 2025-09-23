@@ -41,7 +41,7 @@ static int	append_new_var(int *st, char **new_arg, t_expander *exp,
 	char	*env;
 
 	env = NULL;
-	ft_log_fd(LOG_INFO, STDOUT, "Expanding variable at pos %d to %d\n",
+	ft_log_fd(LOG_INFO, STDERR, "Expanding variable at pos %d to %d\n",
 		exp->var_start, exp->var_end);
 	env = get_var_value(mnsh, exp->var_name);
 	if (!env)

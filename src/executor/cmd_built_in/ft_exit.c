@@ -2,6 +2,7 @@
 # include "minishell.h"
 # include "ft_defines.h"
 # include "ft_executor.h"
+#include "ft_common.h"
 
 static int is_numeric_str(const char *str)
 {
@@ -27,11 +28,12 @@ int	ft_exit(t_command *cmd)
 	argc = count_args(cmd->args);
 
 	if (argc == 1)
-		exit(cmd->mnsh->last_exit_status);
+		free_and_exit(cmd->mnsh, cmd->mnsh->last_exit_status);
+		// exit(cmd->mnsh->last_exit_status);
 	if (!is_numeric_str(cmd->args[1]))
 	{
 		ft_printf_fd(STDERR, " numeric argument required\n", cmd->args[1]); // bash: "exit: %s: numeric argument required\n"
-		exit(2);
+		free_and_exit(cmd->mnsh, 2);
 	}
 	if (argc > 2)
 	{
@@ -39,8 +41,8 @@ int	ft_exit(t_command *cmd)
 		return (EXIT_FAILURE);
 	}
 	status = ft_atoi(cmd->args[1]);
-	// ft_printf_fd(cmd->fd_out, "Exiting with code %u\n", (unsigned char)status); ///to delete --- IGNORE ---
-	exit((unsigned char)status);
+	free_and_exit(cmd->mnsh, (unsigned char)status);
+	// exit((unsigned char)status);
 
 	return (EXIT_SUCCESS);
 }
