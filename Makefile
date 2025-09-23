@@ -54,7 +54,7 @@ debug:
 	$(MAKE) -C $(LIBFT_PATH) debug
 	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
 
-debug-re:
+debug-re: fclean
 	$(MAKE) -C $(LIBFT_PATH) debug-re
 	$(MAKE) CFLAGS="$(DFLAGS)" $(NAME)
 

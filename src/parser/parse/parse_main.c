@@ -18,7 +18,7 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 	t_logical_expression	*logical;
 	t_ast_node				*right;
 
-	while (ts_expect(ts, AND) || ts_expect(ts, OR))
+	while (ts_match(ts, AND) || ts_match(ts, OR))
 	{
 		logical = create_logical_node(ts, left);
 		if (!logical)
