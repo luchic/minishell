@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 12:55:44 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 16:08:01 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:22:12 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ typedef struct s_var_handle
 typedef struct s_exp_info
 {
 	int					size;
-	int					wld_count;
-	int					var_count;
 	char				*res;
 	t_list				**expand;
 }						t_exp_info;
@@ -91,9 +89,8 @@ int						handle_var(int size, char *var_pos, t_token *token,
 							t_list **expand);
 int						update_wildcard_expander(t_exp_info *info,
 							t_token *token, int (*is_qted)(t_quote_status));
-int						update_value(t_exp_info *info, t_token *token,
-							int is_new);
 int						set_merged_value(char **value, t_list **expander,
 							t_tokenstream *ts);
+void					release_escaped_char(char *str, char c);
 
 #endif

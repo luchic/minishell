@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:25:18 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 18:42:28 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:35:35 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	handle_var(int size, char *var_pos, t_token *token, t_list **expand)
 	t_list			*new_node;
 
 	var_end = var_pos + 1;
-	if (!var_end || *var_end == '\0' || token->quote_status == SINGLE_QUOTED)
+	if (!var_end || token->quote_status == SINGLE_QUOTED)
 		return (0);
 	if (*var_end == '?' || ft_isdigit(*var_end))
 	{

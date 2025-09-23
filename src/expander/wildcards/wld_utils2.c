@@ -12,6 +12,8 @@ void	restore_str(char *str)
 		if (str[i] == SENTINEL)
 			str[i] = '*';
 	}
+	release_escaped_char(str, '$');
+	release_escaped_char(str, '\\');
 }
 
 void	restore_str_array(char **args)
