@@ -4,7 +4,20 @@
 #include "parser.h"
 #include <stdlib.h>
 
-static void	*create_redirection(t_list **lst, t_redir_type type,
+static t_redir_type	get_redir_type(t_token_type type)
+{
+	if (type == REDIRECT_IN)
+		return (REDIR_INPUT);
+	else if (type == REDIRECT_OUT)
+		return (REDIR_OUTPUT);
+	else if (type == REDIRECT_APPEND)
+		return (REDIR_APPEND);
+	else if (type == HEREDOC)
+		return (REDIR_HEREDOC);
+	return (-1);
+}
+
+static void	*create_redirection(t_list **lst, t_token_type type,
 		t_tokenstream *ts)
 {
 	t_redirection	*redir;
@@ -13,7 +26,7 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 	redir = ft_calloc(1, sizeof(t_redirection));
 	if (!redir)
 		return (NULL);
-	redir->type = type;
+	redir->type = get_redir_type(type);
 	if (set_merged_value(&redir->value, &redir->expander, ts) == -1)
 		return (ft_free_redir(redir), NULL);
 	new_node = ft_lstnew(redir);
@@ -25,25 +38,16 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 
 int	cmd_set_redirection(t_command *cmd, t_tokenstream *ts)
 {
-
-	t_token	*redir_token = NULL;
-	// t_token	*word_token;
-	void	*redir = NULL;
+	t_token	*token;
+	void	*redir;
 
 	if (!is_redirection_token(ts))
 		return (msg_unexpected_token(ts_peek(ts)), SYNTAX_ERROR);
 	redir = NULL;
-	redir_token = ts_advance(ts);
+	token = ts_advance(ts);
 	if (!ts_match(ts, WORD))
 		return (msg_unexpected_token(ts_peek(ts)), SYNTAX_ERROR);
-	if (redir_token->type == REDIRECT_IN)
-		redir = create_redirection(&cmd->redirections, REDIR_INPUT, ts);
-	else if (redir_token->type == REDIRECT_OUT)
-		redir = create_redirection(&cmd->redirections, REDIR_OUTPUT, ts);
-	else if (redir_token->type == REDIRECT_APPEND)
-		redir = create_redirection(&cmd->redirections, REDIR_APPEND, ts);
-	else if (redir_token->type == HEREDOC)
-		redir = create_redirection(&cmd->redirections, REDIR_HEREDOC, ts);
+	redir = create_redirection(&cmd->redirections, token->type, ts);
 	if (!redir)
 		return (0);
 	return (1);
