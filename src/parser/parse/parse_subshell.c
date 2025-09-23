@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_subshell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 11:02:02 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 14:25:31 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 19:31:16 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,5 @@ t_ast_node	*parse_subshell(t_tokenstream *ts, t_minishell *mnsh)
 	ast_node = create_ast_node(SUBSHELL);
 	if (!ast_node)
 		return (free_subshell(subshell), NULL);
-	return (ast_node->subshell = subshell, ast_node);
+	return (ast_node->subshell = subshell, subshell->mnsh = mnsh, ast_node);
 }
