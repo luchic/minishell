@@ -2,6 +2,7 @@
 # include "minishell.h"
 # include "ft_defines.h"
 # include "ft_executor.h"
+# include "ft_common.h"
 # include "expander.h"
 
 static void print_attri_into(t_command *cmd)
@@ -95,6 +96,14 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		return (EXIT_SUCCESS);
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
+	if (cmd->name && cmd->args[0][0] == '\0')
+	{
+		ft_log_fd(LOG_ERROR, STDERR, "minishell: command not found\n"); ///to delete --- IGNORE ---
+		if (cmd->args[1] == NULL)
+		{
+			return (EXIT_SUCCESS);
+		}
+	}
 	if (!cmd->name && cmd->assignments)
 	{
 		original_env = handle_assignments(mnsh, cmd->assignments);
@@ -147,7 +156,7 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 {
 	int		status;
-	char	**original_env; //maybe no need
+	char	**original_env;
 
 	status = 0;
 
@@ -169,8 +178,6 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 		status = run_builtin(cmd);
     else if (cmd->type == CMD_EXTERNAL)
 		status = run_external_no_fork(cmd);
-
-	//mnsh->last_exit_status = status;
 
 	return (status);
 }

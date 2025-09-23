@@ -30,6 +30,19 @@ int run_builtin(t_command *cmd)
 {
 	int	orig_fds[2];
 	int	status;
+	t_command	tmp_cmd;
+
+
+	tmp_cmd = *cmd;
+	if (tmp_cmd.name && tmp_cmd.args[0][0] == '\0' && tmp_cmd.args[1])
+	{
+		tmp_cmd.name = cmd->args[1];
+		tmp_cmd.args = &cmd->args[1];
+	}
+	else if (tmp_cmd.name && tmp_cmd.args[0][0] == '\0')
+	{
+		return (EXIT_SUCCESS);
+	}
 
 	orig_fds[0] = dup(STDIN);
 	orig_fds[1] = dup(STDOUT);
@@ -43,7 +56,7 @@ int run_builtin(t_command *cmd)
 		return (EXIT_FAILURE);
 	}
 
-	status = match_built_in(cmd);
+	status = match_built_in(&tmp_cmd);
 
 	if (dup2(orig_fds[0], STDIN) == -1)
 		return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);

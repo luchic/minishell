@@ -1,6 +1,7 @@
 # include "minishell.h"
 # include "ft_defines.h"
 # include "ft_executor.h"
+#include "ft_common.h"
 
 
 void	close_pipes(int pipe_fds[2])
@@ -21,15 +22,12 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 	}
 	if (pid == 0)
 	{
-		// if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
-        //     exit(EXIT_FAILURE);
-			
     	if (dup2(fds[0], STDIN_FILENO) == -1)
             exit(EXIT_FAILURE);
         if (dup2(fds[1], STDOUT_FILENO) == -1)
             exit(EXIT_FAILURE);
 
-		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
+		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE)
             exit(EXIT_FAILURE);
 
 		if (fds[0] != STDIN)
@@ -39,8 +37,12 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
         if (i < pipeline->count - 1)
             close_pipes(pipe_fds);
 
+		// if (pipeline->commands[i]->type == SUBSHELL)
+		// 	status = execute_subshell(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->subshell);
+		// else
+		// 	status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
 		status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
-		exit(status);
+		free_and_exit(pipeline->commands[i]->command->mnsh, status);
 	}
 	else
 	{

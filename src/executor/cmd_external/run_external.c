@@ -7,15 +7,6 @@
 #include "minishell.h"
 #include <sys/stat.h> 
 
-void	cmd_false_exit(t_minishell *mnsh)
-{
-	if (mnsh)
-		free_stack_minishell(mnsh);
-	if (errno == ENOENT)
-		exit(127);
-	else
-		exit(126);
-}
 
 int	run_external_no_fork(t_command *cmd)
 {
@@ -32,7 +23,7 @@ int	run_external_no_fork(t_command *cmd)
 			ft_printf_fd(STDERR, "%s: No such file or directory\n",
 				cmd->name);
 			ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
-			exit (127);
+			free_and_exit(cmd->mnsh, 127);
 		}
 	}
 	else
@@ -42,7 +33,7 @@ int	run_external_no_fork(t_command *cmd)
 		{
 			ft_printf_fd(STDERR, "%s: command not found\n",cmd->name);
 			ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 127\n"); ///to delete --- IGNORE ---
-			exit (127);
+			free_and_exit(cmd->mnsh, 127);
 		}
 		is_path_malloced = 1;
 	}
@@ -50,7 +41,6 @@ int	run_external_no_fork(t_command *cmd)
 
 	signal_check();
 	
-	//handle_io_redirection(cmd);
 	ft_log_fd(LOG_INFO, STDERR, " cmd->fd_in: %d, cmd->fd_out: %d\n", cmd->fd_in, cmd->fd_out); ///to delete --- IGNORE ---
 
 	execve(path, cmd->args, cmd->mnsh->envp);
@@ -60,14 +50,14 @@ int	run_external_no_fork(t_command *cmd)
 		ft_printf_fd(STDERR, "%s: Is a directory\n",
 			cmd->name);
 		ft_log_fd(LOG_ERROR, STDERR, "Exiting with code 126\n"); ///to delete --- IGNORE ---
-		exit (126);
+		free_and_exit(cmd->mnsh, 126);
 	}
 	if (access(path, X_OK) != 0)
 	{
 		ft_printf_fd(STDERR, "%s: Permission denied\n",
 			cmd->name);
 		free(path);
-		exit (126);
+		free_and_exit(cmd->mnsh, 126);
 	}
 
 	ft_log_fd(LOG_ERROR, STDERR, "%s: execution failed\n",
@@ -76,7 +66,8 @@ int	run_external_no_fork(t_command *cmd)
 		free(path);
 	
 	ft_log_fd(LOG_ERROR, STDERR, "Exiting with code cannot execute 126\n"); ///to delete --- IGNORE ---
-	exit (126);
+	free_and_exit(cmd->mnsh, 126);
+	return (EXIT_FAILURE); // should never reach here
 }
 
 
@@ -95,9 +86,16 @@ int	run_external(t_command *cmd)
 		if (handle_redirections(cmd) == EXIT_FAILURE)
 		{
 			ft_log_fd(LOG_ERROR, STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"); ///to delete --- IGNORE ---
-			return (EXIT_FAILURE);
+			free_and_exit(cmd->mnsh, EXIT_FAILURE);
 		}
-		return (run_external_no_fork(cmd));
+		if (cmd->name && cmd->args[0][0] == '\0' && cmd->args[1])
+		{
+			cmd->name = cmd->args[1];
+			cmd->args = &cmd->args[1];
+		}
+
+		run_external_no_fork(cmd);
+		free_and_exit(cmd->mnsh, EXIT_FAILURE);
 	}
 	else
 	{
@@ -123,10 +121,7 @@ int	run_external(t_command *cmd)
 			ft_log_fd(LOG_INFO, STDERR, "Child terminated by signal %d\n", WTERMSIG(status)); ///to delete --- IGNORE ---
 			return (WTERMSIG(status));
 		}
-		else
-		{
-			ft_log_fd(LOG_INFO, STDERR, "child exited abnormally with status %d\n", status); ///to delete --- IGNORE ---
-			return (1);
-		}
+		ft_log_fd(LOG_INFO, STDERR, "child exited abnormally with status %d\n", status); ///to delete --- IGNORE ---
 	}
+	return (EXIT_FAILURE);
 }
