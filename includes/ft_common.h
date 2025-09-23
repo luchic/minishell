@@ -65,6 +65,7 @@ void	msg_unexpected_token_type(t_token_type type);
 
 // ================================ Env ========================================
 char	*get_env(t_minishell *mnsh, const char *name);
+int		is_valid_name(char *variable, char *name);
 
 // ================================ Dirs utils ================================
 int		is_directory(const char *path);
