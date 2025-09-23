@@ -35,9 +35,13 @@ int run_builtin(t_command *cmd)
 	orig_fds[1] = dup(STDOUT);
 
 	if (handle_redirections(cmd) == EXIT_FAILURE)
-		return (ft_log_fd(LOG_ERROR, STDERR, "Failed to handle redirections for command: %s\n", cmd->name ? cmd->name : "(null)"), EXIT_FAILURE);
-
-	//handle_io_redirection(cmd);
+	{
+		dup2(orig_fds[0], STDIN);
+		dup2(orig_fds[1], STDOUT);
+		close(orig_fds[0]);
+		close(orig_fds[1]);
+		return (EXIT_FAILURE);
+	}
 
 	status = match_built_in(cmd);
 

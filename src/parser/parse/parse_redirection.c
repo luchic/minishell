@@ -19,7 +19,8 @@ static void	*create_redirection(t_list **lst, t_redir_type type,
 	new_node = ft_lstnew(redir);
 	if (!new_node)
 		return (ft_free_redir(redir), NULL);
-	ft_lstadd_front(lst, new_node);
+	//ft_lstadd_front(lst, new_node);
+	ft_lstadd_back(lst, new_node);
 	return (redir);
 }
 

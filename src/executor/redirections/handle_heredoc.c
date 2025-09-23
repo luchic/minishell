@@ -66,7 +66,7 @@ static char	*create_heredoc_tempfile(void)
 	return (filename);
 }
 
-int	handle_heredoc(t_redirection *redir, t_command *cmd)
+int	handle_heredoc(t_redirection *redir, t_command *cmd/* , t_redir_type *last_type */)
 {
 	char	*temp_filename;
 	int		temp_fd;
@@ -84,6 +84,15 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 		return (0);
 	}
 
+	// if (*last_type == REDIR_HEREDOC)
+	// {
+	// 	ft_log_fd(LOG_INFO, STDERR, "Skipping redundant redirection of type %d\n", *last_type); ///to delete --- IGNORE ---
+	// 	close(temp_fd);
+	// 	unlink(temp_filename);
+	// 	free(temp_filename);
+	// 	return (EXIT_SUCCESS);
+	// }
+
 	delimiter = redir->value;
 	ft_write_data_to_std(delimiter, temp_fd);
 	close(temp_fd);
@@ -95,8 +104,6 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 	if (temp_fd == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: cannot open temp file for reading\n");
-		// unlink(temp_filename);
-		// free(temp_filename);
 		return (EXIT_FAILURE);
 	}
 
@@ -106,10 +113,9 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 		close(temp_fd);
 		return (EXIT_FAILURE);
 	}
-	// if (cmd->fd_in != STDIN && cmd->fd_in != -1)
-	// 	close(cmd->fd_in);
-	// cmd->fd_in = temp_fd;
+
 	close(temp_fd);
+	// *last_type = REDIR_HEREDOC;
 	cmd->fd_in = STDIN; // important: never keep the temp fd
 
 	return (EXIT_SUCCESS);

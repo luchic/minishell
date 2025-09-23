@@ -14,7 +14,7 @@ void	ft_array_remove(char ***array, char *value)
 	i = 0;
 	envp = *array;
 	// find if value exists in envp
-	while (envp[i] && ft_strncmp(envp[i], value, ft_strlen(value)) != 0)
+	while (envp[i] && is_valid_name(envp[i], value) == 0)
 		i++;
 	if (!envp[i])
 		return ; // value not found

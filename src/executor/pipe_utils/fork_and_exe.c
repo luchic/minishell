@@ -21,12 +21,15 @@ pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 	}
 	if (pid == 0)
 	{
-		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
-            exit(EXIT_FAILURE);
+		// if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
+        //     exit(EXIT_FAILURE);
 			
     	if (dup2(fds[0], STDIN_FILENO) == -1)
             exit(EXIT_FAILURE);
         if (dup2(fds[1], STDOUT_FILENO) == -1)
+            exit(EXIT_FAILURE);
+
+		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE) // dup2 redirects and stdin and stdout
             exit(EXIT_FAILURE);
 
 		if (fds[0] != STDIN)

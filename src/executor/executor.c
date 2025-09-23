@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:56:03 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/22 19:30:45 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/22 22:04:11 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,6 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-int run_executor(t_minishell *mnsh)
-{
-    t_ast_node *script;
-
-    script = get_script(mnsh);
-    if (!script)
-        return (/* ft_log_fd(LOG_ERROR, STDERR, "%s", "No script to execute.\n"),  */EXIT_FAILURE);
-    
-    return (execute_script(mnsh, script));
-}
-
-t_ast_node *get_script(t_minishell *mnsh)
-{
-    if (!mnsh || !mnsh->script)
-        return (NULL);
-    return (mnsh->script->nodes);
-}
 
 int    execute_script(t_minishell *mnsh, t_ast_node *script)
 {
