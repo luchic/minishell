@@ -1,6 +1,6 @@
 
-# include "ft_common.h"
-# include "libft.h"
+#include "ft_common.h"
+#include "libft.h"
 
 void	ft_array_remove(char ***array, char *value)
 {
@@ -17,7 +17,7 @@ void	ft_array_remove(char ***array, char *value)
 	while (envp[i] && is_valid_name(envp[i], value) == 0)
 		i++;
 	if (!envp[i])
-		return ; // value not found
+		return ;
 	new_array = malloc(sizeof(char *) * (count_args(envp) + 1)); // +1 for NULL terminator
 	if (!new_array)
 		return ;

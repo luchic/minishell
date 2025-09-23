@@ -59,6 +59,8 @@ typedef struct s_minishell
 	int							num_variables;
 	int							is_background;
 	int							last_exit_status;
+	int							is_interactive;
+	int							fd;
 	char						**envp;
 }								t_minishell;
 

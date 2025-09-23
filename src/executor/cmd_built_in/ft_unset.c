@@ -1,12 +1,12 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "minishell.h"
 
-int ft_unset(t_command *cmd)
+int	ft_unset(t_command *cmd)
 {
-	int i;
-	int status;
+	int		i;
+	int		status;
 	char	***envp;
 
 	if (count_args(cmd->args) < 2)
