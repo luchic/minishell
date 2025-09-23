@@ -10,39 +10,62 @@ void	close_pipes(int pipe_fds[2])
 	close(pipe_fds[1]);
 }
 
+static t_minishell *get_mnsh_from_node(t_ast_node *node)
+{
+    if (!node) 
+		return (NULL);
+    if (node->type == COMMAND) 
+		return (node->command->mnsh);
+    if (node->type == SUBSHELL) 
+		return (node->subshell->mnsh);
+    return (NULL);
+}
+
+
 pid_t fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
 	pid_t pid;
 	int status;
+	t_ast_node *current_node;
+	t_minishell *mnsh;
 	
 	pid = fork();
 	if (pid == -1)
-	{
 		return (-1);
-	}
+
 	if (pid == 0)
 	{
-    	if (dup2(fds[0], STDIN_FILENO) == -1)
-            exit(EXIT_FAILURE);
-        if (dup2(fds[1], STDOUT_FILENO) == -1)
-            exit(EXIT_FAILURE);
+		current_node = pipeline->commands[i];
+		mnsh = get_mnsh_from_node(current_node);
 
-		if (handle_redirections(pipeline->commands[i]->command) == EXIT_FAILURE)
-            exit(EXIT_FAILURE);
+    	if (dup2(fds[0], STDIN_FILENO) == -1 || dup2(fds[1], STDOUT_FILENO) == -1)
+            free_and_exit(mnsh, EXIT_FAILURE);
 
 		if (fds[0] != STDIN)
 			close(fds[0]);
 		if (fds[1] != STDOUT)
 			close(fds[1]);
+
         if (i < pipeline->count - 1)
             close_pipes(pipe_fds);
 
-		// if (pipeline->commands[i]->type == SUBSHELL)
-		// 	status = execute_subshell(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->subshell);
-		// else
-		// 	status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
-		status = execute_command_pipeline(pipeline->commands[i]->command->mnsh, pipeline->commands[i]->command);
-		free_and_exit(pipeline->commands[i]->command->mnsh, status);
+		status = EXIT_FAILURE;
+		if (current_node->type == COMMAND)
+		{
+			if (handle_redirections(current_node->command) == EXIT_FAILURE)
+				free_and_exit(mnsh, EXIT_FAILURE);
+			status = execute_command_pipeline(mnsh, current_node->command);
+		}
+		else if (current_node->type == SUBSHELL)
+		{
+			status = execute_subshell(mnsh, current_node->subshell);
+		}
+		else
+		{
+			ft_printf_fd(STDERR, "minishell: unknown node type in pipeline\n");
+		}
+		free_and_exit(mnsh, status);
+
 	}
 	else
 	{

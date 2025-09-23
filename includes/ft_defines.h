@@ -128,6 +128,8 @@ typedef struct s_logical_expression
 typedef struct s_subshell
 {
 	t_ast_node					*script;
+	t_minishell					*mnsh;
+	// t_list						*redirections; // list of t_redirection
 }								t_subshell;
 
 // Generic AST node
