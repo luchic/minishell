@@ -11,7 +11,7 @@ int	ft_unset(t_command *cmd)
 
 	if (count_args(cmd->args) < 2)
 		return (EXIT_SUCCESS);
-	envp = &cmd->mnsh->envp;
+	envp = &(cmd->mnsh->envp);
 	i = 1;
 	status = EXIT_SUCCESS;
 	while (cmd->args[i])

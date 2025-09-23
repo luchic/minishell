@@ -63,9 +63,8 @@ char		*get_cmd_path(char *cmd_name, char **envp);
 
 // ======================== redirections ========================
 int			handle_redirections(t_command *cmd);
-int			handle_io_redirection(t_command *cmd);
-int			handle_input_redirection(t_redirection *redir, t_command *cmd);
-int			handle_output_redirection(t_redirection *redir, t_command *cmd);
+int			handle_input_redirection(t_command *cmd, const char *path);
+int			handle_output_redirection(t_command *cmd, const char *path, int append);
 int			handle_heredoc(t_redirection *redir, t_command *cmd);
 int			ft_is_limiter(char *line, char *del);
 void		ft_write_data_to_std(char *del, int fd);
