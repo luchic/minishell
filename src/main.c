@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/23 14:02:02 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/23 20:56:55 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,26 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 		return ;
 }
 
+char	*ft_read_line(t_minishell *mnsh)
+{
+	char	*line;
+
+	if (mnsh->is_interactive)
+		return(readline("minishell> "));
+	ft_printf_fd(mnsh->fd, "minishell> ");
+	line = get_next_line(STDIN);
+	if (line)
+	{
+		int len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+	}
+	return (line);
+}
 // TODO: handle minishell> kkjhg execve: No such file or directory
 // TODO: change error messages to match bash ones
 
-void	ft_run_minishell(t_minishell *mnsh)
+int	ft_run_minishell(t_minishell *mnsh)
 {
 	char		*input;
 	t_list		*tokens;
@@ -81,9 +97,10 @@ void	ft_run_minishell(t_minishell *mnsh)
 	int			tmp;
 
 	(void)mnsh;
-	while ((input = readline("minishell> ")))
+	while ((input = ft_read_line(mnsh)))
 	{
-		add_history(input);
+		if (mnsh->is_interactive)
+			add_history(input);
 		tmp = run_lexer(&tokens, input);
 		if (tmp)
 		{
@@ -113,19 +130,21 @@ void	ft_run_minishell(t_minishell *mnsh)
 		mnsh->last_exit_status = exit_status;
 		free_ast_tree(ast);
 	}
-	rl_clear_history();
+	if (mnsh->is_interactive)
+		rl_clear_history();
+	return (mnsh->last_exit_status);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	mnsh;
+	int exit_code;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	(void)mnsh;
 	init_minishell(&mnsh, argc, argv, envp);
-	ft_run_minishell(&mnsh);
-	// free_stack_minishell(&mnsh);
-	return (0);
+	exit_code = ft_run_minishell(&mnsh);
+	return (exit_code);
 }
