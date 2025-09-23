@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools1.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 18:27:12 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:37:09 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,9 @@ void	free_stack_minishell(t_minishell *mnsh)
 	if (!mnsh)
 		return ;
 	if (mnsh->envp)
+	{
 		free_str_array(mnsh->envp);
+	}
 	if (mnsh->script)
 	{
 		free_script(mnsh->script);

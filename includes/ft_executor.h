@@ -9,8 +9,6 @@
 # include "minishell.h"
 
 // ======================== executor ========================
-int			run_executor(t_minishell *mnsh);
-t_ast_node	*get_script(t_minishell *mnsh);
 int			execute_script(t_minishell *mnsh, t_ast_node *script);
 int			execute_node(t_minishell *mnsh, t_ast_node *node);
 

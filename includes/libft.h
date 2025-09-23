@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 12:24:52 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/04 16:01:55 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:39:47 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ double				ft_atof(const char *str);
  * @retval The converted value or 0 on error.
  */
 int					ft_atoi(const char *str);
+int					ft_isspace(int c);
 
 /**
  * @brief The bzero() function writes n zeroed bytes to the string s.
