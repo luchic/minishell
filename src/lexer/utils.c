@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 13:49:24 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/16 16:05:25 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:05:43 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ int	is_double_char_token(const char *str)
 {
 	if (!str || !str[0] || !str[1])
 		return (0);
-	// if (str[0] == '$' && str[1] == '?')
-	// 	return (1);
 	return (str[0] == str[1] && (str[0] == '|' || str[0] == '&' || str[0] == '<'
 			|| str[0] == '>'));
 }
@@ -39,8 +37,7 @@ int	is_double_char_token(const char *str)
 int	is_special_char(char c)
 {
 	return ((c == '|' || c == '&' || c == '<' || c == '>' || c == '('
-			|| c == ')' || c == ';' || c == '\'' || c == '\"' /* || c == '$'*/
-			|| c == '=' ));
+			|| c == ')' || c == ';' || c == '\'' || c == '\"' || c == '='));
 }
 
 int	is_double_quote(char c, int *escaped)
@@ -63,7 +60,7 @@ void	*add_new_token(t_list **head, char *value, t_quote_status quote,
 	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
 		return (NULL);
-	if (*input == ' ')
+	if (is_ifs_space((unsigned char)*input))
 		token->is_space_after = 1;
 	else
 		token->is_space_after = 0;

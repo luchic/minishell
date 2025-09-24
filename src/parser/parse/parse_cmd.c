@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:00:29 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:07:34 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "lexer.h"
@@ -58,7 +69,8 @@ static int	parse_command_fields(t_command *command, t_tokenstream *ts,
 	if (!ts_peek(ts))
 		return (1);
 	if (!ts_match(ts, WORD))
-		return (msg_unexpected_token(ts_peek(ts)), mnsh->last_exit_status = 2, 0);
+		return (msg_unexpected_token(ts_peek(ts)), mnsh->last_exit_status = 2,
+			0);
 	tok_name = ts_peek(ts);
 	command->name = ft_strdup(tok_name->value);
 	if (!command->name)
@@ -77,9 +89,6 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts, t_minishell *mnsh)
 	t_ast_node	*ast_node;
 
 	ft_log_fd(LOG_INFO, STDERR, "Parse simple command\n");
-	// if (!ts_peek(ts))
-	// 	return (ft_log_fd(LOG_ERROR, STDERR,
-	// 			"Parse simple command: no token to parse\n"), NULL); //need to pass null to executor
 	command = create_command(CMD_EXTERNAL);
 	if (!command)
 		return (ft_log_fd(LOG_ERROR, STDERR,

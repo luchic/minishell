@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:11:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 15:36:27 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:10:02 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ static int	ft_append_file(char *filename, char ***files)
 	return (0);
 }
 
-/// @brief
-/// NOTE: don't support hidden files now
 static char	**get_current_files(char *path)
 {
 	DIR				*dir;
@@ -62,7 +60,6 @@ static char	**get_current_files(char *path)
 	closedir(dir);
 	return (files);
 }
-
 
 char	**get_matching_files(char *path, char *pattern, int *status)
 {
@@ -107,32 +104,3 @@ char	*get_file_prefix(char *path, char *pattern)
 	}
 	return (prefix);
 }
-
-// #include <stdio.h>
-// #include <stdlib.h>
-
-// int main(int argc, char **argv)
-// {
-// 	char **new_args = NULL;
-// 	char *arg;
-// 	if (argc != 2)
-// 	{
-// 		arg = ft_strdup("\\*hello");
-// 	}
-// 	else
-// 	{
-// 		arg = ft_strdup(argv[1]);
-// 	}
-// 	new_args =  get_matching_files(".", arg);
-// 	free(arg);
-// 	if (!new_args)
-// 	{
-// 		printf("No matching files\n");
-// 		return 0;
-// 	}
-// 	for(int i = 0; new_args && new_args[i]; i++)
-// 	{
-// 		printf("new_args[%d]: %s\n", i, new_args[i]);
-// 	}
-// 	free_str_array(new_args);
-// }

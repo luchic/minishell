@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_main.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:01:50 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:01:53 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "parser.h"
 
@@ -32,11 +43,9 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 		}
 		ft_log_fd(LOG_INFO, STDERR, "Parsing right side of logical\n");
 		right = parse_pipeline(ts, mnsh);
-		if (!right)
-			return (free_logical(logical), NULL);
 		logical->right = right;
 		left = create_ast_node(LOGICAL);
-		if (!left)
+		if (!right || !left)
 			return (free_logical(logical), NULL);
 		left->logical = logical;
 	}

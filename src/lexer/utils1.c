@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 13:30:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:04:50 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/24 14:59:04 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 14:59:05 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
-
-t_ast_node	*run_parser(t_list *tokens, t_minishell *mnsh)
+int	is_ifs_space(int c)
 {
-	t_tokenstream	ts;
-	t_ast_node		*ast;
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v'
+		|| c == '\f');
+}
 
-	ft_log_fd(LOG_INFO, STDERR, "Run parser\n");
-	ts.cur = tokens;
-	ast = parse_script(&ts, mnsh);
-	return (ast);
+void	skip_ifs_spaces(const char **p)
+{
+	while (is_ifs_space((unsigned char)**p))
+		(*p)++;
 }

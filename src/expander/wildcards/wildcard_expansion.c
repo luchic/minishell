@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard_expansion.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:10:07 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:24:01 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_defines.h"
@@ -7,23 +18,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-char	**expand_wildcard_internal(char *pattern, int *status)
-{
-	char	*curr_path;
-	char	**matched;
-
-	curr_path = get_current_path(pattern);
-	if (!curr_path)
-	{
-		set_status(status, -1);
-		return (NULL);
-	}
-	matched = expand_wildcard_recursive(curr_path, pattern, status);
-	free(curr_path);
-	return (matched);
-}
-
-int	expand_wildcard_if_not_matched(char ***new_args, char *arg)
+static int	expand_wildcard_if_not_matched(char ***new_args, char *arg)
 {
 	char	*matched_file;
 	char	**tmp;
@@ -39,7 +34,7 @@ int	expand_wildcard_if_not_matched(char ***new_args, char *arg)
 	return (0);
 }
 
-int	expand_wildcard(char ***new_args, char *arg)
+static int	expand_wildcard(char ***new_args, char *arg)
 {
 	char	*matched_file;
 	char	**matched;
@@ -68,7 +63,7 @@ int	expand_wildcard(char ***new_args, char *arg)
 	return (free_str_array(matched), 0);
 }
 
-int	expand_wildcard_if_need(char ***new_arg, char *arg)
+static int	expand_wildcard_if_need(char ***new_arg, char *arg)
 {
 	char	*copy_arg;
 	char	**tmp;
@@ -86,18 +81,12 @@ int	expand_wildcard_if_need(char ***new_arg, char *arg)
 	return (0);
 }
 
-int	run_wildcards_expander(t_command *cmd)
+static int	expand_wildcards_args(t_command *cmd)
 {
 	char	**args;
 	char	**new_args;
 	int		i;
 
-	ft_log_fd(LOG_DEBUG, STDERR, "run_wildcards_expander: %s: %s\n",
-		"Expanding wildcards for command", cmd->name);
-	if (!cmd || !cmd->args)
-		return (-1);
-	if (!is_wildcard(cmd))
-		return (restore_values(cmd), 0);
 	args = cmd->args;
 	new_args = NULL;
 	i = -1;
@@ -105,7 +94,6 @@ int	run_wildcards_expander(t_command *cmd)
 	{
 		ft_log_fd(LOG_DEBUG, STDERR,
 			"run_wildcards_expander: Processing arg[%d]: %s\n", i, args[i]);
-			/// to delete --- IGNORE ---
 		if (expand_wildcard_if_need(&new_args, args[i]) == -1)
 		{
 			ft_log_fd(LOG_ERROR, STDERR_FILENO,
@@ -115,34 +103,30 @@ int	run_wildcards_expander(t_command *cmd)
 			return (-1);
 		}
 	}
+	free_str_array(cmd->args);
+	cmd->args = new_args;
+	return (0);
+}
+
+int	run_wildcards_expander(t_command *cmd)
+{
+	ft_log_fd(LOG_DEBUG, STDERR, "run_wildcards_expander: %s: %s\n",
+		"Expanding wildcards for command", cmd->name);
+	if (!cmd || !cmd->args)
+		return (-1);
+	if (!is_wildcard(cmd))
+		return (restore_values(cmd), 0);
+	if (expand_wildcards_args(cmd) == -1)
+	{
+		ft_log_fd(LOG_ERROR, STDERR_FILENO,
+			"expand_wildcards: Failed to expand wildcard in args\n");
+		return (-1);
+	}
 	if (expand_wildcard_redirection(cmd->redirections, cmd) == -1)
 	{
 		ft_log_fd(LOG_ERROR, STDERR_FILENO,
 			"expand_wildcards: Failed to expand wildcard in redirection\n");
-		return (free_str_array(new_args), -1);
+		return (-1);
 	}
-	return (free_str_array(cmd->args), cmd->args = new_args, 0);
+	return (0);
 }
-
-// #include <stdio.h>
-// #include <stdlib.h>
-
-// int main(int argc, char **argv)
-// {
-// 	char **new_args = NULL;
-// 	char *arg;
-// 	if (argc != 2)
-// 	{
-// 		arg = ft_strdup("*");0
-// 		arg = ft_strdup(argv[1]);
-// 	}
-// 	// new_args = calloc(3, sizeof(char *));
-// 	// new_args[0] = strdup("file1.txt");
-// 	// new_args[1] = strdup("*");
-// 	expand_wildcard_if_need(&new_args, arg);
-
-// 	for(int i = 0; new_args && new_args[i]; i++)
-// 	{
-// 		printf("new_args[%d]: %s\n", i, new_args[i]);
-// 	}
-// }

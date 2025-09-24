@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_expansion.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:08:46 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:08:55 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_printf.h"
@@ -105,6 +116,7 @@ int	run_variable_expander(t_command *cmd)
 		return (-1);
 	if (expand_redirection(cmd->redirections, cmd) == -1)
 		return (-1);
-	ft_log_fd(LOG_INFO, STDERR, "Finished redirection expansion with cmd: %s\n", cmd->name);
+	ft_log_fd(LOG_INFO, STDERR, "Finished redirection expansion with cmd: %s\n",
+		cmd->name);
 	return (1);
 }

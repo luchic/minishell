@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wld_utils2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:24:23 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:24:31 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "expander_internal.h"
 #include "parser.h"
 
 void	restore_str(char *str)
@@ -56,4 +69,20 @@ void	set_status(int *status, int new_status)
 {
 	if (status)
 		*status = new_status;
+}
+
+char	**expand_wildcard_internal(char *pattern, int *status)
+{
+	char	*curr_path;
+	char	**matched;
+
+	curr_path = get_current_path(pattern);
+	if (!curr_path)
+	{
+		set_status(status, -1);
+		return (NULL);
+	}
+	matched = expand_wildcard_recursive(curr_path, pattern, status);
+	free(curr_path);
+	return (matched);
 }
