@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/24 13:39:25 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:49:56 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,9 +138,11 @@ int	ft_run_minishell(t_minishell *mnsh)
 		exit_status = execute_node(mnsh, ast);
 		mnsh->last_exit_status = exit_status;
 		free_ast_tree(ast);
+		mnsh->script->nodes = NULL;
 	}
 	if (mnsh->is_interactive)
 		rl_clear_history();
+	free_stack_minishell(mnsh);
 	return (mnsh->last_exit_status);
 }
 

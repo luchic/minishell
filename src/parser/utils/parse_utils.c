@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:29:25 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 20:53:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:03:48 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_logical_op	get_logical_op(t_tokenstream *ts)
 }
 
 int	is_built_in(char *cmd_name)
-{	
+{
 	if (!cmd_name)
 		return (0);
 	if (ft_strcmp(cmd_name, "echo") == 0)

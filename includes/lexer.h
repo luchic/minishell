@@ -71,6 +71,8 @@ int					is_double_char_token(const char *str);
 int					is_special_char(char c);
 void				free_tokens(void *param);
 int					is_double_quote(char c, int *escaped);
+int					is_ifs_space(int c);
+void				skip_ifs_spaces(const char **p);
 
 /**
  * @brief Adds a new token to the list.
