@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 13:49:24 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 14:29:46 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:05:43 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ int	is_double_char_token(const char *str)
 {
 	if (!str || !str[0] || !str[1])
 		return (0);
-	// if (str[0] == '$' && str[1] == '?')
-	// 	return (1);
 	return (str[0] == str[1] && (str[0] == '|' || str[0] == '&' || str[0] == '<'
 			|| str[0] == '>'));
 }
@@ -39,8 +37,7 @@ int	is_double_char_token(const char *str)
 int	is_special_char(char c)
 {
 	return ((c == '|' || c == '&' || c == '<' || c == '>' || c == '('
-			|| c == ')' || c == ';' || c == '\'' || c == '\"' /* || c == '$'*/
-			|| c == '=' ));
+			|| c == ')' || c == ';' || c == '\'' || c == '\"' || c == '='));
 }
 
 int	is_double_quote(char c, int *escaped)

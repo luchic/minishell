@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:23:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 14:28:15 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:57:53 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ char	*get_next_token(const char **input, t_parse_mode *mode,
 		return (*mode = DOUBLE, NULL);
 	if (is_special_char(*cur_input))
 		return (get_special_char_token(input, mode));
-	while (*cur_input && !is_special_char(*cur_input) && !is_ifs_space(*cur_input))
+	while (*cur_input && !is_special_char(*cur_input)
+		&& !is_ifs_space(*cur_input))
 		cur_input++;
 	token = ft_substr(*input, 0, cur_input - *input);
 	if (!token)
@@ -123,12 +124,6 @@ char	*get_double_quoted_token(const char **input, t_parse_mode *mode,
 	return (token);
 }
 
-/*
-Potential double-free/ASan noise in ft_split_tokens
-token is not nulled after successful	add_new_token;
-later branches check token && mode == UNBALANCED and may
-free a token that now belongs to the list.
-*/
 char	*get_token(const char **input, t_parse_mode *mode,
 		t_quote_status *status)
 {
