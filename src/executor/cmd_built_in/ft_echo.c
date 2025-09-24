@@ -10,7 +10,7 @@
 
 // 0 for no -n, 1 for -n
 
-int n_option(char *arg)
+static int is_n_option(char *arg)
 {
     int i;
     
@@ -23,17 +23,7 @@ int n_option(char *arg)
             return 0;
         i++;
     }
-    return 1;
-}
-
-int is_newline_option(char *arg)
-{
-    int is_n;
-
-    is_n = n_option(arg);
-    if (is_n == 1)
-        return (0);
-    return (1);
+    return (i > 1);
 }
 
 int ft_echo(t_command *cmd)
@@ -42,21 +32,22 @@ int ft_echo(t_command *cmd)
     int newline;
 
     i = 1;
-    newline = is_newline_option(cmd->args[i]);
-    while (n_option(cmd->args[i]) == 1)
+    newline = 1;
+    while (cmd->args[i] && is_n_option(cmd->args[i]))
     {
+        newline = 0;
         i++;
     }
     while (cmd->args[i])
     {
-        ft_log_fd(LOG_INFO, STDERR, "echo arg[%d]: %s\n", i, cmd->args[i]); ///to delete --- IGNORE ---
         ft_printf_fd(STDOUT, "%s", cmd->args[i]);
         if (cmd->args[i + 1])
-			ft_printf_fd(STDOUT, " ");
+            ft_printf_fd(STDOUT, " ");
         i++;
     }
     if (newline)
-		ft_printf_fd(STDOUT, "\n");
+        ft_printf_fd(STDOUT, "\n");
+
     return (EXIT_SUCCESS);
 }
 
