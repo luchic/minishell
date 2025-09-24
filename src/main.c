@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/23 21:16:21 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:39:25 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,22 +112,23 @@ int	ft_run_minishell(t_minishell *mnsh)
 		tmp = run_lexer(&tokens, input);
 		if (tmp)
 		{
-			ft_printf_fd(STDERR, "Lexer error\n");
+			ft_log_fd(LOG_ERROR, STDERR, "Lexer error\n");
 			free(input);
 			continue ;
 		}
 		if (mnsh->script == NULL)
 		{
-			ft_printf_fd(STDERR, "Memory allocation error\n");
+			ft_log_fd(LOG_ERROR, STDERR, "Memory allocation error\n");
 			free(input);
 			ft_lstclear(&tokens, free_tokens);
 			continue ;
 		}
 		ast = run_parser(tokens, mnsh);
 		mnsh->script->nodes = ast;
-		if (!mnsh->script)
+		if (mnsh->last_exit_status == SYNTAX_ERROR && !ast)
 		{
-			ft_printf_fd(STDERR, "Parser error\n");
+			ft_log_fd(LOG_INFO, STDERR, "Exit code: %d\n", mnsh->last_exit_status);
+			ft_log_fd(LOG_ERROR, STDERR, "Parser error\n");
 			free(input);
 			ft_lstclear(&tokens, free_tokens);
 			continue ;
