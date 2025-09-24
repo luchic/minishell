@@ -73,12 +73,12 @@ int	ft_exit(t_command *cmd)
 	
 	if (!is_valid_num_arg(cmd->args[1]))
 	{
-		ft_printf_fd(STDOUT, " numeric argument required\n");
+		ft_printf_fd(STDERR, "%s: exit: %s: numeric argument required\n", PREFIX, cmd->args[1]);
 		free_and_exit(cmd->mnsh, 2);
 	}
 	if (argc > 2)
 	{
-		ft_printf_fd(STDOUT, "exit: too many arguments\n");
+		ft_printf_fd(STDERR, "%s: exit: too many arguments\n", PREFIX);
 		return (EXIT_FAILURE);
 	}
 	status = ft_strtoll(cmd->args[1], NULL);
