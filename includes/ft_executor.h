@@ -30,6 +30,7 @@ int		preprocess_cmd(t_command *cmd);
 int		execute_dispatcher(t_command *cmd, int in_pipeline);
 void	close_previous_fd(int fd_to_close);
 int		restore_check(t_command *cmd);
+void	setup_io_fds(int fd_in, int fd_out);
 
 // ======================== assignments ========================
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments);

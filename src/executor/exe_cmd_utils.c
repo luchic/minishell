@@ -5,6 +5,20 @@
 #include "ft_executor.h"
 #include "minishell.h"
 
+void	setup_io_fds(int fd_in, int fd_out)
+{
+	if (fd_in != STDIN_FILENO)
+	{
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+	}
+	if (fd_out != STDOUT_FILENO)
+	{
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}
+}
+
 int	restore_check(t_command *cmd)
 {
 	if (ft_strcmp(cmd->name, "export") == 0 || ft_strcmp(cmd->name,

@@ -28,10 +28,8 @@ int	execute_command(t_minishell *mnsh, t_command *cmd)
 		return (EXIT_FAILURE);
 	if (!cmd->name)
 	{
-		if (cmd->fd_in != STDIN_FILENO)
-			close(cmd->fd_in);
-		if (cmd->fd_out != STDOUT_FILENO)
-			close(cmd->fd_out);
+		close_previous_fd(cmd->fd_in);
+		close_previous_fd(cmd->fd_out);
 		if (cmd->assignments)
 		{
 			original_env = handle_assignments(mnsh, cmd->assignments);
@@ -43,14 +41,7 @@ int	execute_command(t_minishell *mnsh, t_command *cmd)
 	{
 		orig_fds[0] = dup(STDIN_FILENO);
 		orig_fds[1] = dup(STDOUT_FILENO);
-		if (cmd->fd_in != STDIN_FILENO)
-			dup2(cmd->fd_in, STDIN_FILENO);
-		if (cmd->fd_out != STDOUT_FILENO)
-			dup2(cmd->fd_out, STDOUT_FILENO);
-		if (cmd->fd_in != STDIN_FILENO)
-			close(cmd->fd_in);
-		if (cmd->fd_out != STDOUT_FILENO)
-			close(cmd->fd_out);
+		setup_io_fds(cmd->fd_in, cmd->fd_out);
 		handle_assignments_and_run(mnsh, cmd, &status, run_builtin);
 		dup2(orig_fds[0], STDIN_FILENO);
 		dup2(orig_fds[1], STDOUT_FILENO);

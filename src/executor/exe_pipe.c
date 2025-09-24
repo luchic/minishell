@@ -37,10 +37,8 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		pids[i] = fork_and_exe(pipeline, i, fds, pipe_fds);
 		if (pids[i] == -1)
 			return (free(pids), EXIT_FAILURE);
-		if (fds[0] != STDIN)
-			close(fds[0]);
-		if (fds[1] != STDOUT)
-			close(pipe_fds[1]);
+		close_previous_fd(fds[0]);
+		close_previous_fd(fds[1]);
 		if (i < pipeline->count - 1)
 		{
 			fds[0] = pipe_fds[0];
