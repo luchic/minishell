@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_mnsh.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/24 19:37:06 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/24 19:17:46 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 19:17:51 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_common.h"
 #include "minishell.h"
 
-
-int	main(int argc, char **argv, char **envp)
+t_minishell	**get_mnsh(void)
 {
-	t_minishell	mnsh;
-	int			exit_code;
+	static t_minishell	*mnsh = NULL;
 
-	(void)argc;
-	(void)argv;
-	if (init_minishell(&mnsh, envp) == -1)
-		return (EXIT_FAILURE);
-	init_signal_handler();
-	exit_code = run_loop(&mnsh);
-	return (exit_code);
+	return (&mnsh);
 }

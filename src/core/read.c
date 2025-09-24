@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   read.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/24 19:37:06 by nluchini         ###   ########.fr       */
+/*   Created: 2025/09/24 19:03:58 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 19:28:28 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_common.h"
 #include "minishell.h"
+#include "ft_printf.h"
+#include <readline/history.h>
+#include <readline/readline.h>
 
 
-int	main(int argc, char **argv, char **envp)
+char	*ft_read_line(t_minishell *mnsh)
 {
-	t_minishell	mnsh;
-	int			exit_code;
+	char	*line;
+	int		len;
 
-	(void)argc;
-	(void)argv;
-	if (init_minishell(&mnsh, envp) == -1)
-		return (EXIT_FAILURE);
-	init_signal_handler();
-	exit_code = run_loop(&mnsh);
-	return (exit_code);
+	if (mnsh->is_tty_in)
+		return (readline("minishell> "));
+	line = get_next_line(STDIN);
+	if (line)
+	{
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+	}
+	return (line);
 }

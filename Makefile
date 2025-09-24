@@ -30,6 +30,7 @@ SRCS += $(wildcard $(PARSER)validator/*.c)
 SRCS += $(wildcard $(PARSER)token_stream/*.c)
 SRCS += $(wildcard $(EXPANDER)variable/*.c)
 SRCS += $(wildcard $(EXPANDER)wildcards/*.c)
+SRCS += $(wildcard $(SRCS_DIR)core/*.c)
 SRCS += $(SRCS_DIR)main.c
 
 OBJS = $(SRCS:.c=.o)

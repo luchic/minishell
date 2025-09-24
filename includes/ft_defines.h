@@ -3,12 +3,14 @@
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
 # include "libft.h"
-
+# include <stdio.h>
 // Forward declarations
-struct s_ast_node;
-struct s_script;
-typedef struct s_ast_node		t_ast_node;
-typedef struct s_script			t_script;
+struct						s_ast_node;
+struct						s_script;
+typedef struct s_ast_node	t_ast_node;
+typedef struct s_script		t_script;
+
+// ---- Enums ----
 
 typedef enum e_node_type
 {
@@ -18,7 +20,6 @@ typedef enum e_node_type
 	LOGICAL
 }								t_node_type;
 
-// Operators for logical expressions
 typedef enum e_logical_op
 {
 	OP_INVALID,
@@ -26,14 +27,10 @@ typedef enum e_logical_op
 	OP_OR
 }								t_logical_op;
 
-// ---- Command Types ----
-
 typedef enum e_cmd_type
 {
 	CMD_BUILTIN,
 	CMD_EXTERNAL,
-	// CMD_ASSIGNMENT, //if no cmd name, but just assignemnt links
-	// CMD_HEREDOC // executor doesn't execute, just handle redirection and tmp file
 }								t_cmd_type;
 
 // ---- Structures ----
@@ -59,20 +56,23 @@ typedef struct s_minishell
 	int							num_variables;
 	int							is_background;
 	int							last_exit_status;
-	int							is_interactive;
+	int							is_tty_out;
+	int							is_tty_in;
 	int							fd;
+	int							is_running;
+	FILE						*tty_out;
+	FILE						*tty_in;
 	char						**envp;
 }								t_minishell;
 
 // ---- Executors ----
 
-// Represents a command
 typedef enum e_redir_type
 {
-	REDIR_INPUT,  // < infile cat
-	REDIR_OUTPUT, // cat > outfile
-	REDIR_APPEND, // cat >> outfile
-	REDIR_HEREDOC // cat << delimiter
+	REDIR_INPUT,
+	REDIR_OUTPUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
 }								t_redir_type;
 
 typedef struct s_redirection
@@ -91,28 +91,28 @@ typedef struct s_assigment
 }								t_assignment;
 
 typedef struct s_cmd_expander
-{	
-	int		index;
-	t_list	*expand; // list of t_expander
+{
+	int							index;
+	t_list						*expand;
 }								t_cmd_expander;
 
 typedef struct s_command
 {
-	t_cmd_type type; // 4 types: Built-in, External(need path to find), Assignment, Special (<<<< here doc)
-	int fd_in;       // -1 if no redirection
-	int fd_out;      // -1 if no redirection
+	t_cmd_type					type;
+	int							fd_in;
+	int							fd_out;
 	char						*name;
-	char **args; // includes name, NULL-terminated
+	char						**args;
 	t_list						*expander;
 	t_minishell					*mnsh;
-	t_list						*redirections; // list of t_redirection
-	t_list						*assignments;  // list of t_var for assignments
+	t_list						*redirections;
+	t_list						*assignments;
 }								t_command;
 
 // Represents a pipeline
 typedef struct s_pipeline
 {
-	struct s_ast_node **commands; //!! this is s_ast_node, not s_command, to allow subshells in pipeline
+	struct s_ast_node			**commands;
 	int							count;
 }								t_pipeline;
 
@@ -129,7 +129,6 @@ typedef struct s_subshell
 {
 	t_ast_node					*script;
 	t_minishell					*mnsh;
-	// t_list						*redirections; // list of t_redirection
 }								t_subshell;
 
 // Generic AST node
@@ -151,7 +150,7 @@ typedef struct s_ast_node
 // Represents a script (root)
 typedef struct s_script
 {
-	t_ast_node *nodes; // to avoid confusion from pipeline->commands
+	t_ast_node					*nodes;
 	int							count;
 }								t_script;
 
