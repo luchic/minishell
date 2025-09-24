@@ -23,18 +23,37 @@ static void	parse_wildcards(t_exp_info *info, t_token *token,
 	}
 }
 
-int	update_value(t_exp_info *info, t_token *token, int is_new)
+static int	is_last_token(t_tokenstream *ts)
+{
+	t_tokenstream	*copy;
+	int				res;
+
+	copy = ts_clone(ts);
+	if (!copy)
+		return (0);
+	ts_advance(copy);
+	res = 0;
+	if (ts_peek(copy) == NULL)
+		res = 1;
+	ts_free(copy);
+	return (res);
+}
+
+static int	update_value(t_exp_info *info, t_token *token, int is_last)
 {
 	char	*pos;
 	int		exit_status;
 
-	if (is_new)
-		info->wld_count = 0;
 	if (ft_append_str(&info->res, token->value) == -1)
 		return (-1);
 	pos = ft_strchr_not_escaped(token->value, '$');
 	while (pos)
 	{
+		if (*(pos + 1) == '\0' && !token->is_space_after && !is_last)
+		{
+			info->res[ft_strlen(info->res) - 1] = '\0';
+			break ;
+		}
 		exit_status = handle_var(info->size, pos, token, info->expand);
 		if (exit_status == -1)
 			return (-1);
@@ -42,6 +61,18 @@ int	update_value(t_exp_info *info, t_token *token, int is_new)
 	}
 	parse_wildcards(info, token, is_single_or_double);
 	return (1);
+}
+
+void	release_escaped_char(char *str, char c)
+{
+	char	*pos;
+
+	pos = ft_strchr_escaped(str, c);
+	while (pos)
+	{
+		ft_memmove(pos - 1, pos, ft_strlen(pos) + 1);
+		pos = ft_strchr_escaped(pos, c);
+	}
 }
 
 int	set_merged_value(char **value, t_list **expander, t_tokenstream *ts)
@@ -54,7 +85,7 @@ int	set_merged_value(char **value, t_list **expander, t_tokenstream *ts)
 		return (0);
 	ft_bzero(&info, sizeof(t_exp_info));
 	info.expand = expander;
-	if (update_value(&info, token, 1) == -1)
+	if (update_value(&info, token, is_last_token(ts)) == -1)
 		return (free(info.res), -1);
 	while (ts_match(ts, WORD))
 	{
@@ -66,7 +97,7 @@ int	set_merged_value(char **value, t_list **expander, t_tokenstream *ts)
 		if (!token || !ts_match(ts, WORD))
 			break ;
 		info.size = ft_strlen(info.res);
-		if (update_value(&info, token, 0) == -1)
+		if (update_value(&info, token, is_last_token(ts)) == -1)
 			return (free(info.res), -1);
 	}
 	return (*value = info.res, 1);
