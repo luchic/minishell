@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:23:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 23:24:24 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:10:53 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*get_next_token(const char **input, t_parse_mode *mode,
 
 	if (!*input || !**input)
 		return (NULL);
-	while (**input == ' ')
+	while (**input == ' ' || (**input >= 9 && **input <= 13))
 		(*input)++;
 	if (!**input)
 		return (NULL);

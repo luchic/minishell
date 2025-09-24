@@ -96,14 +96,39 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		return (EXIT_SUCCESS);
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
-	if (cmd->name && cmd->args[0][0] == '\0')
+
+	if (cmd->args && cmd->args[0])
 	{
-		ft_log_fd(LOG_ERROR, STDERR, "minishell: command not found\n"); ///to delete --- IGNORE ---
-		if (cmd->args[1] == NULL)
+		if (cmd->name== NULL || ft_strcmp(cmd->name, cmd->args[0]) != 0)
 		{
-			return (EXIT_SUCCESS);
+			free(cmd->name);
+			cmd->name = ft_strdup(cmd->args[0]);
+			if (!cmd->name)
+				return (EXIT_FAILURE);
 		}
 	}
+	else if (cmd->name)
+	{
+		free(cmd->name);
+		cmd->name = NULL;
+	}
+
+	// if (cmd->name && cmd->args[0][0] == '\0')
+	// {
+	// 	ft_log_fd(LOG_ERROR, STDERR, "minishell: command not found\n"); ///to delete --- IGNORE ---
+	// 	if (cmd->args[1] == NULL)
+	// 	{
+	// 		return (EXIT_SUCCESS);
+	// 	}
+	// }
+
+    if (handle_redirections(cmd) == EXIT_FAILURE)
+	{
+        return (EXIT_FAILURE);
+
+	}
+
+
 	if (!cmd->name && cmd->assignments)
 	{
 		original_env = handle_assignments(mnsh, cmd->assignments);
