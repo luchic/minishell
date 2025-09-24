@@ -103,14 +103,10 @@ int	handle_heredoc(t_redirection *redir, t_command *cmd)
 
 	temp_fd = create_heredoc_file(redir->value);
 	if (temp_fd == -1)
-		return (EXIT_FAILURE);
-	if (dup2(temp_fd, STDIN) == -1)
 	{
-		ft_printf_fd(STDERR, "heredoc: dup2 failed\n");
-		close(temp_fd);
+		cmd->fd_in = -1;
 		return (EXIT_FAILURE);
 	}
-	close(temp_fd);
-	cmd->fd_in = STDIN;
+	cmd->fd_in = temp_fd;
 	return (EXIT_SUCCESS);
 }

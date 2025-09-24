@@ -77,13 +77,14 @@ static int	parent_process(t_command *cmd, pid_t pid)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		return (WTERMSIG(status));
+		return (WTERMSIG(status) + 128);
 	return (EXIT_FAILURE);
 }
 
 int	run_external(t_command *cmd)
 {
 	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid < 0)
@@ -91,13 +92,21 @@ int	run_external(t_command *cmd)
 			EXIT_FAILURE);
 	else if (pid == 0)
 	{
-		if (cmd->name && cmd->args[0][0] == '\0' && cmd->args[1])
+		if (cmd->fd_in != STDIN_FILENO)
 		{
-			cmd->name = cmd->args[1];
-			cmd->args = &cmd->args[1];
+			dup2(cmd->fd_in, STDIN_FILENO);
+			close(cmd->fd_in);
 		}
-		run_external_no_fork(cmd);
-		free_and_exit(cmd->mnsh, EXIT_FAILURE);
+		if (cmd->fd_out != STDOUT_FILENO)
+		{
+			dup2(cmd->fd_out, STDOUT_FILENO);
+			close(cmd->fd_out);
+		}
+		handle_assignments_and_run(cmd->mnsh, cmd, &status,
+			run_external_no_fork);
+		free_and_exit(cmd->mnsh, status);
 	}
+	close_previous_fd(cmd->fd_in);
+	close_previous_fd(cmd->fd_out);
 	return (parent_process(cmd, pid));
 }

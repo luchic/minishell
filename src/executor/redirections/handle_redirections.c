@@ -11,25 +11,40 @@ int	handle_redirections(t_command *cmd)
 {
 	t_list			*current;
 	t_redirection	*redir;
-	int				status;
+	int				temp_fd;
 
-	status = EXIT_SUCCESS;
+	cmd->fd_in = STDIN_FILENO;
+	cmd->fd_out = STDOUT_FILENO;
 	if (!cmd || !cmd->redirections)
 		return (EXIT_SUCCESS);
 	current = cmd->redirections;
 	while (current)
 	{
 		redir = (t_redirection *)current->content;
+		temp_fd = -1;
 		if (redir->type == REDIR_INPUT)
-			status = handle_input_redirection(cmd, redir->value);
-		else if (redir->type == REDIR_OUTPUT)
-			status = handle_output_redirection(cmd, redir->value, 0);
-		else if (redir->type == REDIR_APPEND)
-			status = handle_output_redirection(cmd, redir->value, 1);
+		{
+			close_previous_fd(cmd->fd_in);
+			temp_fd = open_input_file(redir->value);
+			if (temp_fd == -1)
+				return (EXIT_FAILURE);
+			cmd->fd_in = temp_fd;
+		}
+		else if (redir->type == REDIR_OUTPUT || redir->type == REDIR_APPEND)
+		{
+			close_previous_fd(cmd->fd_out);
+			temp_fd = open_output_file(redir->value,
+					(redir->type == REDIR_APPEND));
+			if (temp_fd == -1)
+				return (EXIT_FAILURE);
+			cmd->fd_out = temp_fd;
+		}
 		else if (redir->type == REDIR_HEREDOC)
-			status = handle_heredoc(redir, cmd);
-		if (status == EXIT_FAILURE)
-			return (EXIT_FAILURE);
+		{
+			close_previous_fd(cmd->fd_in);
+			if (handle_heredoc(redir, cmd) == EXIT_FAILURE)
+				return (EXIT_FAILURE);
+		}
 		current = current->next;
 	}
 	return (EXIT_SUCCESS);

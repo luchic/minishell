@@ -18,13 +18,24 @@ int		execute_logical(t_minishell *mnsh, t_logical_expression *logic);
 int		execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
 int		execute_subshell(t_minishell *mnsh, t_subshell *subsh);
 
+// void	setup_child_io(t_command *cmd);
+
 // ======================== pipes utils========================
 pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
 int		finish_execution(pid_t *pids, int count);
-void	close_pipes(int pipe_fds[2]);
+// void	close_pipes(int pipe_fds[2]);
+
+// ======================== exe_cmd_utils ========================
+int		preprocess_cmd(t_command *cmd);
+int		execute_dispatcher(t_command *cmd, int in_pipeline);
+void	close_previous_fd(int fd_to_close);
+int		restore_check(t_command *cmd);
 
 // ======================== assignments ========================
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments);
+void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
+		int *status, int (*run_func)(t_command *));
+void	update_underscore(t_minishell *mnsh, t_command *cmd);
 
 // ======================== cmd_built_in ========================
 int		run_builtin(t_command *cmd);
@@ -60,8 +71,11 @@ char	*get_cmd_path(char *cmd_name, char **envp);
 
 // ======================== redirections ========================
 int		handle_redirections(t_command *cmd);
-int		handle_input_redirection(t_command *cmd, const char *path);
-int		handle_output_redirection(t_command *cmd, const char *path, int append);
+void	close_previous_fd(int fd_to_close);
+// int		handle_input_redirection(t_command *cmd, const char *path);
+int		open_input_file(const char *path);
+int		open_output_file(const char *path, int append);
+// int		handle_output_redirection(t_command *cmd, const char *path, int append);
 int		handle_heredoc(t_redirection *redir, t_command *cmd);
 int		ft_is_limiter(char *line, char *del);
 void	ft_write_data_to_std(char *del, int fd);
