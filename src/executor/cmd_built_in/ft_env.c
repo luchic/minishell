@@ -1,15 +1,16 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "minishell.h"
 
 int	ft_env(t_command *cmd)
 {
-	int		i;
+	int	i;
 
 	if (cmd->args[1])
 	{
-		ft_printf_fd(STDERR, "env: '%s' No such file or directory\n", cmd->args[1]);
+		ft_printf_fd(STDERR, "env: '%s' No such file or directory\n",
+			cmd->args[1]);
 		return (127);
 	}
 	i = 0;

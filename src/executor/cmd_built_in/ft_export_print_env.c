@@ -1,8 +1,7 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
-
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "minishell.h"
 
 static char	**array_dup(char **en)
 {
@@ -61,12 +60,13 @@ void	ft_export_print_env(char **envp, int fd)
 	if (!sorted)
 		return ;
 	array_bubble_sort(&sorted);
-	i = 0;
-	while (sorted[i])
+	i = -1;
+	while (sorted[++i])
 	{
 		if (ft_strchr(sorted[i], '='))
 		{
-			name = ft_substr(sorted[i], 0, ft_strchr(sorted[i], '=') - sorted[i]);
+			name = ft_substr(sorted[i], 0, ft_strchr(sorted[i], '=')
+					- sorted[i]);
 			value = ft_strdup(ft_strchr(sorted[i], '=') + 1);
 			ft_printf_fd(fd, "declare -x %s=\"%s\"\n", name, value);
 			free(name);
@@ -74,7 +74,6 @@ void	ft_export_print_env(char **envp, int fd)
 		}
 		else
 			ft_printf_fd(fd, "declare -x %s\n", sorted[i]);
-		i++;
 	}
 	free_str_array(sorted);
 }

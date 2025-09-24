@@ -90,10 +90,126 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	char	**original_env;
 	int		status;
 	int		should_restore_env;
+	int		orig_fds[2];
+	int		is_builtin_with_redir;
 
+	//set up defaults
 	status = 0;
+	orig_fds[0] = -1;
+	orig_fds[1] = -1;
+	is_builtin_with_redir = 0;
+	original_env = NULL;
+	should_restore_env = 0;
+
+	// basic checks
 	if (!cmd->name && !cmd->assignments)
 		return (EXIT_SUCCESS);
+	run_variable_expander(cmd);
+	run_wildcards_expander(cmd);
+	if (cmd->type == CMD_BUILTIN && cmd->redirections)
+	{
+		is_builtin_with_redir = 1;
+		orig_fds[0] = dup(STDIN);
+		orig_fds[1] = dup(STDOUT);
+		if (orig_fds[0] == -1 || orig_fds[1] == -1)
+			return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup error\n"), EXIT_FAILURE);
+	}
+	if (handle_redirections(cmd) == EXIT_FAILURE)
+	{
+		if (is_builtin_with_redir)
+		{
+			dup2(orig_fds[0], STDIN_FILENO);
+			dup2(orig_fds[1], STDOUT_FILENO);
+			close(orig_fds[0]);
+			close(orig_fds[1]);
+		}
+        return (EXIT_FAILURE);
+
+	}
+
+	// update cmd->name if cmd->args[0] is different
+	if (cmd->args && cmd->args[0])
+	{
+		if (cmd->name== NULL || ft_strcmp(cmd->name, cmd->args[0]) != 0)
+		{
+			free(cmd->name);
+			cmd->name = ft_strdup(cmd->args[0]);
+			if (!cmd->name)
+				return (EXIT_FAILURE);
+		}
+	}
+	else if (cmd->name)
+	{
+		free(cmd->name);
+		cmd->name = NULL;
+	}
+	// if no cmd name, but just assignments
+	if (!cmd->name && cmd->assignments)
+	{
+		original_env = handle_assignments(mnsh, cmd->assignments);
+		free_str_array(original_env);
+		return (EXIT_SUCCESS);
+	}
+
+	if (cmd->fd_in == -1)
+		cmd->fd_in = STDIN;
+	if (cmd->fd_out == -1)
+		cmd->fd_out = STDOUT;
+		
+	print_attri_into(cmd); ///to delete --- IGNORE ---
+
+	update_underscore(mnsh, cmd);
+
+	if (cmd->assignments)
+	{
+		if (cmd->type == CMD_BUILTIN)
+			should_restore_env = restore_check(cmd);
+		else if (cmd->type == CMD_EXTERNAL)
+			should_restore_env = 1;
+	}
+
+	original_env = handle_assignments(mnsh, cmd->assignments);
+	if (!should_restore_env && original_env)
+	{
+		free_str_array(original_env);
+		original_env = NULL;
+	}
+
+	// execute command
+	if (cmd->type == CMD_BUILTIN)
+		status = run_builtin(cmd);
+    else if (cmd->type == CMD_EXTERNAL)
+		status = run_external(cmd);
+	
+	ft_log_fd(LOG_INFO, STDERR, "after run cmd->type: %d, status: %d\n", cmd->type, status); ///to delete --- IGNORE ---
+
+	mnsh->last_exit_status = status;
+	if (should_restore_env && original_env)
+	{
+		free_str_array(mnsh->envp);
+		mnsh->envp = original_env;
+	}
+	ft_log_fd(LOG_INFO, STDERR, "the command %s exit with status: %d\n", cmd->name ? cmd->name : "(null)", status); ///to delete --- IGNORE ---
+	
+	if (is_builtin_with_redir)
+	{
+		dup2(orig_fds[0], STDIN_FILENO);
+		dup2(orig_fds[1], STDOUT_FILENO);
+		close(orig_fds[0]);
+		close(orig_fds[1]);
+	}
+	
+	
+	return (status);
+}
+
+int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
+{
+	int		status;
+	char	**original_env;
+
+	status = 0;
+
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
 
@@ -113,21 +229,6 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		cmd->name = NULL;
 	}
 
-	// if (cmd->name && cmd->args[0][0] == '\0')
-	// {
-	// 	ft_log_fd(LOG_ERROR, STDERR, "minishell: command not found\n"); ///to delete --- IGNORE ---
-	// 	if (cmd->args[1] == NULL)
-	// 	{
-	// 		return (EXIT_SUCCESS);
-	// 	}
-	// }
-
-    if (handle_redirections(cmd) == EXIT_FAILURE)
-	{
-        return (EXIT_FAILURE);
-
-	}
-
 
 	if (!cmd->name && cmd->assignments)
 	{
@@ -136,68 +237,11 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		return (EXIT_SUCCESS);
 	}
 
-	if (cmd->fd_in == -1)
-		cmd->fd_in = STDIN;
-	if (cmd->fd_out == -1)
-		cmd->fd_out = STDOUT;
-		
-	print_attri_into(cmd); ///to delete --- IGNORE ---
-
-	update_underscore(mnsh, cmd);
-
-	should_restore_env = 0;
 	if (cmd->assignments)
 	{
-		if (cmd->type == CMD_BUILTIN)
-			should_restore_env = restore_check(cmd);
-		else if (cmd->type == CMD_EXTERNAL)
-			should_restore_env = 1;
-	}
-
-	original_env = handle_assignments(mnsh, cmd->assignments);
-	if (!should_restore_env && original_env)
-	{
-		free_str_array(original_env);
-		original_env = NULL;
-	}
-
-	if (cmd->type == CMD_BUILTIN)
-		status = run_builtin(cmd);
-    else if (cmd->type == CMD_EXTERNAL)
-		status = run_external(cmd);
-	
-	ft_log_fd(LOG_INFO, STDERR, "after run cmd->type: %d, status: %d\n", cmd->type, status); ///to delete --- IGNORE ---
-
-	mnsh->last_exit_status = status;
-	if (should_restore_env && original_env)
-	{
-		free_str_array(mnsh->envp);
-		mnsh->envp = original_env;
-	}
-	ft_log_fd(LOG_INFO, STDERR, "the command %s exit with status: %d\n", cmd->name ? cmd->name : "(null)", status); ///to delete --- IGNORE ---
-	return (status);
-}
-
-int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
-{
-	int		status;
-	char	**original_env;
-
-	status = 0;
-
-	run_variable_expander(cmd);
-	run_wildcards_expander(cmd);
-	if (!cmd->name && cmd->assignments)
-	{
 		original_env = handle_assignments(mnsh, cmd->assignments);
 		free_str_array(original_env);
-		return (EXIT_SUCCESS);
 	}
-
-	original_env = handle_assignments(mnsh, cmd->assignments);
-	free_str_array(original_env);
-	original_env = NULL;
-
 
 	if (cmd->type == CMD_BUILTIN)
 		status = run_builtin(cmd);

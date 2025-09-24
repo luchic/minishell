@@ -1,16 +1,15 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
-# include "ft_common.h"
-# include "libft.h"
-# include <limits.h>
+#include "ft_common.h"
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "libft.h"
+#include "minishell.h"
+#include <limits.h>
 
-
-static long long ft_strtoll(const char *str, char **endptr)
+static long long	ft_strtoll(const char *str, char **endptr)
 {
-	long long 	result;
-	int 		sign;
+	long long	result;
+	int			sign;
 
 	result = 0;
 	sign = 1;
@@ -32,16 +31,15 @@ static long long ft_strtoll(const char *str, char **endptr)
 	return (result * sign);
 }
 
-static int is_valid_num_arg(const char *str)
+static int	is_valid_num_arg(const char *str)
 {
-	int i;
-	long long num;
-	char *endptr;
-	
+	int			i;
+	long long	num;
+	char		*endptr;
+
 	if (!str || !*str)
 		return (0);
 	i = 0;
-	
 	while (ft_isspace(str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
@@ -67,13 +65,12 @@ int	ft_exit(t_command *cmd)
 	argc = count_args(cmd->args);
 	if (isatty(STDIN))
 		ft_printf_fd(STDOUT, "exit\n");
-
 	if (argc == 1)
 		free_and_exit(cmd->mnsh, cmd->mnsh->last_exit_status);
-	
 	if (!is_valid_num_arg(cmd->args[1]))
 	{
-		ft_printf_fd(STDERR, "%s: exit: %s: numeric argument required\n", PREFIX, cmd->args[1]);
+		ft_printf_fd(STDERR, "%s: exit: %s: numeric argument required\n",
+			PREFIX, cmd->args[1]);
 		free_and_exit(cmd->mnsh, 2);
 	}
 	if (argc > 2)
@@ -83,6 +80,5 @@ int	ft_exit(t_command *cmd)
 	}
 	status = ft_strtoll(cmd->args[1], NULL);
 	free_and_exit(cmd->mnsh, (unsigned char)status);
-
 	return (EXIT_SUCCESS);
 }

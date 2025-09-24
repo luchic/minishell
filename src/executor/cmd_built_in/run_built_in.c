@@ -1,11 +1,11 @@
 
-# include "minishell.h"
-# include "ft_defines.h"
-# include "ft_executor.h"
+#include "ft_defines.h"
+#include "ft_executor.h"
+#include "minishell.h"
 
 int	match_built_in(t_command *cmd)
 {
-	int status;
+	int	status;
 
 	status = 0;
 	if (ft_strcmp(cmd->name, "echo") == 0)
@@ -22,16 +22,13 @@ int	match_built_in(t_command *cmd)
 		status = ft_env(cmd);
 	else if (ft_strcmp(cmd->name, "exit") == 0)
 		status = ft_exit(cmd);
-
 	return (status);
 }
 
-int run_builtin(t_command *cmd)
+int	run_builtin(t_command *cmd)
 {
-	int	orig_fds[2];
-	int	status;
+	int			status;
 	t_command	tmp_cmd;
-
 
 	tmp_cmd = *cmd;
 	if (tmp_cmd.name && tmp_cmd.args[0][0] == '\0' && tmp_cmd.args[1])
@@ -43,28 +40,6 @@ int run_builtin(t_command *cmd)
 	{
 		return (EXIT_SUCCESS);
 	}
-
-	orig_fds[0] = dup(STDIN);
-	orig_fds[1] = dup(STDOUT);
-
-	if (handle_redirections(cmd) == EXIT_FAILURE)
-	{
-		dup2(orig_fds[0], STDIN);
-		dup2(orig_fds[1], STDOUT);
-		close(orig_fds[0]);
-		close(orig_fds[1]);
-		return (EXIT_FAILURE);
-	}
-
 	status = match_built_in(&tmp_cmd);
-
-	if (dup2(orig_fds[0], STDIN) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_in\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
-	if (dup2(orig_fds[1], STDOUT) == -1)
-		return (ft_log_fd(LOG_ERROR, STDERR, "%s", PREFIX, "dup2 error on fd_out\n"), close(orig_fds[0]), close(orig_fds[1]), EXIT_FAILURE);
-	close(orig_fds[0]);
-	close(orig_fds[1]);
-    return (status);
+	return (status);
 }
-
-
