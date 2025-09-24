@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:13:28 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/21 15:39:31 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:16:40 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char			**expand_wildcard_recursive(char *path, char *pattern,
 t_cmd_expander	*get_arg_expander(int index, t_list *exp);
 char			*extract_arg(char *arg, t_list *exp, t_minishell *mnsh);
 int				expand_wildcard_redirection(t_list *redir, t_command *cmd);
+char			**expand_wildcard_internal(char *pattern, int *status);
 char			**expand_wildcard_internal(char *pattern, int *status);
 
 #endif
