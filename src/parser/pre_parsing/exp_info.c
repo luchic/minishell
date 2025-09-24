@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:25:18 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/23 20:35:35 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:02:53 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,6 @@
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
-
-// int	handle_wildcard(int count, t_token *token, t_list **expand,
-// 		int (*is_quoted)(t_quote_status))
-// {
-// 	t_list	*new_node;
-
-// 	if (is_quoted(token->quote_status))
-// 		return (0);
-// 	new_node = add_wld_expander(count);
-// 	if (!new_node)
-// 		return (-1);
-// 	ft_lstadd_back(expand, new_node);
-// 	return (1);
-// }
 
 static t_list	*add_var_expander(t_var_handle info, t_token *token)
 {
