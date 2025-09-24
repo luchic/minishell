@@ -1,11 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wld_utils1.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/24 15:26:22 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/24 15:26:34 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "expander_internal.h"
 #include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_printf.h"
 #include "libft.h"
-#include <dirent.h>
-#include <sys/stat.h>
 
 char	*get_slash_after(const char *pattern)
 {
@@ -45,7 +54,7 @@ int	ft_fnmatch(char *pattern, const char *filename)
 	return (0);
 }
 
-int is_wildcard_redirection(t_list *redirection)
+int	is_wildcard_redirection(t_list *redirection)
 {
 	t_redirection	*rdir;
 
@@ -80,8 +89,6 @@ int	is_wildcard(t_command *cmd)
 	}
 	if (is_wildcard_redirection(cmd->redirections))
 		return (1);
-	// if (is_wildcard_in_assignemts(cmd->assignments))
-	// 	return (1);
 	return (0);
 }
 
@@ -100,4 +107,3 @@ int	is_arg_wildcard(char *arg)
 	}
 	return (0);
 }
-
