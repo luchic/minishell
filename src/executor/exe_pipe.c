@@ -2,7 +2,6 @@
 # include "ft_defines.h"
 # include "ft_executor.h"
 
-// infile.txt < ls -l | grep "minishell" | wc -l > outfile.txt
 
 
 int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
@@ -21,8 +20,8 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		return (EXIT_FAILURE);
 	}
 
-	fds[0] = STDIN; // pipeline->commands[0]->command->fd_in;
-	
+	fds[0] = STDIN;
+
 	i = 0;
 	while (i < pipeline->count)
 	{
@@ -38,11 +37,9 @@ int execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		}
 		else
 		{
-			fds[1] = STDOUT; //pipeline->commands[i]->command->fd_out;
+			fds[1] = STDOUT;
 		}
 		
-		// pipeline->commands[i]->command->fd_in = fds[0];
-        // pipeline->commands[i]->command->fd_out = fds[1];
 		
 		pids[i] = fork_and_exe(pipeline, i, fds, pipe_fds);
 		if (pids[i] == -1)
