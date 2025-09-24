@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/23 20:56:55 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:16:21 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,14 @@ void	init_minishell(t_minishell *mnsh, int argc, char **argv, char **envp)
 	(void)envp;
 	(void)mnsh;
 	ft_memset(mnsh, 0, sizeof(t_minishell));
+
+	ft_memset(mnsh, 0, sizeof(t_minishell));
+	mnsh->is_interactive = isatty(STDOUT);
+	if (!mnsh->is_interactive)
+	{
+		char *name = ttyname(STDOUT);
+		mnsh->fd = open(name, O_WRONLY);
+	}
 	size = count_args(envp);
 	mnsh->envp = ft_calloc((size + 1), sizeof(char *));
 	if (!mnsh->envp)
@@ -126,7 +134,7 @@ int	ft_run_minishell(t_minishell *mnsh)
 		}
 		ft_lstclear(&tokens, free_tokens);
 		free(input);
-		exit_status = execute_script(mnsh, ast);
+		exit_status = execute_node(mnsh, ast);
 		mnsh->last_exit_status = exit_status;
 		free_ast_tree(ast);
 	}
