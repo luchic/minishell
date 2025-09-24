@@ -1,12 +1,12 @@
 
 #include "ft_defines.h"
-#include "minishell.h"
-#include "libft.h"
-#include "ft_printf.h"
 #include "ft_executor.h"
+#include "ft_printf.h"
+#include "libft.h"
+#include "minishell.h"
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 int	ft_is_limiter(char *line, char *del)
 {
@@ -34,7 +34,7 @@ void	ft_write_data_to_std(char *del, int fd)
 
 	while (1)
 	{
-		ft_printf_fd(STDERR, "> ");  // heredoc prompt
+		ft_printf_fd(STDERR, "> ");
 		line = get_next_line(STDIN_FILENO);
 		if (ft_is_limiter(line, del))
 		{
@@ -42,9 +42,11 @@ void	ft_write_data_to_std(char *del, int fd)
 				free(line);
 			break ;
 		}
-		if (!line)  // EOF reached (Ctrl+D)
+		if (!line)
 		{
-			ft_printf_fd(STDERR, "\nminishell: warning: here-document delimited by end-of-file (wanted `%s')\n", del);
+			ft_printf_fd(STDERR,
+				"\nminishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
+				del);
 			break ;
 		}
 		ft_printf_fd(fd, "%s", line);
@@ -54,10 +56,11 @@ void	ft_write_data_to_std(char *del, int fd)
 
 static char	*create_heredoc_tempfile(void)
 {
-	static unsigned int	counter = 0;
-	char		*filename;
-	char		*num_str;
+	static unsigned int	counter;
+	char				*filename;
+	char				*num_str;
 
+	counter = 0;
 	num_str = ft_itoa(counter++);
 	if (!num_str)
 		return (NULL);
@@ -66,57 +69,48 @@ static char	*create_heredoc_tempfile(void)
 	return (filename);
 }
 
-int	handle_heredoc(t_redirection *redir, t_command *cmd/* , t_redir_type *last_type */)
+static int	create_heredoc_file(const char *delimiter)
 {
 	char	*temp_filename;
 	int		temp_fd;
-	char	*delimiter;
 
 	temp_filename = create_heredoc_tempfile();
 	if (!temp_filename)
-		return (EXIT_FAILURE);
-
+		return (-1);
 	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: cannot create temp file\n");
 		free(temp_filename);
-		return (0);
+		return (-1);
 	}
-
-	// if (*last_type == REDIR_HEREDOC)
-	// {
-	// 	ft_log_fd(LOG_INFO, STDERR, "Skipping redundant redirection of type %d\n", *last_type); ///to delete --- IGNORE ---
-	// 	close(temp_fd);
-	// 	unlink(temp_filename);
-	// 	free(temp_filename);
-	// 	return (EXIT_SUCCESS);
-	// }
-
-	delimiter = redir->value;
-	ft_write_data_to_std(delimiter, temp_fd);
+	ft_write_data_to_std((char *)delimiter, temp_fd);
 	close(temp_fd);
-
-	// Open temp file for reading
 	temp_fd = open(temp_filename, O_RDONLY);
 	unlink(temp_filename);
 	free(temp_filename);
 	if (temp_fd == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: cannot open temp file for reading\n");
-		return (EXIT_FAILURE);
+		return (-1);
 	}
+	return (temp_fd);
+}
 
-	if (dup2(temp_fd, STDIN) == -1) 
+int	handle_heredoc(t_redirection *redir, t_command *cmd)
+{
+	int	temp_fd;
+
+	temp_fd = create_heredoc_file(redir->value);
+	if (temp_fd == -1)
+		return (EXIT_FAILURE);
+	if (dup2(temp_fd, STDIN) == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: dup2 failed\n");
 		close(temp_fd);
 		return (EXIT_FAILURE);
 	}
-
 	close(temp_fd);
-	// *last_type = REDIR_HEREDOC;
-	cmd->fd_in = STDIN; // important: never keep the temp fd
-
+	cmd->fd_in = STDIN;
 	return (EXIT_SUCCESS);
 }

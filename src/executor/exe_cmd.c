@@ -42,9 +42,6 @@ static void print_attri_into(t_command *cmd)
 	}
 } 
 
-
-
-
 static void update_underscore(t_minishell *mnsh, t_command *cmd)
 {
 	char	*cmd_path;
@@ -68,21 +65,52 @@ static void update_underscore(t_minishell *mnsh, t_command *cmd)
 	if (!cmd_path)
 		return ;
 	underscore_var = ft_strjoin("_=", cmd_path);
-	if (underscore_var)
-	{
-		update_env_var(underscore_var, &(mnsh->envp));
-		free(underscore_var);
-	}
-	free(cmd_path);
-	return ;
+	if (!underscore_var)
+		return (free(cmd_path));
+	return (update_env_var(underscore_var, &(mnsh->envp)), free(underscore_var), free(cmd_path));
 }
-
 
  static int	restore_check(t_command *cmd)
 {
 	if (ft_strcmp(cmd->name, "export") == 0 || ft_strcmp(cmd->name, "unset") == 0 || ft_strcmp(cmd->name, "cd") == 0)
 		return (0);
 	return (1);
+}
+
+static int preprocess_cmd(t_command *cmd)
+{
+	run_variable_expander(cmd);
+	run_wildcards_expander(cmd);
+	if (cmd->args && cmd->args[0])
+	{
+		if (cmd->name== NULL || ft_strcmp(cmd->name, cmd->args[0]) != 0)
+		{
+			free(cmd->name);
+			cmd->name = ft_strdup(cmd->args[0]);
+			if (!cmd->name)
+				return (EXIT_FAILURE);
+		}
+	}
+	else if (cmd->name)
+	{
+		free(cmd->name);
+		cmd->name = NULL;
+	}
+	return (EXIT_SUCCESS);
+}
+
+static int execute_dispatcher(t_command *cmd, int in_pipeline)
+{
+	if (cmd->type == CMD_BUILTIN)
+		return (run_builtin(cmd));
+	else if (cmd->type == CMD_EXTERNAL)
+	{
+		if (in_pipeline)
+			return (run_external_no_fork(cmd));
+		else
+			return (run_external(cmd));
+	}
+	return (EXIT_SUCCESS);
 }
 
 int execute_command(t_minishell *mnsh, t_command *cmd)
@@ -104,8 +132,10 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 	// basic checks
 	if (!cmd->name && !cmd->assignments)
 		return (EXIT_SUCCESS);
-	run_variable_expander(cmd);
-	run_wildcards_expander(cmd);
+	if (preprocess_cmd(cmd) != EXIT_SUCCESS)
+		return (EXIT_FAILURE);
+
+	// handle redirections-> need to do before assignments, because assignments may fail \ recover the opened fds
 	if (cmd->type == CMD_BUILTIN && cmd->redirections)
 	{
 		is_builtin_with_redir = 1;
@@ -127,6 +157,28 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 
 	}
 
+	// if no cmd name, but just assignments
+	if (!cmd->name && cmd->assignments)
+	{
+		original_env = handle_assignments(mnsh, cmd->assignments);
+		free_str_array(original_env);
+		return (EXIT_SUCCESS);
+	}
+	update_underscore(mnsh, cmd);
+	if (cmd->assignments)
+	{
+		if (cmd->type == CMD_BUILTIN)
+			should_restore_env = restore_check(cmd);
+		else if (cmd->type == CMD_EXTERNAL)
+			should_restore_env = 1;
+	}
+	original_env = handle_assignments(mnsh, cmd->assignments);
+	if (!should_restore_env && original_env)
+	{
+		free_str_array(original_env);
+		original_env = NULL;
+	}
+
 	// update cmd->name if cmd->args[0] is different
 	if (cmd->args && cmd->args[0])
 	{
@@ -143,46 +195,18 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		free(cmd->name);
 		cmd->name = NULL;
 	}
-	// if no cmd name, but just assignments
-	if (!cmd->name && cmd->assignments)
-	{
-		original_env = handle_assignments(mnsh, cmd->assignments);
-		free_str_array(original_env);
-		return (EXIT_SUCCESS);
-	}
 
 	if (cmd->fd_in == -1)
 		cmd->fd_in = STDIN;
 	if (cmd->fd_out == -1)
 		cmd->fd_out = STDOUT;
 		
-	print_attri_into(cmd); ///to delete --- IGNORE ---
-
-	update_underscore(mnsh, cmd);
-
-	if (cmd->assignments)
-	{
-		if (cmd->type == CMD_BUILTIN)
-			should_restore_env = restore_check(cmd);
-		else if (cmd->type == CMD_EXTERNAL)
-			should_restore_env = 1;
-	}
-
-	original_env = handle_assignments(mnsh, cmd->assignments);
-	if (!should_restore_env && original_env)
-	{
-		free_str_array(original_env);
-		original_env = NULL;
-	}
-
 	// execute command
-	if (cmd->type == CMD_BUILTIN)
-		status = run_builtin(cmd);
-    else if (cmd->type == CMD_EXTERNAL)
-		status = run_external(cmd);
+	status = execute_dispatcher(cmd, 0);
 	
 	ft_log_fd(LOG_INFO, STDERR, "after run cmd->type: %d, status: %d\n", cmd->type, status); ///to delete --- IGNORE ---
 
+	// cleaning
 	mnsh->last_exit_status = status;
 	if (should_restore_env && original_env)
 	{
@@ -199,7 +223,6 @@ int execute_command(t_minishell *mnsh, t_command *cmd)
 		close(orig_fds[1]);
 	}
 	
-	
 	return (status);
 }
 
@@ -209,25 +232,24 @@ int	execute_command_pipeline(t_minishell *mnsh, t_command *cmd)
 	char	**original_env;
 
 	status = 0;
-
 	run_variable_expander(cmd);
 	run_wildcards_expander(cmd);
 
-	if (cmd->args && cmd->args[0])
-	{
-		if (cmd->name== NULL || ft_strcmp(cmd->name, cmd->args[0]) != 0)
-		{
-			free(cmd->name);
-			cmd->name = ft_strdup(cmd->args[0]);
-			if (!cmd->name)
-				return (EXIT_FAILURE);
-		}
-	}
-	else if (cmd->name)
-	{
-		free(cmd->name);
-		cmd->name = NULL;
-	}
+	// if (cmd->args && cmd->args[0])
+	// {
+	// 	if (cmd->name== NULL || ft_strcmp(cmd->name, cmd->args[0]) != 0)
+	// 	{
+	// 		free(cmd->name);
+	// 		cmd->name = ft_strdup(cmd->args[0]);
+	// 		if (!cmd->name)
+	// 			return (EXIT_FAILURE);
+	// 	}
+	// }
+	// else if (cmd->name)
+	// {
+	// 	free(cmd->name);
+	// 	cmd->name = NULL;
+	// }
 
 
 	if (!cmd->name && cmd->assignments)
