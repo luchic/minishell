@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:23:00 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/18 23:24:24 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:28:15 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ char	*get_next_token(const char **input, t_parse_mode *mode,
 
 	if (!*input || !**input)
 		return (NULL);
-	while (**input == ' ')
-		(*input)++;
+	skip_ifs_spaces(input);
 	if (!**input)
 		return (NULL);
 	cur_input = *input;
@@ -61,7 +60,7 @@ char	*get_next_token(const char **input, t_parse_mode *mode,
 		return (*mode = DOUBLE, NULL);
 	if (is_special_char(*cur_input))
 		return (get_special_char_token(input, mode));
-	while (*cur_input && !is_special_char(*cur_input) && *cur_input != ' ')
+	while (*cur_input && !is_special_char(*cur_input) && !is_ifs_space(*cur_input))
 		cur_input++;
 	token = ft_substr(*input, 0, cur_input - *input);
 	if (!token)
