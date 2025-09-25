@@ -1,6 +1,5 @@
 
-# include "ft_common.h"
-
+#include "ft_common.h"
 
 char	**ft_array_append(char **arr, char *str)
 {

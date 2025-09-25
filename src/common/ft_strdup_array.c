@@ -1,6 +1,5 @@
 
-# include "ft_common.h"
-
+#include "ft_common.h"
 
 /*
 ** Duplicates an array of strings.
@@ -9,18 +8,18 @@
 
 */
 
-char **ft_strdup_array(char **array)
+char	**ft_strdup_array(char **array)
 {
-	int     count;
-	char    **dup_array;
-	int     i;
+	int		count;
+	char	**dup_array;
+	int		i;
 
 	count = 0;
 	while (array && array[count])
 		count++;
 	dup_array = malloc((count + 1) * sizeof(char *));
 	if (!dup_array)
-		return NULL;
+		return (NULL);
 	i = 0;
 	while (i < count)
 	{
@@ -29,6 +28,6 @@ char **ft_strdup_array(char **array)
 			return (free_str_array(dup_array), NULL);
 		i++;
 	}
-	dup_array[count] = NULL; // Null-terminate the array
+	dup_array[count] = NULL;
 	return (dup_array);
 }

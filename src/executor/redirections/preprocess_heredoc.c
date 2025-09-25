@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:42 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:53:36 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/25 17:08:11 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	preprocess_heredoc_cmd(t_command *cmd)
 	return (EXIT_SUCCESS);
 }
 
-int	prepro_hdoc_node(t_ast_node *node)
+int	prep_heredoc_node(t_ast_node *node)
 {
 	int	i;
 
@@ -53,17 +53,17 @@ int	prepro_hdoc_node(t_ast_node *node)
 		i = -1;
 		while (++i < node->pipeline->count)
 		{
-			if (prepro_hdoc_node(node->pipeline->commands[i]) == EXIT_FAILURE)
+			if (prep_heredoc_node(node->pipeline->commands[i]) == EXIT_FAILURE)
 				return (EXIT_FAILURE);
 		}
 	}
 	if (node->type == LOGICAL)
 	{
-		if (prepro_hdoc_node(node->logical->left) == EXIT_FAILURE
-			|| prepro_hdoc_node(node->logical->right) == EXIT_FAILURE)
+		if (prep_heredoc_node(node->logical->left) == EXIT_FAILURE
+			|| prep_heredoc_node(node->logical->right) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	if (node->type == SUBSHELL)
-		return (prepro_hdoc_node(node->subshell->script));
+		return (prep_heredoc_node(node->subshell->script));
 	return (EXIT_SUCCESS);
 }

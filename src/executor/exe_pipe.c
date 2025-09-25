@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 17:00:35 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/25 17:12:02 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	(void)mnsh;
 	tmp_node.type = PIPELINE;
 	tmp_node.pipeline = pipeline;
-	if (preprocess_heredoc_node(&tmp_node) != EXIT_SUCCESS)
+	if (prep_heredoc_node(&tmp_node) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)

@@ -13,12 +13,11 @@ void	ft_array_remove(char ***array, char *value)
 		return ;
 	i = 0;
 	envp = *array;
-	// find if value exists in envp
 	while (envp[i] && is_valid_name(envp[i], value) == 0)
 		i++;
 	if (!envp[i])
 		return ;
-	new_array = malloc(sizeof(char *) * (count_args(envp) + 1)); // +1 for NULL terminator
+	new_array = malloc(sizeof(char *) * (count_args(envp) + 1));
 	if (!new_array)
 		return ;
 	j = 0;
@@ -31,7 +30,7 @@ void	ft_array_remove(char ***array, char *value)
 			j++;
 		}
 		else
-			free(envp[i]); // free the removed element
+			free(envp[i]);
 		i++;
 	}
 	new_array[j] = NULL;
