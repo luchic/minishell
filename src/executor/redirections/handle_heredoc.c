@@ -30,11 +30,16 @@ int	ft_is_limiter(char *line, char *del)
 
 void	ft_write_data_to_std(char *del, int fd)
 {
-	char	*line;
+	char		*line;
+	t_minishell	*mnsh;
 
+	mnsh = *get_mnsh();
 	while (1)
 	{
-		ft_printf_fd(STDERR, "> ");
+		if (mnsh->is_tty_in && mnsh->is_tty_out)
+			ft_printf_fd(STDOUT, "> ");
+		else if (mnsh->is_tty_in && !mnsh->is_tty_out)
+			ft_printf_fd(mnsh->fd, "> ");
 		line = get_next_line(STDIN_FILENO);
 		if (ft_is_limiter(line, del))
 		{
@@ -48,8 +53,7 @@ void	ft_write_data_to_std(char *del, int fd)
 				end-of-file (wanted `%s')\n", del);
 			break ;
 		}
-		ft_printf_fd(fd, "%s", line);
-		free(line);
+		(ft_printf_fd(fd, "%s", line), free(line));
 	}
 }
 
