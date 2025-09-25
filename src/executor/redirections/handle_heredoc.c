@@ -44,8 +44,7 @@ void	ft_write_data_to_std(char *del, int fd)
 		}
 		if (!line)
 		{
-			ft_printf_fd(STDERR,
-				"\nminishell: warning: here-document delimited by \
+			ft_printf_fd(STDERR, "\nminishell: warning: here-document delimited by \
 				end-of-file (wanted `%s')\n", del);
 			break ;
 		}
@@ -69,6 +68,7 @@ static char	*create_heredoc_namefile(void)
 	return (filename);
 }
 
+
 static char	*create_heredoc_file(const char *delimiter)
 {
 	char	*temp_filename;
@@ -76,6 +76,7 @@ static char	*create_heredoc_file(const char *delimiter)
 
 	temp_filename = create_heredoc_namefile();
 	if (!temp_filename)
+
 		return (NULL);
 	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd == -1)
