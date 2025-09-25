@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exe_cmd_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:42:15 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:42:17 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "expander.h"
 #include "ft_common.h"
@@ -55,10 +66,8 @@ int	preprocess_cmd(t_command *cmd)
 		free(cmd->name);
 		cmd->name = NULL;
 	}
-
 	if (handle_redirections(cmd) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
-
 	return (EXIT_SUCCESS);
 }
 

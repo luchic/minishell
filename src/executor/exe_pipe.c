@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exe_pipe.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 17:00:35 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_defines.h"
 #include "ft_executor.h"
 #include "minishell.h"
@@ -42,19 +54,21 @@ static int	run_pl_process(t_pipeline *pl, pid_t *pids)
 
 int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 {
-	pid_t	*pids;
-	int		result;
+	pid_t		*pids;
+	int			status;
+	t_ast_node	tmp_node;
 
 	(void)mnsh;
-	if (preprocess_heredoc_node(&(t_ast_node){.type = PIPELINE,
-			.pipeline = pipeline}) != EXIT_SUCCESS)
+	tmp_node.type = PIPELINE;
+	tmp_node.pipeline = pipeline;
+	if (preprocess_heredoc_node(&tmp_node) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (EXIT_FAILURE);
 	if (run_pl_process(pipeline, pids) == EXIT_FAILURE)
 		return (free(pids), EXIT_FAILURE);
-	result = finish_execution(pids, pipeline->count);
+	status = finish_execution(pids, pipeline->count);
 	free(pids);
-	return (result);
+	return (status);
 }

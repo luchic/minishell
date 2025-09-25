@@ -1,8 +1,8 @@
+#include "ft_common.h"
+#include "ft_executor.h"
 #include "ft_printf.h"
 #include "libft.h"
 #include "minishell.h"
-#include "ft_executor.h"
-#include "ft_common.h"
 #include <readline/history.h>
 #include <readline/readline.h>
 

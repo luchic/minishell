@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:43:15 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:43:16 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "ft_executor.h"
@@ -61,7 +72,6 @@ int	ft_cd(t_command *cmd)
 	int		status;
 
 	getcwd(oldpwd, sizeof(oldpwd));
-	getcwd(pwd, sizeof(pwd));
 	if (count_args(cmd->args) > 2)
 	{
 		ft_printf_fd(STDERR, "cd: too many arguments\n");
@@ -70,13 +80,13 @@ int	ft_cd(t_command *cmd)
 	if (!cmd->args[1] || ft_strcmp(cmd->args[1], "~") == 0)
 		status = ft_cd_home();
 	else if (cmd->args[1] && ft_strcmp(cmd->args[1], "-") == 0)
-		status = ft_cd_oldpwd(oldpwd, pwd);
+		status = ft_cd_oldpwd(cmd);
 	else
 		status = ft_cd_to_path(cmd->args[1]);
 	if (status != 0)
 		return (status);
-	change_env_var("OLDPWD", pwd, cmd);
 	getcwd(pwd, sizeof(pwd));
+	change_env_var("OLDPWD", oldpwd, cmd);
 	change_env_var("PWD", pwd, cmd);
 	return (status);
 }

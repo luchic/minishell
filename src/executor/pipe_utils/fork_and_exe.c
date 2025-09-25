@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fork_and_exe.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:51:07 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:51:15 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_executor.h"
@@ -40,7 +52,6 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 	else
 		free_and_exit(mnsh, EXIT_FAILURE);
 }
-
 
 pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
