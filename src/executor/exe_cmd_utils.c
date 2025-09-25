@@ -55,6 +55,8 @@ int	preprocess_cmd(t_command *cmd)
 		free(cmd->name);
 		cmd->name = NULL;
 	}
+	if (handle_redirections(cmd) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

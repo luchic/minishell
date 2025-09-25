@@ -35,7 +35,7 @@ void	setup_io_fds(int fd_in, int fd_out);
 // ======================== assignments ========================
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments);
 void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
-		int *status, int (*run_func)(t_command *));
+			int *status, int (*run_func)(t_command *));
 void	update_underscore(t_minishell *mnsh, t_command *cmd);
 
 // ======================== cmd_built_in ========================
@@ -73,12 +73,13 @@ char	*get_cmd_path(char *cmd_name, char **envp);
 // ======================== redirections ========================
 int		handle_redirections(t_command *cmd);
 void	close_previous_fd(int fd_to_close);
-// int		handle_input_redirection(t_command *cmd, const char *path);
-int		open_input_file(const char *path);
-int		open_output_file(const char *path, int append);
-// int		handle_output_redirection(t_command *cmd, const char *path, int append);
-int		handle_heredoc(t_redirection *redir, t_command *cmd);
+int		open_input_file(const char *path, t_command *cmd);
+int		open_output_file(const char *path, int append, t_command *cmd);
+int		handle_heredoc_cmd(t_redirection *redir, t_command *cmd);
 int		ft_is_limiter(char *line, char *del);
 void	ft_write_data_to_std(char *del, int fd);
+int		preprocess_heredoc_node(t_ast_node *node);
+int		preprocess_heredoc_cmd(t_command *cmd);
+int		preprocess_heredocs_fds(t_redirection *redir);
 
 #endif
