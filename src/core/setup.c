@@ -83,6 +83,8 @@ int	init_minishell(t_minishell *mnsh, char **envp)
 		if (mnsh->fd == -1)
 			mnsh->fd = STDERR;
 	}
+	else
+		mnsh->fd = STDOUT;
 	setup_rl(mnsh);
 	if (setup_env(mnsh, envp) == -1)
 		return (close_tty(mnsh), -1);

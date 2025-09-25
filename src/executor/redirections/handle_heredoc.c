@@ -4,6 +4,7 @@
 #include "ft_printf.h"
 #include "libft.h"
 #include "minishell.h"
+#include <readline/readline.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -31,16 +32,10 @@ int	ft_is_limiter(char *line, char *del)
 void	ft_write_data_to_std(char *del, int fd)
 {
 	char		*line;
-	t_minishell	*mnsh;
 
-	mnsh = *get_mnsh();
 	while (1)
 	{
-		if (mnsh->is_tty_in && mnsh->is_tty_out)
-			ft_printf_fd(STDOUT, "> ");
-		else if (mnsh->is_tty_in && !mnsh->is_tty_out)
-			ft_printf_fd(mnsh->fd, "> ");
-		line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (ft_is_limiter(line, del))
 		{
 			if (line)
