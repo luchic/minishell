@@ -6,13 +6,14 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:51:15 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/25 22:21:08 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_common.h"
 #include "ft_defines.h"
 #include "ft_executor.h"
+#include "ft_printf.h"
 #include "minishell.h"
 
 static t_minishell	*get_mnsh_from_node(t_ast_node *node)
@@ -57,11 +58,13 @@ pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
 	pid_t	pid;
 
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
 	{
+		reset_signals_to_default();
 		child_process(pipeline, i, fds, pipe_fds);
 	}
 	else
@@ -89,11 +92,13 @@ int	finish_execution(pid_t *pids, int count)
 			ft_log_fd(LOG_ERROR, STDERR, "minishell: waitpid failed\n");
 			exit_status = EXIT_FAILURE;
 		}
-		else if (WIFEXITED(status))
+		if (WIFEXITED(status))
 			exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			exit_status = 128 + WTERMSIG(status);
 		i++;
 	}
+	if (exit_status == 130)
+		ft_printf("\n");
 	return (exit_status);
 }

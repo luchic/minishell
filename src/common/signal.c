@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:39:16 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/24 19:21:11 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/25 21:08:35 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 
 void	signal_check(void)
 {
-	signal(SIGINT, SIG_DFL);  // Ctrl+C
-	signal(SIGQUIT, SIG_DFL); // core dump
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 void	handle_signal(int signum)
@@ -27,7 +27,7 @@ void	handle_signal(int signum)
 	t_minishell	*mnsh;
 
 	mnsh = *get_mnsh();
-	if (!mnsh || (signum == SIGINT && !mnsh->is_running)) //(Ctrl+C)
+	if (!mnsh || (signum == SIGINT && !mnsh->is_running))
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
@@ -39,10 +39,34 @@ void	handle_signal(int signum)
 	if (mnsh)
 		mnsh->last_exit_status = 130;
 }
-// Handle signals for interactive mode in the main function
-//
+
 void	init_signal_handler(void)
 {
-	signal(SIGINT, handle_signal); // Ctrl+C
-	signal(SIGQUIT, SIG_IGN);      // Ctrl+\-> core dump in the child process
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, SIG_IGN);
 }
+
+void    handle_signal_interactive(int signum)
+{
+    if (signum == SIGINT)
+    {
+        write(1, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+}
+
+void    init_interactive_signals(void)
+{
+    signal(SIGINT, handle_signal_interactive);
+    signal(SIGQUIT, SIG_IGN); // Ctrl-\: 忽略
+}
+
+void	reset_signals_to_default(void)
+{
+	// 这是一个辅助函数，用于在子进程中恢复默认信号处理
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
+

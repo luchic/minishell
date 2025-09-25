@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 17:12:02 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/25 21:29:47 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		return (free(pids), EXIT_FAILURE);
 	status = finish_execution(pids, pipeline->count);
 	free(pids);
+	signal(SIGINT, handle_signal_interactive);
 	return (status);
 }
