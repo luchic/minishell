@@ -2,59 +2,58 @@
 #include "ft_executor.h"
 #include "minishell.h"
 
+static int	get_fds_write(t_pipeline *pl, int i, int fds[2], int pipe_fds[2])
+{
+	if (i < pl->count - 1)
+	{
+		if (pipe(pipe_fds) == -1)
+			return (EXIT_FAILURE);
+		fds[1] = pipe_fds[1];
+	}
+	else
+		fds[1] = STDOUT_FILENO;
+	return (EXIT_SUCCESS);
+}
+
+static int	run_pl_process(t_pipeline *pl, pid_t *pids)
+{
+	int	fds[2];
+	int	pipe_fds[2];
+	int	i;
+
+	fds[0] = STDIN_FILENO;
+	i = -1;
+	while (++i < pl->count)
+	{
+		if (get_fds_write(pl, i, fds, pipe_fds) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+		pids[i] = fork_and_exe(pl, i, fds, pipe_fds);
+		if (pids[i] == -1)
+			return (EXIT_FAILURE);
+		close_previous_fd(fds[1]);
+		close_previous_fd(pipe_fds[1]);
+		if (i < pl->count - 1)
+			fds[0] = pipe_fds[0];
+	}
+	if (fds[0] != STDIN_FILENO)
+		close(fds[0]);
+	return (EXIT_SUCCESS);
+}
+
 int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 {
-	int		fds[2];
-	int		pipe_fds[2];
 	pid_t	*pids;
-	int		i;
 	int		result;
 
 	(void)mnsh;
 	if (preprocess_heredoc_node(&(t_ast_node){.type = PIPELINE,
 			.pipeline = pipeline}) != EXIT_SUCCESS)
-	{
-		mnsh->last_exit_status = 1;
 		return (EXIT_FAILURE);
-	}
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
-	{
-		ft_log_fd(LOG_ERROR, STDERR, "malloc failed for pids\n");
 		return (EXIT_FAILURE);
-	}
-	fds[0] = STDIN;
-	i = 0;
-	while (i < pipeline->count)
-	{
-		if (i < pipeline->count - 1)
-		{
-			if (pipe(pipe_fds) == -1)
-			{
-				ft_log_fd(LOG_ERROR, STDERR, "pipe failed\n");
-				return (free(pids), EXIT_FAILURE);
-			}
-			fds[1] = pipe_fds[1];
-		}
-		else
-		{
-			fds[1] = STDOUT;
-		}
-		pids[i] = fork_and_exe(pipeline, i, fds, pipe_fds);
-		if (pids[i] == -1)
-			return (free(pids), EXIT_FAILURE);
-		if (fds[0] != STDIN)
-			close(fds[0]);
-		if (fds[1] != STDOUT)
-			close(pipe_fds[1]);
-		if (i < pipeline->count - 1)
-		{
-			fds[0] = pipe_fds[0];
-		}
-		i++;
-	}
-	if (fds[0] != STDIN)
-		close(fds[0]);
+	if (run_pl_process(pipeline, pids) == EXIT_FAILURE)
+		return (free(pids), EXIT_FAILURE);
 	result = finish_execution(pids, pipeline->count);
 	free(pids);
 	return (result);
