@@ -44,9 +44,8 @@ void	ft_write_data_to_std(char *del, int fd)
 		}
 		if (!line)
 		{
-			ft_printf_fd(STDERR,
-				"\nminishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-				del);
+			ft_printf_fd(STDERR, "\nminishell: warning: here-document delimited by \
+				end-of-file (wanted `%s')\n", del);
 			break ;
 		}
 		ft_printf_fd(fd, "%s", line);
@@ -54,7 +53,7 @@ void	ft_write_data_to_std(char *del, int fd)
 	}
 }
 
-static char	*create_heredoc_tempfile(void)
+static char	*create_heredoc_namefile(void)
 {
 	static unsigned int	counter;
 	char				*filename;
@@ -69,44 +68,42 @@ static char	*create_heredoc_tempfile(void)
 	return (filename);
 }
 
-static int	create_heredoc_file(const char *delimiter)
+
+static char	*create_heredoc_file(const char *delimiter)
 {
 	char	*temp_filename;
 	int		temp_fd;
 
-	temp_filename = create_heredoc_tempfile();
+	temp_filename = create_heredoc_namefile();
 	if (!temp_filename)
-		return (-1);
+
+		return (NULL);
 	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd == -1)
 	{
 		ft_printf_fd(STDERR, "heredoc: cannot create temp file\n");
 		free(temp_filename);
-		return (-1);
+		return (NULL);
 	}
 	ft_write_data_to_std((char *)delimiter, temp_fd);
 	close(temp_fd);
-	temp_fd = open(temp_filename, O_RDONLY);
-	unlink(temp_filename);
-	free(temp_filename);
 	if (temp_fd == -1)
 	{
+		free(temp_filename);
 		ft_printf_fd(STDERR, "heredoc: cannot open temp file for reading\n");
-		return (-1);
+		return (NULL);
 	}
-	return (temp_fd);
+	return (temp_filename);
 }
 
-int	handle_heredoc(t_redirection *redir, t_command *cmd)
+int	preprocess_heredocs_fds(t_redirection *redir)
 {
-	int	temp_fd;
+	char	*filename;
 
-	temp_fd = create_heredoc_file(redir->value);
-	if (temp_fd == -1)
-	{
-		cmd->fd_in = -1;
+	filename = create_heredoc_file(redir->value);
+	if (!filename)
 		return (EXIT_FAILURE);
-	}
-	cmd->fd_in = temp_fd;
+	free(redir->value);
+	redir->value = filename;
 	return (EXIT_SUCCESS);
 }

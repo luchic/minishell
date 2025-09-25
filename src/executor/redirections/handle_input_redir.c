@@ -8,14 +8,17 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int	open_input_file(const char *path)
+int	open_input_file(const char *path, t_command *cmd)
 {
 	int	fd;
 
+	close_previous_fd(cmd->fd_in);
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
 		ft_printf_fd(STDERR, "%s: %s\n", path, strerror(errno));
+		return (EXIT_FAILURE);
 	}
-	return (fd);
+	cmd->fd_in = fd;
+	return (EXIT_SUCCESS);
 }

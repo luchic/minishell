@@ -11,6 +11,12 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	int		result;
 
 	(void)mnsh;
+	if (preprocess_heredoc_node(&(t_ast_node){.type = PIPELINE,
+			.pipeline = pipeline}) != EXIT_SUCCESS)
+	{
+		mnsh->last_exit_status = 1;
+		return (EXIT_FAILURE);
+	}
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 	{

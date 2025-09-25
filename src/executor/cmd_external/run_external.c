@@ -92,16 +92,7 @@ int	run_external(t_command *cmd)
 			EXIT_FAILURE);
 	else if (pid == 0)
 	{
-		if (cmd->fd_in != STDIN_FILENO)
-		{
-			dup2(cmd->fd_in, STDIN_FILENO);
-			close(cmd->fd_in);
-		}
-		if (cmd->fd_out != STDOUT_FILENO)
-		{
-			dup2(cmd->fd_out, STDOUT_FILENO);
-			close(cmd->fd_out);
-		}
+		setup_io_fds(cmd->fd_in, cmd->fd_out);
 		handle_assignments_and_run(cmd->mnsh, cmd, &status,
 			run_external_no_fork);
 		free_and_exit(cmd->mnsh, status);

@@ -14,7 +14,6 @@ static t_minishell	*get_mnsh_from_node(t_ast_node *node)
 	return (NULL);
 }
 
-
 static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 		int pipe_fds[2])
 {
@@ -24,38 +23,16 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 
 	cur_node = pipeline->commands[i];
 	mnsh = get_mnsh_from_node(cur_node);
-
-
-    if (fds[0] != STDIN_FILENO)
-    {
-        dup2(fds[0], STDIN_FILENO);
-        close(fds[0]);
-    }
-    if (fds[1] != STDOUT_FILENO)
-    {
-        dup2(fds[1], STDOUT_FILENO);
-        close(fds[1]);
-    }
-    if (i < pipeline->count - 1)
-        close(pipe_fds[0]);
-    if (cur_node->type == COMMAND)
-    {
-        cmd = cur_node->command;
-        if (handle_redirections(cmd) == EXIT_FAILURE)
-            free_and_exit(mnsh, EXIT_FAILURE);
-        if (cmd->fd_in != STDIN_FILENO)
-        {
-            dup2(cmd->fd_in, STDIN_FILENO);
-            close(cmd->fd_in);
-        }
-        if (cmd->fd_out != STDOUT_FILENO)
-        {
-            dup2(cmd->fd_out, STDOUT_FILENO);
-            close(cmd->fd_out);
-        }
-    }
-    
-
+	setup_io_fds(fds[0], fds[1]);
+	if (i < pipeline->count - 1)
+		close(pipe_fds[0]);
+	if (cur_node->type == COMMAND)
+	{
+		cmd = cur_node->command;
+		if (handle_redirections(cmd) == EXIT_FAILURE)
+			free_and_exit(mnsh, EXIT_FAILURE);
+		setup_io_fds(cmd->fd_in, cmd->fd_out);
+	}
 	if (cur_node->type == COMMAND)
 		free_and_exit(mnsh, execute_command_pipeline(mnsh, cur_node->command));
 	else if (cur_node->type == SUBSHELL)
@@ -63,6 +40,7 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 	else
 		free_and_exit(mnsh, EXIT_FAILURE);
 }
+
 
 pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
