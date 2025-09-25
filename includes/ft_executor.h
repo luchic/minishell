@@ -11,7 +11,6 @@
 // ======================== executor ========================
 int		execute_script(t_minishell *mnsh, t_ast_node *script);
 int		execute_node(t_minishell *mnsh, t_ast_node *node);
-
 int		execute_command(t_minishell *mnsh, t_command *cmd);
 int		execute_command_pipeline(t_minishell *mnsh, t_command *cmd);
 int		execute_logical(t_minishell *mnsh, t_logical_expression *logic);
@@ -35,7 +34,7 @@ void	setup_io_fds(int fd_in, int fd_out);
 // ======================== assignments ========================
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments);
 void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
-			int *status, int (*run_func)(t_command *));
+int *status, int (*run_func)(t_command *));
 void	update_underscore(t_minishell *mnsh, t_command *cmd);
 
 // ======================== cmd_built_in ========================
@@ -48,7 +47,6 @@ void	change_env_var(const char *name, char *value, t_command *cmd);
 int		ft_cd_home(void);
 int		ft_cd_oldpwd(char *oldpwd, char *pwd);
 int		ft_cd_to_path(char *path);
-
 int		ft_echo(t_command *cmd);
 int		ft_exit(t_command *cmd);
 int		ft_pwd(t_command *cmd);
@@ -58,7 +56,6 @@ void	ft_export_print_env(char **envp, int fd);
 int		ft_unset(t_command *cmd);
 
 // cmd_export helpers && cmd_assignments helpers
-
 void	ft_export_print_env(char **envp, int fd);
 int		is_valid_identifier(char *str);
 void	update_env_var(char *arg, char ***envp);
@@ -81,5 +78,6 @@ void	ft_write_data_to_std(char *del, int fd);
 int		preprocess_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_cmd(t_command *cmd);
 int		preprocess_heredocs_fds(t_redirection *redir);
+
 
 #endif

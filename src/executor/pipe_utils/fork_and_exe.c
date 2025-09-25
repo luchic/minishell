@@ -41,6 +41,7 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 		free_and_exit(mnsh, EXIT_FAILURE);
 }
 
+
 pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2])
 {
 	pid_t	pid;

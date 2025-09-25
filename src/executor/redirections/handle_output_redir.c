@@ -16,6 +16,7 @@ int	open_output_file(const char *path, int append, t_command *cmd)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	else
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
+
 	close_previous_fd(cmd->fd_out);
 	fd = open(path, flags, 0644);
 	if (fd < 0)
