@@ -48,7 +48,7 @@ void	ft_write_data_to_std(char *del, int fd)
 				end-of-file (wanted `%s')\n", del);
 			break ;
 		}
-		(ft_printf_fd(fd, "%s", line), free(line));
+		(ft_printf_fd(fd, "%s\n", line), free(line));
 	}
 }
 
