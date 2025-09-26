@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 14:39:16 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 09:37:13 by mezhang          ###   ########.fr       */
+/*   Created: 2025/09/26 11:31:11 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/26 11:31:16 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ void	handle_signal(int signum)
 	mnsh = *get_mnsh();
 	if (!mnsh || (signum == SIGINT && !mnsh->is_running))
 	{
-		write(1, "\n", 1);
+		write(mnsh->fd, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 	else
-		write(1, "\n", 1);
+		write(mnsh->fd, "\n", 1);
 	if (mnsh)
 		mnsh->last_exit_status = 130;
 }

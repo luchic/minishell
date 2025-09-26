@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 18:57:38 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 19:40:50 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 11:44:39 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,12 @@ int	parse(char *input, t_minishell *mnsh)
 	}
 	ast = run_parser(tokens, mnsh);
 	mnsh->script->nodes = ast;
+	ft_lstclear(&tokens, free_tokens);
 	if (mnsh->last_exit_status == SYNTAX_ERROR && !ast)
 	{
 		ft_log_fd(LOG_ERROR, STDERR, "Parser error\n");
-		ft_lstclear(&tokens, free_tokens);
 		return (-1);
 	}
-	ft_lstclear(&tokens, free_tokens);
 	return (0);
 }
 
