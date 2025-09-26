@@ -74,10 +74,12 @@ int		open_input_file(const char *path, t_command *cmd);
 int		open_output_file(const char *path, int append, t_command *cmd);
 int		handle_heredoc_cmd(t_redirection *redir, t_command *cmd);
 int		ft_is_limiter(char *line, char *del);
-void	ft_write_data_to_std(char *del, int fd);
+int		save_data_heredoc(char *del, int fd);
 int		prep_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_cmd(t_command *cmd);
 int		preprocess_heredocs_fds(t_redirection *redir);
+char	*get_next_line_not_in_tty(void);
+char	*expand_heredoc_line(const char *line);
 
 #endif
