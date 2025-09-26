@@ -1,14 +1,25 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_defines.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 18:58:54 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/26 18:59:49 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef FT_DEFINES_H
 # define FT_DEFINES_H
+
 # include "libft.h"
 # include <stdio.h>
-// Forward declarations
-struct						s_ast_node;
-struct						s_script;
-typedef struct s_ast_node	t_ast_node;
-typedef struct s_script		t_script;
+
+struct							s_ast_node;
+struct							s_script;
+typedef struct s_ast_node		t_ast_node;
+typedef struct s_script			t_script;
 
 // ---- Enums ----
 
@@ -80,7 +91,7 @@ typedef struct s_redirection
 {
 	t_redir_type				type;
 	int							fd;
-	int 						is_quoted;
+	int							is_quoted;
 	char						*value;
 	t_list						*expander;
 }								t_redirection;
@@ -146,10 +157,6 @@ typedef struct s_ast_node
 	};
 }								t_ast_node;
 
-// t_ast_node node
-// node->command = cmd;
-// noed->pipeline;
-// Represents a script (root)
 typedef struct s_script
 {
 	t_ast_node					*nodes;

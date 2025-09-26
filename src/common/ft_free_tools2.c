@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:37:19 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/23 13:36:05 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 18:57:04 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
 #include "ft_common.h"
+#include "ft_defines.h"
 #include "libft.h"
-#include <stdlib.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <stdlib.h>
 
 void	free_expander(void *param)
 {

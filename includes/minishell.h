@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 18:58:32 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/26 18:58:34 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -13,12 +25,12 @@
 # include <unistd.h>
 
 // ======================== read.c ========================
-char		*ft_read_line(t_minishell *mnsh);
+char	*ft_read_line(t_minishell *mnsh);
 
 // ======================== run.c ========================
-int			run_loop(t_minishell *mnsh);
+int		run_loop(t_minishell *mnsh);
 
 // ======================== setup.c ========================
-int			init_minishell(t_minishell *mnsh, char **envp);
-void		close_tty(t_minishell *mnsh);
+int		init_minishell(t_minishell *mnsh, char **envp);
+void	close_tty(t_minishell *mnsh);
 #endif
