@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:45 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:43:46 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 20:49:39 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	ft_export(t_command *cmd)
 		return (ft_export_print_env(cmd->mnsh->envp, STDOUT), 0);
 	envp = &(cmd->mnsh->envp);
 	status = 0;
-	i = EXIT_SUCCESS;
+	i = 1;
 	while (cmd->args && cmd->args[i])
 	{
 		if (is_valid_identifier(cmd->args[i]) == 0)
