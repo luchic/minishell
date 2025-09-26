@@ -1,10 +1,12 @@
 
-# include "ft_common.h"
+#include "ft_common.h"
 
-int count_args(char **args)
+int	count_args(char **args)
 {
-	int count = 0;
+	int	count;
+
+	count = 0;
 	while (args && args[count])
 		count++;
-	return count;
+	return (count);
 }

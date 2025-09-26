@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_heredoc.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:53:48 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:54:36 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "ft_executor.h"
@@ -67,7 +78,6 @@ static char	*create_heredoc_namefile(void)
 	return (filename);
 }
 
-
 static char	*create_heredoc_file(const char *delimiter)
 {
 	char	*temp_filename;
@@ -75,7 +85,6 @@ static char	*create_heredoc_file(const char *delimiter)
 
 	temp_filename = create_heredoc_namefile();
 	if (!temp_filename)
-
 		return (NULL);
 	temp_fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd == -1)

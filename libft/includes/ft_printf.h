@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:43:25 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/13 19:23:22 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:38:06 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,5 @@ int	ft_printf_fd(int fd, const char *format, ...);
  * @param ... The values to be formatted and included in the log message.
  * @return int The number of characters written, or -1 on error.
  */
-int ft_log_fd(t_log_level level, int fd, const char *format, ...);
+int	ft_log_fd(t_log_level level, int fd, const char *format, ...);
 #endif

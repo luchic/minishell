@@ -1,20 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   read.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 19:03:58 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 19:28:28 by nluchini         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "minishell.h"
 #include "ft_printf.h"
+#include "minishell.h"
 #include <readline/history.h>
 #include <readline/readline.h>
-
 
 char	*ft_read_line(t_minishell *mnsh)
 {

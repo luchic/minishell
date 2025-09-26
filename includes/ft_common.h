@@ -45,6 +45,9 @@ t_minishell	**get_mnsh(void);
 void		signal_check(void);
 void		init_signal_handler(void);
 void		handle_signal(int signum);
+void		handle_signal_interactive(int signum);
+void		reset_signals_to_default(void);
+void		init_interactive_signals(void);
 
 // ================================ Free Tools =================================
 void		free_cmd(t_command *cmd);

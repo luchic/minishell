@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_cmd_path.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:44:16 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:50:58 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "ft_executor.h"
@@ -26,8 +36,6 @@ char	*get_cmd_path(char *cmd_name, char **envp)
 		if (!cmd_path)
 			return (free(tmp), free_str_array(paths), NULL);
 		free(tmp);
-		if (!cmd_path)
-			return (free_str_array(paths), NULL);
 		if (access(cmd_path, F_OK) == 0)
 			return (free_str_array(paths), cmd_path);
 		free(cmd_path);

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   preprocess_heredoc.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:51:42 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 17:08:11 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "ft_executor.h"
@@ -29,7 +40,7 @@ int	preprocess_heredoc_cmd(t_command *cmd)
 	return (EXIT_SUCCESS);
 }
 
-int	preprocess_heredoc_node(t_ast_node *node)
+int	prep_heredoc_node(t_ast_node *node)
 {
 	int	i;
 
@@ -42,18 +53,17 @@ int	preprocess_heredoc_node(t_ast_node *node)
 		i = -1;
 		while (++i < node->pipeline->count)
 		{
-			if (preprocess_heredoc_node(node->pipeline->commands[i]) != EXIT_SUCCESS)
+			if (prep_heredoc_node(node->pipeline->commands[i]) == EXIT_FAILURE)
 				return (EXIT_FAILURE);
 		}
 	}
 	if (node->type == LOGICAL)
 	{
-		if (preprocess_heredoc_node(node->logical->left) != EXIT_SUCCESS)
-			return (EXIT_FAILURE);
-		if (preprocess_heredoc_node(node->logical->right) != EXIT_SUCCESS)
+		if (prep_heredoc_node(node->logical->left) == EXIT_FAILURE
+			|| prep_heredoc_node(node->logical->right) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	if (node->type == SUBSHELL)
-		return (preprocess_heredoc_node(node->subshell->script));
+		return (prep_heredoc_node(node->subshell->script));
 	return (EXIT_SUCCESS);
 }
