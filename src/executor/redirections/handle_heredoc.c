@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:53:48 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:54:36 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 12:08:27 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,30 @@ int	ft_is_limiter(char *line, char *del)
 	return (0);
 }
 
+char	*get_next_line_not_in_tty(void)
+{
+	char	*line;
+
+	line = get_next_line(STDIN_FILENO);
+	if (!line)
+		return (NULL);
+	if (line[ft_strlen(line) - 1] == '\n')
+		line[ft_strlen(line) - 1] = '\0';
+	return (line);
+}
+
 void	ft_write_data_to_std(char *del, int fd)
 {
 	char		*line;
+	t_minishell	*mnsh;
 
+	mnsh = *get_mnsh();
 	while (1)
-	{
-		line = readline("> ");
+	{	
+		if (mnsh->is_tty_in)
+			line = readline("> ");
+		else
+			line = get_next_line_not_in_tty();
 		if (ft_is_limiter(line, del))
 		{
 			if (line)
