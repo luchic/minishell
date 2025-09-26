@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_pipe.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 11:04:42 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 16:34:37 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	tmp_node.type = PIPELINE;
 	tmp_node.pipeline = pipeline;
 	if (prep_heredoc_node(&tmp_node) != EXIT_SUCCESS)
-		return (EXIT_FAILURE);
-	if (mnsh->last_exit_status == SYNTAX_ERROR)
-		return (mnsh->last_exit_status);
+		return (mnsh->parser_status);
+	if (mnsh->parser_status != 0)
+		return (mnsh->parser_status);
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (EXIT_FAILURE);
@@ -72,6 +72,6 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 		return (free(pids), EXIT_FAILURE);
 	status = finish_execution(pids, pipeline->count);
 	free(pids);
-	signal(SIGINT, handle_signal_interactive);
+	signal(SIGINT, handle_signal);
 	return (status);
 }
