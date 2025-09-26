@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_external.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:44:22 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/26 09:10:07 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_common.h"
 #include "ft_defines.h"
@@ -72,12 +83,17 @@ static int	parent_process(t_command *cmd, pid_t pid)
 	if (cmd->fd_out != STDOUT)
 		close(cmd->fd_out);
 	current = waitpid(pid, &status, 0);
+	signal(SIGINT, handle_signal_interactive);
 	if (current == -1)
 		return (EXIT_FAILURE);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) + 128 == 130)
+			ft_printf("\n");
 		return (WTERMSIG(status) + 128);
+	}
 	return (EXIT_FAILURE);
 }
 
@@ -86,12 +102,14 @@ int	run_external(t_command *cmd)
 	pid_t	pid;
 	int		status;
 
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
-		return (ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"),
-			EXIT_FAILURE);
+		return (signal(SIGINT, SIG_IGN), ft_log_fd(LOG_ERROR, STDERR,
+				"minishell: fork error\n"), EXIT_FAILURE);
 	else if (pid == 0)
 	{
+		reset_signals_to_default();
 		setup_io_fds(cmd->fd_in, cmd->fd_out);
 		handle_assignments_and_run(cmd->mnsh, cmd, &status,
 			run_external_no_fork);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_output_redir.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/25 16:51:28 by mezhang           #+#    #+#             */
+/*   Updated: 2025/09/25 16:53:08 by mezhang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_defines.h"
 #include "ft_executor.h"
 #include "ft_printf.h"
@@ -16,7 +28,6 @@ int	open_output_file(const char *path, int append, t_command *cmd)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	else
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
-
 	close_previous_fd(cmd->fd_out);
 	fd = open(path, flags, 0644);
 	if (fd < 0)
