@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_external.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:44:22 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 09:10:07 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 13:59:42 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static int	parent_process(t_command *cmd, pid_t pid)
 	if (cmd->fd_out != STDOUT)
 		close(cmd->fd_out);
 	current = waitpid(pid, &status, 0);
-	signal(SIGINT, handle_signal_interactive);
+	signal(SIGINT, handle_signal);
 	if (current == -1)
 		return (EXIT_FAILURE);
 	if (WIFEXITED(status))
