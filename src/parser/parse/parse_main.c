@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:01:50 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 16:32:54 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 17:26:48 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 		if (!right || !left)
 			return (free_logical(logical), NULL);
 		left->logical = logical;
+		if (mnsh->parser_status != 0)
+			return (left);
 	}
 	return (left);
 }

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:44:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:02:00 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 17:25:39 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static int	parse_pipe_command_list(t_pipeline *pipeline, t_ast_node *first_cmd,
 	pipeline->commands[pipeline->count++] = first_cmd;
 	while (ts_expect(ts, PIPE))
 	{
+		if (mnsh->parser_status != 0)
+			return (1);
 		if (ts_peek(ts) == NULL)
 		{
 			msg_unexpected_token_type(PIPE);
