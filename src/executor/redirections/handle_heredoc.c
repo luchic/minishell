@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:53:48 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 12:08:27 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 16:05:38 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	ft_write_data_to_std(char *del, int fd)
 	}
 }
 
-static char	*create_heredoc_namefile(void)
+char	*create_heredoc_namefile(void)
 {
 	static unsigned int	counter;
 	char				*filename;
@@ -94,8 +94,7 @@ static char	*create_heredoc_namefile(void)
 	free(num_str);
 	return (filename);
 }
-
-static char	*create_heredoc_file(const char *delimiter)
+char	*create_heredoc_file(const char *delimiter)
 {
 	char	*temp_filename;
 	int		temp_fd;
