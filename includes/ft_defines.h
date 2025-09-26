@@ -80,6 +80,7 @@ typedef struct s_redirection
 {
 	t_redir_type				type;
 	int							fd;
+	int 						is_quoted;
 	char						*value;
 	t_list						*expander;
 }								t_redirection;

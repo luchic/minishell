@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 18:49:50 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/26 18:49:57 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_common.h"
 #include "ft_defines.h"
@@ -6,7 +17,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-int	ft_is_limiter(char *line, char *del)
+int	ft_is_limiter(char *line, const char *del)
 {
 	char	*tmp;
 

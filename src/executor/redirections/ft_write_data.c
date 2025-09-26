@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:06:57 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 17:10:18 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 18:23:19 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-static void	ft_write_data_in_child(char *del, int fd)
+static void	ft_write_data_in_child(const char *del, int fd, int is_quoted)
 {
 	char		*line;
 	char		*expanded;
 
+	expanded = NULL;
 	while (1)
 	{
 		line = get_next_line_not_in_tty();
@@ -32,8 +33,9 @@ static void	ft_write_data_in_child(char *del, int fd)
 		}
 		if (!line)
 			break ;
-		expanded = expand_heredoc_line(line);
-		if (!expanded)
+		if (!is_quoted)
+			expanded = expand_heredoc_line(line);
+		if (!expanded || is_quoted)
 			ft_printf_fd(fd, "%s\n", line);
 		else
 			ft_printf_fd(fd, "%s\n", expanded);
@@ -43,12 +45,12 @@ static void	ft_write_data_in_child(char *del, int fd)
 	}
 }
 
-static void	run_process_heredoc(char *del, int fd)
+static void	run_process_heredoc(const char *del, int fd, int is_quoted)
 {
 	t_minishell	*mnsh;
 
 	init_signal_heredoc();
-	ft_write_data_in_child(del, fd);
+	ft_write_data_in_child(del, fd, is_quoted);
 	close(fd);
 	rl_clear_history();
 	mnsh = *get_mnsh();
@@ -59,7 +61,7 @@ static void	run_process_heredoc(char *del, int fd)
 	exit(EXIT_SUCCESS);
 }
 
-int	save_data_heredoc(char *del, int fd)
+int	save_data_heredoc(const char *del, int fd, int is_quoted)
 {
 	int	pid;
 	int	status;
@@ -69,7 +71,7 @@ int	save_data_heredoc(char *del, int fd)
 		return (ft_log_fd(LOG_ERROR, STDERR, "heredoc: fork failed\n"),
 			EXIT_FAILURE);
 	if (pid == 0)
-		run_process_heredoc(del, fd);
+		run_process_heredoc(del, fd, is_quoted);
 	else
 	{
 		ignore_signals();

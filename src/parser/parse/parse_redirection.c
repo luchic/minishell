@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:02:20 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:02:31 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 18:17:09 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,29 @@ static t_redir_type	get_redir_type(t_token_type type)
 	return (-1);
 }
 
+static void	set_quoted_status(t_redirection *redir, t_tokenstream *ts)
+{
+	t_token			*token;
+	t_tokenstream	*copy;
+
+	if (!redir || !ts || redir->type != REDIR_HEREDOC)
+		return ;
+	copy = ts_clone(ts);
+	while (ts_match(copy, WORD))
+	{
+		token = ts_peek(copy);
+		if (token && token->quote_status != UNQUOTED)
+		{
+			redir->is_quoted = 1;
+			break ;
+		}
+		if (token->is_space_after)
+			break ;
+		ts_advance(copy);
+	}
+	ts_free(copy);
+}
+
 static void	*create_redirection(t_list **lst, t_token_type type,
 		t_tokenstream *ts)
 {
@@ -38,6 +61,7 @@ static void	*create_redirection(t_list **lst, t_token_type type,
 	if (!redir)
 		return (NULL);
 	redir->type = get_redir_type(type);
+	set_quoted_status(redir, ts);
 	if (set_merged_value(&redir->value, &redir->expander, ts) == -1)
 		return (ft_free_redir(redir), NULL);
 	new_node = ft_lstnew(redir);

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:53:48 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 14:52:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 18:49:42 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ static char	*create_heredoc_namefile(void)
 	return (filename);
 }
 
-static int	create_heredoc_file(const char *delimiter, char **fname)
+static int	create_heredoc_file(const char *delimiter, char **fname,
+		int is_quoted)
 {
 	char	*temp_filename;
 	int		status;
@@ -50,7 +51,7 @@ static int	create_heredoc_file(const char *delimiter, char **fname)
 		free(temp_filename);
 		return (EXIT_FAILURE);
 	}
-	status = save_data_heredoc((char *)delimiter, temp_fd);
+	status = save_data_heredoc(delimiter, temp_fd, is_quoted);
 	close(temp_fd);
 	if (status)
 	{
@@ -70,7 +71,7 @@ int	preprocess_heredocs_fds(t_redirection *redir)
 
 	filename = NULL;
 	mnsh = *get_mnsh();
-	status = create_heredoc_file(redir->value, &filename);
+	status = create_heredoc_file(redir->value, &filename, redir->is_quoted);
 	if (status != 0)
 	{
 		mnsh->last_exit_status = status;
