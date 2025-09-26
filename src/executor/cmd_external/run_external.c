@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:44:22 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 21:27:25 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 09:10:07 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static int	parent_process(t_command *cmd, pid_t pid)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-	{	
+	{
 		if (WTERMSIG(status) + 128 == 130)
 			ft_printf("\n");
 		return (WTERMSIG(status) + 128);
@@ -105,8 +105,8 @@ int	run_external(t_command *cmd)
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
-		return (signal(SIGINT, SIG_IGN), ft_log_fd(LOG_ERROR, STDERR, "minishell: fork error\n"),
-			EXIT_FAILURE);
+		return (signal(SIGINT, SIG_IGN), ft_log_fd(LOG_ERROR, STDERR,
+				"minishell: fork error\n"), EXIT_FAILURE);
 	else if (pid == 0)
 	{
 		reset_signals_to_default();
