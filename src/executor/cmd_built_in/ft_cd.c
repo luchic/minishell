@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:15 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:43:16 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 10:38:48 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,8 @@ void	change_env_var(const char *name, char *value, t_command *cmd)
 			* (i + 2));
 	if (!tmp)
 		return (free(new), free(new_name));
-	cmd->mnsh->envp = tmp;
-	cmd->mnsh->envp[i] = new;
-	cmd->mnsh->envp[i + 1] = NULL;
+	return (cmd->mnsh->envp = tmp, cmd->mnsh->envp[i] = new,
+		cmd->mnsh->envp[i + 1] = NULL, free(new_name));
 }
 
 int	ft_cd(t_command *cmd)
