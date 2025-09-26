@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:00:29 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:07:34 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 11:37:57 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,12 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts, t_minishell *mnsh)
 		return (ft_log_fd(LOG_ERROR, STDERR,
 				"Parse simple command: create_command failed\n"), NULL);
 	if (!parse_command_fields(command, ts, mnsh))
-		return (ft_log_fd(LOG_ERROR, STDERR,
-				"Parse simple command: parse_command_fields failed\n"),
-			free_cmd(command), NULL);
+	{
+		if (mnsh->last_exit_status != SYNTAX_ERROR)
+			return (ft_log_fd(LOG_ERROR, STDERR,
+					"Parse simple command: parse_command_fields failed\n"),
+				free_cmd(command), NULL);
+	}
 	ast_node = create_ast_node(COMMAND);
 	if (!ast_node)
 		return (ft_log_fd(LOG_ERROR, STDERR,
