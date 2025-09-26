@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:10:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 17:14:00 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 17:30:19 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,13 @@ static int	handle_dolor_sign(int *i, char **out, const char *line, char **pos)
 			if (handle_special_char(out, line[*i + 1]) == -1)
 				return (-1);
 			*i += 2;
+			return (0);
 		}
 		else if (is_name_start(line[*i + 1]))
 		{
 			if (handle_variable(i, out, line) == -1)
 				return (-1);
+			return (0);
 		}
 		else if (append_char(out, '$') == -1)
 			return (-1);
