@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:53:48 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 18:20:25 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 18:49:42 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ static char	*create_heredoc_namefile(void)
 	return (filename);
 }
 
-static int	create_heredoc_file(const char *delimiter, char **fname, int is_quoted)
+static int	create_heredoc_file(const char *delimiter, char **fname,
+		int is_quoted)
 {
 	char	*temp_filename;
 	int		status;
