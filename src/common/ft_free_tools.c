@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_free_tools.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 18:57:10 by nluchini          #+#    #+#             */
+/*   Updated: 2025/09/26 18:57:12 by nluchini         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "ft_defines.h"
 #include "ft_common.h"
+#include "ft_defines.h"
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
