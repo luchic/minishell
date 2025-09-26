@@ -17,12 +17,9 @@ int		execute_logical(t_minishell *mnsh, t_logical_expression *logic);
 int		execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline);
 int		execute_subshell(t_minishell *mnsh, t_subshell *subsh);
 
-// void	setup_child_io(t_command *cmd);
-
 // ======================== pipes utils========================
 pid_t	fork_and_exe(t_pipeline *pipeline, int i, int fds[2], int pipe_fds[2]);
 int		finish_execution(pid_t *pids, int count);
-// void	close_pipes(int pipe_fds[2]);
 
 // ======================== exe_cmd_utils ========================
 int		preprocess_cmd(t_command *cmd);
@@ -66,18 +63,19 @@ void	append_env_var(char ***envp, char *new_var);
 int		run_external(t_command *cmd);
 int		run_external_no_fork(t_command *cmd);
 char	*get_cmd_path(char *cmd_name, char **envp);
+char	*find_path_env(void);
 
 // ======================== redirections ========================
-int		handle_redirections(t_command *cmd);
-void	close_previous_fd(int fd_to_close);
-int		open_input_file(const char *path, t_command *cmd);
-int		open_output_file(const char *path, int append, t_command *cmd);
-int		handle_heredoc_cmd(t_redirection *redir, t_command *cmd);
-int		ft_is_limiter(char *line, char *del);
-void	ft_write_data_to_std(char *del, int fd);
 int		prep_heredoc_node(t_ast_node *node);
-int		preprocess_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_cmd(t_command *cmd);
 int		preprocess_heredocs_fds(t_redirection *redir);
+char	*create_heredoc_file(const char *delimiter);
+char	*create_heredoc_namefile(void);
+void	ft_write_data_to_std(char *del, int fd);
+char	*get_next_line_not_in_tty(void);
+int		ft_is_limiter(char *line, char *del);
+int		handle_redirections(t_command *cmd);
+int		open_input_file(const char *path, t_command *cmd);
+int		open_output_file(const char *path, int append, t_command *cmd);
 
 #endif
