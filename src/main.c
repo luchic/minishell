@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 11:00:58 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:38:15 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 20:34:10 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,9 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	init_signal_handler();
 	exit_code = run_loop(&mnsh);
+	if (mnsh.is_tty_in)
+		ft_printf_fd(mnsh.fd, "exit\n");
+	if (mnsh.fd != STDOUT)
+		close(mnsh.fd);
 	return (exit_code);
 }
