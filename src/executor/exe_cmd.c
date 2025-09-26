@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 11:08:19 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 16:34:29 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ int	execute_command(t_minishell *mnsh, t_command *cmd)
 
 	init_params(orig_fds, &original_env, &status);
 	if (preprocess_heredoc_cmd(cmd) != EXIT_SUCCESS)
-		return (mnsh->last_exit_status = 1, EXIT_FAILURE);
-	if (mnsh->last_exit_status == SYNTAX_ERROR)
-		return (mnsh->last_exit_status);
+		return (mnsh->parser_status);
+	if (mnsh->parser_status != 0)
+		return (mnsh->parser_status);
 	if (!cmd->name && !cmd->assignments)
 		return (EXIT_SUCCESS);
 	if (preprocess_cmd(cmd) != EXIT_SUCCESS)

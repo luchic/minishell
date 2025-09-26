@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:01:50 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:01:53 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 16:32:54 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,21 @@ static t_logical_expression	*create_logical_node(t_tokenstream *ts,
 	return (create_logical_expression(op, left, NULL));
 }
 
+t_ast_node	*handle_unexpected_token(t_logical_expression *logical,
+		t_minishell *mnsh)
+{
+	t_ast_node	*node;
+
+	logical->right = NULL;
+	node = create_ast_node(LOGICAL);
+	if (!node)
+		return (free_logical(logical), NULL);
+	node->logical = logical;
+	msg_unexpected_token(NULL);
+	set_exit_code(mnsh, SYNTAX_ERROR);
+	return (NULL);
+}
+
 static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 		t_minishell *mnsh)
 {
@@ -37,9 +52,7 @@ static t_ast_node	*parse_logical_nodes(t_ast_node *left, t_tokenstream *ts,
 		ts_advance(ts);
 		if (ts_peek(ts) == NULL)
 		{
-			msg_unexpected_token(ts_peek(ts));
-			set_exit_code(mnsh, SYNTAX_ERROR);
-			return (free_logical(logical), NULL);
+			return (handle_unexpected_token(logical, mnsh));
 		}
 		ft_log_fd(LOG_INFO, STDERR, "Parsing right side of logical\n");
 		right = parse_pipeline(ts, mnsh);
