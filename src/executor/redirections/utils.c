@@ -6,7 +6,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-int	ft_is_limiter(char *line, char *del)
+int	ft_is_limiter(char *line, const char *del)
 {
 	char	*tmp;
 
