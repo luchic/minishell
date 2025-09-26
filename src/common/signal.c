@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 11:31:11 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 11:31:16 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 17:12:32 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,45 +16,29 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-void	signal_check(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	handle_signal(int signum)
+void	handle_signal_heredoc(int signum)
 {
 	t_minishell	*mnsh;
 
 	mnsh = *get_mnsh();
-	if (!mnsh || (signum == SIGINT && !mnsh->is_running))
+	if (signum == SIGINT)
 	{
-		write(mnsh->fd, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		mnsh->last_exit_status = 2;
+		write(mnsh->fd, "> ^C\n", 5);
+		close(STDIN);
 	}
-	else
-		write(mnsh->fd, "\n", 1);
-	if (mnsh)
-		mnsh->last_exit_status = 130;
 }
 
-void	init_signal_handler(void)
+void	ignore_signals(void)
 {
-	signal(SIGINT, handle_signal);
+	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	handle_signal_interactive(int signum)
+void	init_signal_heredoc(void)
 {
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
+	signal(SIGINT, handle_signal_heredoc);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	reset_signals_to_default(void)

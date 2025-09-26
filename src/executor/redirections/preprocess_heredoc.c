@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   preprocess_heredoc.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:42 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 17:08:11 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 14:35:58 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ int	preprocess_heredoc_cmd(t_command *cmd)
 		if (((t_redirection *)redir_list->content)->type == REDIR_HEREDOC)
 		{
 			if (preprocess_heredocs_fds(redir_list->content) != EXIT_SUCCESS)
-			{
-				return (EXIT_FAILURE);
-			}
+				return (cmd->mnsh->last_exit_status);
 		}
 		redir_list = redir_list->next;
 	}

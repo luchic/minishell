@@ -40,14 +40,19 @@ int			is_single(t_quote_status status);
 int			is_double(t_quote_status status);
 int			is_single_or_double(t_quote_status status);
 t_minishell	**get_mnsh(void);
+int			append_char(char **dst, char c);
+int			is_name_start(char c);
+int			is_name_char(char c);
 
 // ================================ Signal Handling ============================
 void		signal_check(void);
 void		init_signal_handler(void);
 void		handle_signal(int signum);
-void		handle_signal_interactive(int signum);
 void		reset_signals_to_default(void);
 void		init_interactive_signals(void);
+void		init_signal_handler(void);
+void		ignore_signals(void);
+void		init_signal_heredoc(void);
 
 // ================================ Free Tools =================================
 void		free_cmd(t_command *cmd);

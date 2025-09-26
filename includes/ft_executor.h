@@ -66,6 +66,14 @@ char	*get_cmd_path(char *cmd_name, char **envp);
 char	*find_path_env(void);
 
 // ======================== redirections ========================
+
+int		handle_redirections(t_command *cmd);
+void	close_previous_fd(int fd_to_close);
+int		open_input_file(const char *path, t_command *cmd);
+int		open_output_file(const char *path, int append, t_command *cmd);
+int		handle_heredoc_cmd(t_redirection *redir, t_command *cmd);
+int		ft_is_limiter(char *line, char *del);
+int		save_data_heredoc(char *del, int fd);
 int		prep_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_cmd(t_command *cmd);
 int		preprocess_heredocs_fds(t_redirection *redir);
@@ -77,5 +85,6 @@ int		ft_is_limiter(char *line, char *del);
 int		handle_redirections(t_command *cmd);
 int		open_input_file(const char *path, t_command *cmd);
 int		open_output_file(const char *path, int append, t_command *cmd);
+char	*expand_heredoc_line(const char *line);
 
 #endif
