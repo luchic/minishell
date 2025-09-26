@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 21:29:47 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 11:04:42 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	tmp_node.pipeline = pipeline;
 	if (prep_heredoc_node(&tmp_node) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
+	if (mnsh->last_exit_status == SYNTAX_ERROR)
+		return (mnsh->last_exit_status);
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (EXIT_FAILURE);

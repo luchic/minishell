@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unexpected_token.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 21:51:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/17 15:19:09 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 09:52:32 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	unexpected_token(t_token_type type)
 
 void	msg_unexpected_token(t_token *token)
 {
-	ft_printf_fd(STDERR, "%s: %s: ", PREFIX, UNEXPECTED_TOKEN);
+	ft_printf_fd(STDERR, "%s: %s ", PREFIX, UNEXPECTED_TOKEN);
 	if (token)
 		unexpected_token(token->type);
 	else
@@ -51,6 +51,6 @@ void	msg_unexpected_token(t_token *token)
 
 void	msg_unexpected_token_type(t_token_type type)
 {
-	ft_printf_fd(STDERR, "%s: %s: ", PREFIX, UNEXPECTED_TOKEN);
+	ft_printf_fd(STDERR, "%s: %s ", PREFIX, UNEXPECTED_TOKEN);
 	unexpected_token(type);
 }

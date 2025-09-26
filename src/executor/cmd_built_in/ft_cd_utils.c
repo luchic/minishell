@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:20 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:53:02 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 10:46:48 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,11 @@ int	ft_cd_oldpwd(t_command *cmd)
 	if (chdir(oldpwd_env) != 0)
 	{
 		ft_printf_fd(STDERR, "cd: %s: No such file or directory\n", oldpwd_env);
+		free(oldpwd_env);
 		return (EXIT_FAILURE);
 	}
 	ft_printf_fd(STDOUT, "%s\n", oldpwd_env);
+	free(oldpwd_env);
 	return (EXIT_SUCCESS);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:42:03 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 11:08:19 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,15 @@ int	execute_command(t_minishell *mnsh, t_command *cmd)
 	init_params(orig_fds, &original_env, &status);
 	if (preprocess_heredoc_cmd(cmd) != EXIT_SUCCESS)
 		return (mnsh->last_exit_status = 1, EXIT_FAILURE);
+	if (mnsh->last_exit_status == SYNTAX_ERROR)
+		return (mnsh->last_exit_status);
 	if (!cmd->name && !cmd->assignments)
 		return (EXIT_SUCCESS);
 	if (preprocess_cmd(cmd) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	if (!cmd->name)
 	{
-		close_previous_fd(cmd->fd_in);
-		close_previous_fd(cmd->fd_out);
+		(close_previous_fd(cmd->fd_in), close_previous_fd(cmd->fd_out));
 		if (cmd->assignments)
 			free_str_array(handle_assignments(mnsh, cmd->assignments));
 		return (EXIT_SUCCESS);
