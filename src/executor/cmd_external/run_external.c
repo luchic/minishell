@@ -50,7 +50,6 @@ int	run_external_no_fork(t_command *cmd)
 	int		is_path_malloced;
 
 	check_return_cmd_path(cmd, &path, &is_path_malloced);
-	signal_check();
 	execve(path, cmd->args, cmd->mnsh->envp);
 	if (is_directory(path))
 	{
