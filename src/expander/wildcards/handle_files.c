@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:11:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:10:02 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 17:52:15 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	ft_append_file(char *filename, char ***files)
 	return (0);
 }
 
-static char	**get_current_files(char *path)
+static char	**get_current_files(char *path, char *pattern)
 {
 	DIR				*dir;
 	struct dirent	*entry;
@@ -48,7 +48,7 @@ static char	**get_current_files(char *path)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		if (ft_strncmp(entry->d_name, ".", 1) != 0
+		if ((ft_strncmp(entry->d_name, ".", 1) != 0 || pattern[0] == '.')
 			&& ft_append_file(entry->d_name, &files) == -1)
 		{
 			closedir(dir);
@@ -67,7 +67,7 @@ char	**get_matching_files(char *path, char *pattern, int *status)
 	char	**files;
 	int		i;
 
-	files = get_current_files(path);
+	files = get_current_files(path, pattern);
 	if (!files)
 		return (set_status(status, -1), NULL);
 	i = 0;
