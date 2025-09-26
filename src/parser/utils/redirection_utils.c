@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:39:22 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:03:56 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 16:16:24 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	set_redirection(t_command *cmd, t_tokenstream *ts)
 	{
 		exit_code = cmd_set_redirection(cmd, ts);
 		if (exit_code == SYNTAX_ERROR)
-			return (cmd->mnsh->last_exit_status = SYNTAX_ERROR, 0);
+			return (set_exit_code(cmd->mnsh, SYNTAX_ERROR), 0);
 		if (exit_code == 0)
 			return (ft_log_fd(LOG_ERROR, ERROR, "Failed to set redirection\n"),
 				0);

@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:00:29 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 11:37:57 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 16:15:44 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ static int	parse_command_fields(t_command *command, t_tokenstream *ts,
 	if (!ts_peek(ts))
 		return (1);
 	if (!ts_match(ts, WORD))
-		return (msg_unexpected_token(ts_peek(ts)), mnsh->last_exit_status = 2,
-			0);
+		return (msg_unexpected_token(ts_peek(ts)), set_exit_code(mnsh,
+				SYNTAX_ERROR), 0);
 	tok_name = ts_peek(ts);
 	command->name = ft_strdup(tok_name->value);
 	if (!command->name)
@@ -95,7 +95,7 @@ t_ast_node	*parse_simple_command(t_tokenstream *ts, t_minishell *mnsh)
 				"Parse simple command: create_command failed\n"), NULL);
 	if (!parse_command_fields(command, ts, mnsh))
 	{
-		if (mnsh->last_exit_status != SYNTAX_ERROR)
+		if (mnsh->parser_status != SYNTAX_ERROR)
 			return (ft_log_fd(LOG_ERROR, STDERR,
 					"Parse simple command: parse_command_fields failed\n"),
 				free_cmd(command), NULL);

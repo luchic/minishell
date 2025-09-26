@@ -56,6 +56,7 @@ typedef struct s_minishell
 	int							num_variables;
 	int							is_background;
 	int							last_exit_status;
+	int							parser_status;
 	int							is_tty_out;
 	int							is_tty_in;
 	int							fd;
