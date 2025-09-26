@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:44:22 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 17:54:23 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/26 18:48:22 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	check_return_cmd_path(t_command *cmd, char **path,
 	{
 		*path = get_cmd_path(cmd->name, cmd->mnsh->envp);
 		if (!*path)
-		{ 
+		{
 			ft_printf_fd(STDERR, "%s: command not found\n", cmd->name);
 			free_and_exit(cmd->mnsh, 127);
 		}
