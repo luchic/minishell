@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:44:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 17:25:39 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/26 18:45:28 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ static int	parse_pipe_command_list(t_pipeline *pipeline, t_ast_node *first_cmd,
 		if (ts_peek(ts) == NULL)
 		{
 			msg_unexpected_token_type(PIPE);
-			set_exit_code(mnsh, SYNTAX_ERROR);
-			return (0);
+			return (set_exit_code(mnsh, SYNTAX_ERROR), 0);
 		}
 		if (ts_match(ts, PAREN_OPEN))
 			ast_node = parse_subshell(ts, mnsh);
