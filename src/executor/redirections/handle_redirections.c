@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:36 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:51:38 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 17:27:55 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	handle_redirections(t_command *cmd)
 {
 	t_list			*current;
 	t_redirection	*redir;
-	int				temp_res;
 	int				status;
 
 	cmd->fd_in = STDIN_FILENO;
@@ -35,7 +34,6 @@ int	handle_redirections(t_command *cmd)
 	while (current)
 	{
 		redir = (t_redirection *)current->content;
-		temp_res = -1;
 		if (redir->type == REDIR_INPUT || redir->type == REDIR_HEREDOC)
 			status = open_input_file(redir->value, cmd);
 		else if (redir->type == REDIR_OUTPUT || redir->type == REDIR_APPEND)
