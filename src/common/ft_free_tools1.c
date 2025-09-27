@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/23 20:37:09 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 18:41:23 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,18 @@ void	free_logical(t_logical_expression *logic)
 	}
 }
 
-void	free_variable(t_var *var)
+void	free_variable(void *param)
 {
-	t_var	*tmp;
+	t_var	*var;
 
-	while (var)
-	{
-		tmp = var;
-		var = var->next;
-		free(tmp->name);
-		free(tmp->value);
-		free(tmp);
-	}
+	var = (t_var *)param;
+	if (!var)
+		return ;
+	if (var->name)
+		free(var->name);
+	if (var->value)
+		free(var->value);
+	free(var);
 }
 
 void	free_script(t_script *script)
@@ -73,6 +73,6 @@ void	free_stack_minishell(t_minishell *mnsh)
 	}
 	if (mnsh->variables)
 	{
-		free_variable(mnsh->variables);
+		ft_lstclear(&mnsh->variables, (void *)free_variable);
 	}
 }

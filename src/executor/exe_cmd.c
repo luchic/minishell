@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 16:34:29 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 17:57:34 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,34 @@
 #include "ft_executor.h"
 #include "minishell.h"
 
-static void	init_params(int orig_fds[2], char ***original_env, int *status)
+static void	init_params(char ***original_env, int *status)
 {
-	orig_fds[0] = -1;
-	orig_fds[1] = -1;
 	*original_env = NULL;
 	*status = 0;
 }
 
-static void	io_and_run_builtin(t_command *cmd, int orig_fds[2], int *status,
+static void	io_and_run_builtin(t_command *cmd, int *status,
 		t_minishell *mnsh)
 {
-	orig_fds[0] = dup(STDIN_FILENO);
-	orig_fds[1] = dup(STDOUT_FILENO);
+	cmd->fd_saved[0] = dup(STDIN_FILENO);
+	cmd->fd_saved[1] = dup(STDOUT_FILENO);
 	setup_io_fds(cmd->fd_in, cmd->fd_out);
 	handle_assignments_and_run(mnsh, cmd, status, run_builtin);
-	dup2(orig_fds[0], STDIN_FILENO);
-	dup2(orig_fds[1], STDOUT_FILENO);
-	close(orig_fds[0]);
-	close(orig_fds[1]);
+	close_previous_fd(cmd->fd_in);
+	dup2(cmd->fd_saved[0], STDIN_FILENO);
+	dup2(cmd->fd_saved[1], STDOUT_FILENO);
+	close(cmd->fd_saved[0]);
+	close(cmd->fd_saved[1]);
+	cmd->fd_saved[0] = -1;
+	cmd->fd_saved[1] = -1;
 }
 
 int	execute_command(t_minishell *mnsh, t_command *cmd)
 {
 	char	**original_env;
 	int		status;
-	int		orig_fds[2];
 
-	init_params(orig_fds, &original_env, &status);
+	init_params(&original_env, &status);
 	if (preprocess_heredoc_cmd(cmd) != EXIT_SUCCESS)
 		return (mnsh->parser_status);
 	if (mnsh->parser_status != 0)
@@ -60,7 +60,7 @@ int	execute_command(t_minishell *mnsh, t_command *cmd)
 		return (EXIT_SUCCESS);
 	}
 	if (cmd->type == CMD_BUILTIN)
-		io_and_run_builtin(cmd, orig_fds, &status, mnsh);
+		io_and_run_builtin(cmd, &status, mnsh);
 	else if (cmd->type == CMD_EXTERNAL)
 		status = run_external(cmd);
 	return (status);

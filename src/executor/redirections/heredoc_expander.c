@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expander.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:10:33 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 17:30:19 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 19:29:58 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,14 @@ static int	handle_variable(int *i, char **out, const char *line)
 	int			j;
 	char		*name;
 	char		*val;
-	t_minishell	*mnsh;
 
 	j = *i + 1;
-	mnsh = *get_mnsh();
-	if (!mnsh)
-		return (-1);
 	while (line[j] && is_name_char(line[j]))
 		j++;
 	name = ft_substr(line, *i + 1, j - (*i + 1));
-	val = get_env(mnsh, name);
+	val = get_env(name);
+	if (!val)
+		val = get_env_local(name);
 	if (!val)
 		val = ft_strdup("");
 	if (!name || !val || ft_append_str(out, val) == -1)

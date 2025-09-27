@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 09:16:24 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 09:16:26 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 17:17:04 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_array_remove(char ***array, char *value)
 		return ;
 	envp = *array;
 	i = 0;
-	while (envp[i] && is_valid_name(envp[i], value) == 0)
+	while (envp[i] && is_var_in_envp(envp[i], value) == 0)
 		i++;
 	if (!envp[i])
 		return ;
