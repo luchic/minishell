@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:44:31 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 19:03:35 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 18:16:05 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,7 @@ static void	setup_rl(t_minishell *mnsh)
 		else
 		{
 			if (!mnsh->tty_out)
-			{
-				if (mnsh->fd >= 0 && mnsh->fd != STDERR)
-					mnsh->tty_out = fdopen(mnsh->fd, "w");
-				if (!mnsh->tty_out)
-					mnsh->tty_out = stderr;
-			}
+				mnsh->tty_out = stderr;
 			rl_outstream = mnsh->tty_out;
 		}
 	}
