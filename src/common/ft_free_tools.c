@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:57:10 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 18:57:12 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 17:38:51 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "libft.h"
 #include "parser.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 void	free_str_array(char **arr)
 {
@@ -59,6 +60,10 @@ void	free_cmd(t_command *cmd)
 		ft_lstclear(&cmd->assignments, free_assignment);
 	if (cmd->expander)
 		ft_lstclear(&cmd->expander, free_cmd_expander);
+	if (cmd->fd_saved[0] > 2)
+		close(cmd->fd_saved[0]);
+	if (cmd->fd_saved[1] > 2)
+		close(cmd->fd_saved[1]);
 	free(cmd);
 }
 

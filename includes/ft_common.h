@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_common.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 18:58:11 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 18:49:24 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ void		signal_check(void);
 void		init_signal_handler(void);
 void		handle_signal(int signum);
 void		reset_signals_to_default(void);
-void		init_interactive_signals(void);
 void		init_signal_handler(void);
 void		ignore_signals(void);
 void		init_signal_heredoc(void);
@@ -85,8 +84,9 @@ void		msg_unexpected_token(t_token *token);
 void		msg_unexpected_token_type(t_token_type type);
 
 // ================================ Env ========================================
-char		*get_env(t_minishell *mnsh, const char *name);
-int			is_valid_name(char *variable, char *name);
+char		*get_env(const char *name);
+char		*get_env_local(const char *name);
+int			is_var_in_envp(char *env_var, char *name);
 
 // ================================ Dirs utils ================================
 int			is_directory(const char *path);

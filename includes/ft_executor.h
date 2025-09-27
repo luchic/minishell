@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_executor.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:20 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 18:58:22 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 19:32:26 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		match_built_in(t_command *cmd);
 int		ft_cd(t_command *cmd);
 void	change_env_var(const char *name, char *value, t_command *cmd);
 int		ft_cd_home(void);
-int		ft_cd_oldpwd(t_command *cmd);
+int		ft_cd_oldpwd(void);
 int		ft_cd_to_path(char *path);
 int		ft_echo(t_command *cmd);
 int		ft_exit(t_command *cmd);
@@ -83,7 +83,8 @@ void	close_previous_fd(int fd_to_close);
 int		open_input_file(const char *path, t_command *cmd);
 int		open_output_file(const char *path, int append, t_command *cmd);
 int		ft_is_limiter(char *line, const char *del);
-int		save_data_heredoc(const char *del, int fd, int is_quoted);
+int		save_data_heredoc(const char *del, int fd, char *filename,
+			int is_quoted);
 int		prep_heredoc_node(t_ast_node *node);
 int		preprocess_heredoc_cmd(t_command *cmd);
 int		preprocess_heredocs_fds(t_redirection *redir);

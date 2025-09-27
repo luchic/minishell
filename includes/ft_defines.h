@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_defines.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 18:59:49 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 18:22:59 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,11 @@ typedef struct s_var
 {
 	char						*name;
 	char						*value;
-	struct s_var				*next;
 }								t_var;
 
 typedef struct s_minishell
 {
-	struct s_var				*variables;
+	t_list						*variables;
 	struct s_script				*script;
 	int							num_variables;
 	int							is_background;
@@ -120,6 +119,7 @@ typedef struct s_command
 	t_minishell					*mnsh;
 	t_list						*redirections;
 	t_list						*assignments;
+	int							fd_saved[2];
 }								t_command;
 
 // Represents a pipeline

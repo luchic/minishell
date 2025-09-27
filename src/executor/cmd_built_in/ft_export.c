@@ -6,21 +6,22 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:45 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 20:49:39 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 17:15:28 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
+#include "ft_common.h"
 #include "ft_executor.h"
 #include "minishell.h"
 
 int	is_valid_identifier(char *str)
 {
-	if (!str || (!ft_isalpha(*str) && *str != '_'))
+	if (!str || !is_name_start(str[0]))
 		return (0);
 	while (*str && *str != '=')
 	{
-		if (!(ft_isalnum(*str) || *str == '_'))
+		if (!is_name_char(*str))
 			return (0);
 		str++;
 	}
@@ -66,8 +67,7 @@ void	update_env_var(char *arg, char ***envp)
 	i = 0;
 	while ((*envp)[i])
 	{
-		if (ft_strncmp((*envp)[i], var, ft_strlen(var)) == 0
-			&& (*envp)[i][ft_strlen(var)] == '=')
+		if (is_var_in_envp((*envp)[i], var))
 		{
 			replace_env_var(&((*envp)[i]), arg);
 			return (free(var));
