@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:20 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 18:37:22 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 20:27:12 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 int	ft_cd_home(void)
 {
 	char	*home;
-	
+
 	home = get_env("HOME");
 	if (!home)
 	{
@@ -27,14 +27,16 @@ int	ft_cd_home(void)
 	if (chdir(home) != 0)
 	{
 		ft_printf_fd(STDERR, "cd: %s: No such file or directory\n", home);
+		free(home);
 		return (1);
 	}
+	free(home);
 	return (0);
 }
 
 int	ft_cd_oldpwd(void)
 {
-	char		*oldpwd_env;
+	char	*oldpwd_env;
 
 	oldpwd_env = get_env("OLDPWD");
 	if (!oldpwd_env)
