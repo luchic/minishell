@@ -3,16 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:44:16 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:50:58 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 14:26:44 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_defines.h"
 #include "ft_executor.h"
 #include "minishell.h"
+
+char	**get_cmd_paths(void)
+{
+	char	**paths;
+	char	*env_path;
+
+	env_path = get_env("PATH");
+	if (!env_path)
+		return (NULL);
+	paths = ft_split(env_path, ':');
+	free(env_path);
+	return (paths);
+}
 
 char	*get_cmd_path(char *cmd_name, char **envp)
 {
@@ -21,9 +34,9 @@ char	*get_cmd_path(char *cmd_name, char **envp)
 	char	*cmd_path;
 	int		i;
 
-	if (!cmd_name || !envp || !getenv("PATH"))
+	if (!cmd_name || !envp)
 		return (NULL);
-	paths = ft_split(getenv("PATH"), ':');
+	paths = get_cmd_paths();
 	if (!paths)
 		return (NULL);
 	i = 0;

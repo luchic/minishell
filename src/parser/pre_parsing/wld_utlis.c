@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:03:02 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:03:03 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/28 14:45:57 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static int	update_value(t_exp_info *info, t_token *token, int is_last)
 	pos = ft_strchr_not_escaped(token->value, '$');
 	while (pos)
 	{
-		if (*(pos + 1) == '\0' && !token->is_space_after && !is_last)
+		if (*(pos + 1) == '\0' && !token->is_space_after && !is_last
+			&& token->quote_status == UNQUOTED)
 		{
 			info->res[ft_strlen(info->res) - 1] = '\0';
 			break ;
