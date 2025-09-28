@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/28 11:22:14 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/28 16:39:25 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,10 @@ static int	create_new_node(char *name, char *value)
 
 static void	update_mnsh_vars(t_assignment *asgmt)
 {
-	t_minishell	*mnsh;
 	t_list		*node;
 	char		*name;
 	char		*value;
 
-	mnsh = *get_mnsh();
 	name = ft_substr(asgmt->value, 0, ft_strchr(asgmt->value, '=')
 			- asgmt->value);
 	if (!name)
