@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_exe.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 19:59:57 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 11:09:48 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,25 @@
 #include "ft_printf.h"
 #include "minishell.h"
 
+static void	check_command(t_ast_node *cur_node, t_minishell *mnsh)
+{
+	t_command	*cmd;
+
+	cmd = cur_node->command;
+	if (!cmd->name && !cmd->assignments)
+		free_and_exit(mnsh, EXIT_SUCCESS);
+	if (handle_redirections(cmd) == EXIT_FAILURE)
+	{
+		free_and_exit(mnsh, EXIT_FAILURE);
+	}
+	setup_io_fds(cmd->fd_in, cmd->fd_out);
+}
+
 static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 		int pipe_fds[2])
 {
 	t_ast_node	*cur_node;
 	t_minishell	*mnsh;
-	t_command	*cmd;
 
 	cur_node = pipeline->commands[i];
 	mnsh = *get_mnsh();
@@ -30,10 +43,7 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 		close(pipe_fds[0]);
 	if (cur_node->type == COMMAND)
 	{
-		cmd = cur_node->command;
-		if (handle_redirections(cmd) == EXIT_FAILURE)
-			free_and_exit(mnsh, EXIT_FAILURE);
-		setup_io_fds(cmd->fd_in, cmd->fd_out);
+		check_command(cur_node, mnsh);
 	}
 	if (cur_node->type == COMMAND)
 		free_and_exit(mnsh, execute_command_pipeline(mnsh, cur_node->command));
@@ -74,6 +84,7 @@ int	finish_execution(pid_t *pids, int count)
 
 	i = 0;
 	exit_status = 0;
+	status = 0;
 	while (i < count)
 	{
 		if (waitpid(pids[i], &status, 0) == -1)
