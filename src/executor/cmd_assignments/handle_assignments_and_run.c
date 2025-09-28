@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 17:56:26 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 16:12:57 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,13 @@ void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 	if (cmd->type == CMD_BUILTIN && !restore_check(cmd))
 		should_restore = 0;
 	if (cmd->assignments)
-	{
 		original_env = handle_assignments(mnsh, cmd->assignments);
-	}
 	update_underscore(mnsh, cmd);
+	if (cmd->name == NULL && cmd->args == NULL)
+	{
+		free_str_array(original_env);
+		free_and_exit(mnsh, EXIT_SUCCESS);
+	}
 	*status = run_func(cmd);
 	if (should_restore && original_env)
 	{
@@ -67,7 +70,5 @@ void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 		mnsh->envp = original_env;
 	}
 	else if (original_env)
-	{
 		free_str_array(original_env);
-	}
 }
