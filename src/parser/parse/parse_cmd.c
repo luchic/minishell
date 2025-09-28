@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:00:29 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 16:15:44 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/28 11:27:40 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	parse_command_fields(t_command *command, t_tokenstream *ts,
 		return (0);
 	if (!set_redirection(command, ts))
 		return (0);
-	if (!ts_peek(ts))
+	if (!ts_peek(ts) || (command->assignments && !ts_match(ts, WORD)))
 		return (1);
 	if (!ts_match(ts, WORD))
 		return (msg_unexpected_token(ts_peek(ts)), set_exit_code(mnsh,
