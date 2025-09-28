@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/28 11:08:13 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/28 11:22:14 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,68 +34,50 @@ static t_list	*get_env_local_node(char *name)
 	return (NULL);
 }
 
-static void	create_new_node(t_list **node, t_var **var, char *name)
+static int	create_new_node(char *name, char *value)
 {
 	t_minishell	*mnsh;
-	
+	t_list		*node;
+	t_var		*var;
+
 	mnsh = *get_mnsh();
-	*var = ft_calloc(1, sizeof(t_var));
+	var = ft_calloc(1, sizeof(t_var));
 	if (!mnsh || !var)
-		return (free(*var));
-	*node = ft_lstnew(*var);
-	if (!*node)
-		return (free(*var));
-	(*var)->name = name;
-	if (!(*var)->name)
-		return (free(*var), free(*node));
-	(*var)->value = ft_strdup(ft_strchr(name, '=') + 1);
-	if (!(*var)->value)
-		return (free((*var)->name), free(*var), free(*node));
-	ft_lstadd_back(&mnsh->variables, *node);
-	if (!*node)
-		return ;
+		return (free(var), -1);
+	node = ft_lstnew(var);
+	if (!node)
+		return (free(var), -1);
+	var->name = name;
+	var->value = value;
+	ft_lstadd_back(&mnsh->variables, node);
+	return (0);
 }
 
 static void	update_mnsh_vars(t_assignment *asgmt)
 {
 	t_minishell	*mnsh;
 	t_list		*node;
-	t_var		*var;
 	char		*name;
+	char		*value;
 
 	mnsh = *get_mnsh();
 	name = ft_substr(asgmt->value, 0, ft_strchr(asgmt->value, '=')
 			- asgmt->value);
 	if (!name)
 		return ;
+	value = ft_strdup(ft_strchr(asgmt->value, '=') + 1);
+	if (!value)
+		return (free(name));
 	node = get_env_local_node(name);
 	if (node)
 	{
 		free(name);
 		free(((t_var *)(node->content))->value);
-		((t_var *)(node->content))->value = ft_strdup(ft_strchr(asgmt->value,
-					'=') + 1);
+		((t_var *)(node->content))->value = value;
 		return ;
 	}
-	// var = ft_calloc(1, sizeof(t_var));
-	// if (!mnsh || !var)
-	// 	return (free(var));
-	// node = ft_lstnew(var);
-	// if (!node)
-	// 	return (free(var));
-	// var->name = name;
-	// if (!var->name)
-	// 	return (free(var), free(node));
-	// var->value = ft_strdup(ft_strchr(asgmt->value, '=') + 1);
-	// if (!var->value)
-	// 	return (free(var->name), free(var), free(node));
-	// ft_lstadd_back(&mnsh->variables, node);
-	// if (!node)
-	// 	return ;
-
-	create_new_node(&node, &var, name);
-	if (!node)
-		return ;
+	if (create_new_node(name, value) == -1)
+		return (free(name), free(value));
 }
 
 char	**handle_assignments(t_minishell *mnsh, t_list *assignments)
