@@ -6,12 +6,12 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:45 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 17:15:28 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 15:48:08 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
 #include "ft_common.h"
+#include "ft_defines.h"
 #include "ft_executor.h"
 #include "minishell.h"
 
@@ -32,6 +32,8 @@ void	replace_env_var(char **env_var, char *new_var)
 {
 	char	*tmp;
 
+	if (new_var == NULL || ft_strchr(new_var, '=') == NULL)
+		return ;
 	tmp = ft_strdup(new_var);
 	if (!tmp)
 		return ;

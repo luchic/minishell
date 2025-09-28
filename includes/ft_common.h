@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:09 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 18:49:24 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 15:52:16 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void		free_ast_tree(t_ast_node *node);
 void		free_subshell(t_subshell *subshell);
 void		free_str_array(char **arr);
 void		free_logical(t_logical_expression *logic);
+void		free_variable(void *param);
 void		free_script(t_script *script);
 void		free_stack_minishell(t_minishell *mnsh);
 void		ft_free_redir(void *content);
