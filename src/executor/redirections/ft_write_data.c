@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_write_data.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:06:57 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/26 18:23:19 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 19:33:14 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	run_process_heredoc(const char *del, int fd, int is_quoted)
 	exit(EXIT_SUCCESS);
 }
 
-int	save_data_heredoc(const char *del, int fd, int is_quoted)
+int	save_data_heredoc(const char *del, int fd, char *filename, int is_quoted)
 {
 	int	pid;
 	int	status;
@@ -71,7 +71,9 @@ int	save_data_heredoc(const char *del, int fd, int is_quoted)
 		return (ft_log_fd(LOG_ERROR, STDERR, "heredoc: fork failed\n"),
 			EXIT_FAILURE);
 	if (pid == 0)
-		run_process_heredoc(del, fd, is_quoted);
+	{
+		(free(filename), run_process_heredoc(del, fd, is_quoted));
+	}
 	else
 	{
 		ignore_signals();

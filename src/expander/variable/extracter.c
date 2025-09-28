@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extracter.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 15:08:39 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:08:42 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 19:25:35 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ static char	*get_var_value(t_minishell *mnsh, const char *name)
 		return (ft_strdup(PREFIX));
 	if (ft_strcmp(name, "?") == 0)
 		return (ft_itoa(mnsh->last_exit_status));
-	env = get_env(mnsh, name);
+	env = get_env(name);
+	if (!env)
+		env = get_env_local(name);
 	if (!env)
 		return (ft_strdup(""));
 	return (env);

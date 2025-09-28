@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:15 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 10:38:48 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 18:37:41 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	ft_cd(t_command *cmd)
 	if (!cmd->args[1] || ft_strcmp(cmd->args[1], "~") == 0)
 		status = ft_cd_home();
 	else if (cmd->args[1] && ft_strcmp(cmd->args[1], "-") == 0)
-		status = ft_cd_oldpwd(cmd);
+		status = ft_cd_oldpwd();
 	else
 		status = ft_cd_to_path(cmd->args[1]);
 	if (status != 0)
