@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:54:39 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 18:54:41 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 19:32:44 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	create_heredoc_file(const char *delimiter, char **fname,
 		free(temp_filename);
 		return (EXIT_FAILURE);
 	}
-	status = save_data_heredoc(delimiter, temp_fd, is_quoted);
+	status = save_data_heredoc(delimiter, temp_fd, temp_filename, is_quoted);
 	close(temp_fd);
 	if (status)
 	{

@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:51:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 22:21:08 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 19:59:57 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,6 @@
 #include "ft_printf.h"
 #include "minishell.h"
 
-static t_minishell	*get_mnsh_from_node(t_ast_node *node)
-{
-	if (!node)
-		return (NULL);
-	if (node->type == COMMAND)
-		return (node->command->mnsh);
-	if (node->type == SUBSHELL)
-		return (node->subshell->mnsh);
-	return (NULL);
-}
-
 static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 		int pipe_fds[2])
 {
@@ -35,7 +24,7 @@ static void	child_process(t_pipeline *pipeline, int i, int fds[2],
 	t_command	*cmd;
 
 	cur_node = pipeline->commands[i];
-	mnsh = get_mnsh_from_node(cur_node);
+	mnsh = *get_mnsh();
 	setup_io_fds(fds[0], fds[1]);
 	if (i < pipeline->count - 1)
 		close(pipe_fds[0]);

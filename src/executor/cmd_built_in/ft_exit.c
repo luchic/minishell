@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:37 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/25 16:43:38 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 16:53:55 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static long long	ft_strtoll(const char *str, char **endptr)
 static int	is_valid_num_arg(const char *str)
 {
 	int			i;
-	long long	num;
 	char		*endptr;
 
 	if (!str || !*str)
@@ -58,7 +57,7 @@ static int	is_valid_num_arg(const char *str)
 	if (!ft_isdigit(str[i]))
 		return (0);
 	errno = 0;
-	num = ft_strtoll(str, &endptr);
+	ft_strtoll(str, &endptr);
 	while (*endptr && ft_isspace(*endptr))
 		endptr++;
 	if (*endptr != '\0')
