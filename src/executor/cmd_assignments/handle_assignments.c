@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_assignments.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 19:22:21 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 11:08:13 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ static void	create_new_node(t_list **node, t_var **var, char *name)
 	ft_lstadd_back(&mnsh->variables, *node);
 	if (!*node)
 		return ;
-	
 }
 
 static void	update_mnsh_vars(t_assignment *asgmt)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_defines.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 18:22:59 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/27 20:41:36 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_DEFINES_H
 
 # include "libft.h"
+# include <fcntl.h>
 # include <stdio.h>
 
 struct							s_ast_node;
@@ -73,6 +74,7 @@ typedef struct s_minishell
 	int							is_running;
 	FILE						*tty_out;
 	FILE						*tty_in;
+	pid_t						*pids;
 	char						**envp;
 }								t_minishell;
 

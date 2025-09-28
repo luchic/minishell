@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:52 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/26 16:34:37 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/27 20:42:03 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,12 @@ int	execute_pipeline(t_minishell *mnsh, t_pipeline *pipeline)
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (EXIT_FAILURE);
+	mnsh->pids = pids;
 	if (run_pl_process(pipeline, pids) == EXIT_FAILURE)
-		return (free(pids), EXIT_FAILURE);
+		return (free(pids), mnsh->pids = NULL, EXIT_FAILURE);
 	status = finish_execution(pids, pipeline->count);
 	free(pids);
+	mnsh->pids = NULL;
 	signal(SIGINT, handle_signal);
 	return (status);
 }
