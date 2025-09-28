@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 09:16:40 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 19:09:01 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/28 11:40:00 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_defines.h"
 #include "ft_common.h"
+#include "ft_defines.h"
 #include "libft.h"
 
 char	*get_env_local(const char *name)
 {
-	t_list	*node;
-	t_minishell *mnsh;
+	t_list		*node;
+	t_minishell	*mnsh;
 
 	mnsh = *get_mnsh();
 	if (!mnsh || !name || !mnsh->variables)
@@ -54,8 +54,8 @@ int	is_var_in_envp(char *env_var, char *name)
 
 char	*get_env(const char *name)
 {
-	char	**env;
-	t_minishell *mnsh;
+	char		**env;
+	t_minishell	*mnsh;
 
 	mnsh = *get_mnsh();
 	if (!mnsh || !name || !mnsh->envp)
