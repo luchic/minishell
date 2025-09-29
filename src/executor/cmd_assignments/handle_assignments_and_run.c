@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/29 17:31:41 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/28 16:12:57 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,13 @@ void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 	if (cmd->type == CMD_BUILTIN && !restore_check(cmd))
 		should_restore = 0;
 	if (cmd->assignments)
-	{
 		mnsh->restored = handle_assignments(mnsh, cmd->assignments);
-	}
 	update_underscore(mnsh, cmd);
+	if (cmd->name == NULL && cmd->args == NULL)
+	{
+		free_str_array(original_env);
+		free_and_exit(mnsh, EXIT_SUCCESS);
+	}
 	*status = run_func(cmd);
 	ft_printf("Command exited with status: %d\n", *status);
 	if (should_restore && mnsh->restored)

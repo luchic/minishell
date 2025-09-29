@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_assignments.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/28 11:22:14 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 13:51:08 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,19 @@
 #include "ft_executor.h"
 #include "libft.h"
 #include "minishell.h"
+
+static void	check(char *name, char *arg)
+{
+	char	*value;
+	char	***envp;
+
+	value = get_env(name);
+	if (!value)
+		return ;
+	envp = &((*get_mnsh())->envp);
+	update_env_var(arg, envp);
+	free(value);
+}
 
 static t_list	*get_env_local_node(char *name)
 {
@@ -55,12 +68,10 @@ static int	create_new_node(char *name, char *value)
 
 static void	update_mnsh_vars(t_assignment *asgmt)
 {
-	t_minishell	*mnsh;
 	t_list		*node;
 	char		*name;
 	char		*value;
 
-	mnsh = *get_mnsh();
 	name = ft_substr(asgmt->value, 0, ft_strchr(asgmt->value, '=')
 			- asgmt->value);
 	if (!name)
@@ -69,6 +80,7 @@ static void	update_mnsh_vars(t_assignment *asgmt)
 	if (!value)
 		return (free(name));
 	node = get_env_local_node(name);
+	check(name, asgmt->value);
 	if (node)
 	{
 		free(name);
