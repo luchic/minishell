@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:07 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/29 17:44:55 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 17:53:55 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 	if (cmd->name == NULL && cmd->args == NULL)
 		free_and_exit(mnsh, EXIT_SUCCESS);
 	*status = run_func(cmd);
-	ft_printf("Command exited with status: %d\n", *status);
 	if (should_restore && mnsh->restored)
 	{
 		free_str_array(mnsh->envp);
