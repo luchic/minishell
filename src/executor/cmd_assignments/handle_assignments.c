@@ -68,12 +68,10 @@ static int	create_new_node(char *name, char *value)
 
 static void	update_mnsh_vars(t_assignment *asgmt)
 {
-	t_minishell	*mnsh;
 	t_list		*node;
 	char		*name;
 	char		*value;
 
-	mnsh = *get_mnsh();
 	name = ft_substr(asgmt->value, 0, ft_strchr(asgmt->value, '=')
 			- asgmt->value);
 	if (!name)

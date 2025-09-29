@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 10:41:08 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/24 15:00:01 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 14:33:00 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,14 @@ static t_list	*create_assignments_node(t_tokenstream *ts)
 	value = ft_copy_until_equal(ts);
 	if (!value)
 		return (NULL);
+	assignment = NULL;
 	while (ts_match(ts, WORD))
 	{
 		token = ts_peek(ts);
 		if (!token || token->is_space_after)
 			break ;
 		assignment = get_construct_assignment_value(value, ts);
+		break ;
 	}
 	node = ft_lstnew(assignment);
 	free(value);
