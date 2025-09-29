@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:58:54 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 20:41:36 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 17:40:20 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_minishell
 	FILE						*tty_in;
 	pid_t						*pids;
 	char						**envp;
+	char						**restored;
 }								t_minishell;
 
 // ---- Executors ----

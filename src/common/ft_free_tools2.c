@@ -6,7 +6,7 @@
 /*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 18:37:19 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 20:42:44 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 17:34:03 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,6 @@ void	free_assignment(void *param)
 
 void	free_and_exit(t_minishell *mnsh, int exit_code)
 {
-	if (mnsh && mnsh->pids)
-	{
-		free(mnsh->pids);
-		mnsh->pids = NULL;
-	}
 	if (mnsh)
 		free_stack_minishell(mnsh);
 	rl_clear_history();
