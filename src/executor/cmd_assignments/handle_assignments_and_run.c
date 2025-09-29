@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_assignments_and_run.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:07 by mezhang           #+#    #+#             */
 /*   Updated: 2025/09/28 16:12:57 by mezhang          ###   ########.fr       */
@@ -48,15 +48,13 @@ void	update_underscore(t_minishell *mnsh, t_command *cmd)
 void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 		int *status, int (*run_func)(t_command *))
 {
-	char	**original_env;
 	int		should_restore;
 
-	original_env = NULL;
 	should_restore = (cmd->type == CMD_EXTERNAL);
 	if (cmd->type == CMD_BUILTIN && !restore_check(cmd))
 		should_restore = 0;
 	if (cmd->assignments)
-		original_env = handle_assignments(mnsh, cmd->assignments);
+		mnsh->restored = handle_assignments(mnsh, cmd->assignments);
 	update_underscore(mnsh, cmd);
 	if (cmd->name == NULL && cmd->args == NULL)
 	{
@@ -64,11 +62,16 @@ void	handle_assignments_and_run(t_minishell *mnsh, t_command *cmd,
 		free_and_exit(mnsh, EXIT_SUCCESS);
 	}
 	*status = run_func(cmd);
-	if (should_restore && original_env)
+	ft_printf("Command exited with status: %d\n", *status);
+	if (should_restore && mnsh->restored)
 	{
 		free_str_array(mnsh->envp);
-		mnsh->envp = original_env;
+		mnsh->envp = mnsh->restored;
+		mnsh->restored = NULL;
 	}
-	else if (original_env)
-		free_str_array(original_env);
+	else if (mnsh->restored)
+	{
+		free_str_array(mnsh->restored);
+		mnsh->restored = NULL;
+	}
 }

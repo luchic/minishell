@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_tools1.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 13:08:21 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 18:41:23 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/29 17:36:03 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,19 @@ void	free_stack_minishell(t_minishell *mnsh)
 	if (!mnsh)
 		return ;
 	if (mnsh->envp)
-	{
 		free_str_array(mnsh->envp);
-	}
 	if (mnsh->script)
-	{
 		free_script(mnsh->script);
-	}
 	if (mnsh->variables)
-	{
 		ft_lstclear(&mnsh->variables, (void *)free_variable);
+	if (mnsh->pids)
+	{
+		free(mnsh->pids);
+		mnsh->pids = NULL;
+	}
+	if (mnsh && mnsh->restored)
+	{
+		free_str_array(mnsh->restored);
+		mnsh->restored = NULL;
 	}
 }

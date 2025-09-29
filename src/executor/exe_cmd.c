@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:42:00 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 17:57:34 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/29 17:38:38 by nluchini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,6 @@
 #include "ft_defines.h"
 #include "ft_executor.h"
 #include "minishell.h"
-
-static void	init_params(char ***original_env, int *status)
-{
-	*original_env = NULL;
-	*status = 0;
-}
 
 static void	io_and_run_builtin(t_command *cmd, int *status,
 		t_minishell *mnsh)
@@ -40,10 +34,9 @@ static void	io_and_run_builtin(t_command *cmd, int *status,
 
 int	execute_command(t_minishell *mnsh, t_command *cmd)
 {
-	char	**original_env;
 	int		status;
 
-	init_params(&original_env, &status);
+	status = 0;
 	if (preprocess_heredoc_cmd(cmd) != EXIT_SUCCESS)
 		return (mnsh->parser_status);
 	if (mnsh->parser_status != 0)
