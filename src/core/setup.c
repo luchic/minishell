@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nluchini <nluchini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 18:44:31 by nluchini          #+#    #+#             */
-/*   Updated: 2025/09/27 18:16:05 by nluchini         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:48:22 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,6 @@ int	init_minishell(t_minishell *mnsh, char **envp)
 
 void	close_tty(t_minishell *mnsh)
 {
-	if (mnsh->tty_out && mnsh->tty_out != stderr)
-	{
-		fclose(mnsh->tty_out);
-		mnsh->tty_out = NULL;
-	}
 	if (mnsh->fd > 0 && mnsh->fd != STDERR)
 	{
 		close(mnsh->fd);
