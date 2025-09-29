@@ -6,7 +6,7 @@
 /*   By: mezhang <mezhang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:43:37 by mezhang           #+#    #+#             */
-/*   Updated: 2025/09/27 16:53:55 by mezhang          ###   ########.fr       */
+/*   Updated: 2025/09/29 13:01:27 by mezhang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ static long long	ft_strtoll(const char *str, char **endptr)
 	return (result * sign);
 }
 
-static int	is_valid_num_arg(const char *str)
+static int	get_digi_pos(const char *str)
 {
-	int			i;
-	char		*endptr;
+	int	i;
+	int	neg;
 
 	if (!str || !*str)
 		return (0);
@@ -53,31 +53,54 @@ static int	is_valid_num_arg(const char *str)
 	while (ft_isspace(str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			neg = 1;
 		i++;
+	}
 	if (!ft_isdigit(str[i]))
 		return (0);
-	errno = 0;
-	ft_strtoll(str, &endptr);
-	while (*endptr && ft_isspace(*endptr))
-		endptr++;
-	if (*endptr != '\0')
+	return (i);
+}
+
+static int	is_str_llong(const char *str)
+{
+	const char	*max;
+	const char	*min;
+	int			i;
+	int			start;
+
+	max = "9223372036854775807";
+	min = "9223372036854775808";
+	start = get_digi_pos(str);
+	if (!ft_isdigit(str[start]))
 		return (0);
-	if (errno == ERANGE)
+	i = start;
+	while (ft_isdigit(str[i]))
+		i++;
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] != '\0' || i - start > 19)
 		return (0);
-	return (1);
+	if (i - start < 19)
+		return (1);
+	if (str[start - 1] == '-')
+		return (ft_strncmp(str + start, min, 19) <= 0);
+	else
+		return (ft_strncmp(str + start, max, 19) <= 0);
 }
 
 int	ft_exit(t_command *cmd)
 {
-	int	status;
-	int	argc;
+	long long	status;
+	int			argc;
 
 	argc = count_args(cmd->args);
 	if (isatty(STDIN))
 		ft_printf_fd(STDOUT, "exit\n");
 	if (argc == 1)
 		free_and_exit(cmd->mnsh, cmd->mnsh->last_exit_status);
-	if (!is_valid_num_arg(cmd->args[1]))
+	if (!is_str_llong(cmd->args[1]))
 	{
 		ft_printf_fd(STDERR, "%s: exit: %s: numeric argument required\n",
 			PREFIX, cmd->args[1]);
@@ -89,6 +112,6 @@ int	ft_exit(t_command *cmd)
 		return (EXIT_FAILURE);
 	}
 	status = ft_strtoll(cmd->args[1], NULL);
-	free_and_exit(cmd->mnsh, (unsigned char)status);
+	free_and_exit(cmd->mnsh, (unsigned char)(status & 0xFF));
 	return (EXIT_SUCCESS);
 }
